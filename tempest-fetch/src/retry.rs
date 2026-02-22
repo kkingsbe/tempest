@@ -128,7 +128,6 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tokio::time::sleep;
 
     #[tokio::test]
     async fn test_retry_success_first_attempt() {

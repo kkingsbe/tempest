@@ -6,3 +6,11 @@ edition.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+wgpu = "23"
+wgpu-types = "23"
+raw-window-handle = "0.6"
+futures-intrusive = "0.5"
+thiserror = "2"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt", "macros"] }

@@ -291,6 +291,87 @@ impl ColorRamp {
     }
 }
 
+/// NEXRAD standard reflectivity (dBZ) color ramp
+/// Range: -30 to 70 dBZ
+pub fn reflectivity_ramp() -> ColorRamp {
+    ColorRamp::new(
+        RadarMoment::Reflectivity,
+        vec![
+            ColorStop { value: -30.0, color: Rgb::new(20, 20, 30) },   // Very light - dark
+            ColorStop { value: 5.0, color: Rgb::new(0, 191, 255) },    // Light blue
+            ColorStop { value: 10.0, color: Rgb::new(0, 0, 255) },     // Blue
+            ColorStop { value: 20.0, color: Rgb::new(0, 255, 255) },   // Cyan
+            ColorStop { value: 30.0, color: Rgb::new(0, 255, 0) },     // Green
+            ColorStop { value: 40.0, color: Rgb::new(255, 255, 0) },   // Yellow
+            ColorStop { value: 50.0, color: Rgb::new(255, 165, 0) },   // Orange
+            ColorStop { value: 55.0, color: Rgb::new(255, 0, 0) },     // Red
+            ColorStop { value: 60.0, color: Rgb::new(255, 0, 255) },   // Magenta
+            ColorStop { value: 70.0, color: Rgb::new(255, 255, 255) }, // White - extreme
+        ],
+        Rgb::new(20, 20, 30),   // below -30
+        Rgb::new(255, 255, 255), // above 70
+    )
+}
+
+/// Get color for a reflectivity value in dBZ
+pub fn reflectivity_color(value: f32) -> Rgb {
+    reflectivity_ramp().get_color(value)
+}
+
+/// NEXRAD standard velocity color ramp
+/// Range: -50 to +50 m/s (toward = blue, away = red)
+pub fn velocity_ramp() -> ColorRamp {
+    ColorRamp::new(
+        RadarMoment::Velocity,
+        vec![
+            ColorStop { value: -50.0, color: Rgb::new(0, 0, 139) },       // Dark blue - toward
+            ColorStop { value: -40.0, color: Rgb::new(0, 0, 255) },        // Blue
+            ColorStop { value: -30.0, color: Rgb::new(0, 191, 255) },     // Light blue
+            ColorStop { value: -20.0, color: Rgb::new(135, 206, 250) },   // Pale blue
+            ColorStop { value: -10.0, color: Rgb::new(240, 248, 255) },   // Very light
+            ColorStop { value: 0.0, color: Rgb::new(255, 255, 255) },     // White - zero
+            ColorStop { value: 10.0, color: Rgb::new(255, 240, 245) },    // Very light pink
+            ColorStop { value: 20.0, color: Rgb::new(255, 182, 193) },    // Pale red
+            ColorStop { value: 30.0, color: Rgb::new(255, 0, 0) },         // Light red
+            ColorStop { value: 40.0, color: Rgb::new(178, 34, 34) },      // Medium red
+            ColorStop { value: 50.0, color: Rgb::new(139, 0, 0) },        // Dark red - away
+        ],
+        Rgb::new(0, 0, 139),   // below -50
+        Rgb::new(139, 0, 0),   // above +50
+    )
+}
+
+/// Get color for a velocity value in m/s
+pub fn velocity_color(value: f32) -> Rgb {
+    velocity_ramp().get_color(value)
+}
+
+/// NEXRAD standard ZDR (Differential Reflectivity) color ramp
+/// Range: -4 to +8 dB (indicates rain vs hail)
+pub fn zdr_ramp() -> ColorRamp {
+    ColorRamp::new(
+        RadarMoment::Zdr,
+        vec![
+            ColorStop { value: -4.0, color: Rgb::new(0, 0, 139) },         // Dark blue - light rain
+            ColorStop { value: -2.0, color: Rgb::new(0, 0, 205) },          // Medium blue
+            ColorStop { value: 0.0, color: Rgb::new(0, 128, 0) },           // Green - moderate
+            ColorStop { value: 1.0, color: Rgb::new(154, 205, 50) },       // Yellow-green
+            ColorStop { value: 2.0, color: Rgb::new(255, 255, 0) },        // Yellow - heavy
+            ColorStop { value: 3.0, color: Rgb::new(255, 165, 0) },        // Orange - very heavy
+            ColorStop { value: 4.5, color: Rgb::new(255, 0, 0) },          // Red - hail
+            ColorStop { value: 6.0, color: Rgb::new(255, 0, 255) },        // Magenta - large hail
+            ColorStop { value: 8.0, color: Rgb::new(255, 255, 255) },      // White - giant hail
+        ],
+        Rgb::new(0, 0, 139),   // below -4
+        Rgb::new(255, 255, 255), // above +8
+    )
+}
+
+/// Get color for a ZDR value in dB
+pub fn zdr_color(value: f32) -> Rgb {
+    zdr_ramp().get_color(value)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -425,6 +506,384 @@ mod tests {
             let color = ramp.get_color(75.0);
             assert_eq!(color.r, 128); // 127.5 rounds to 128
             assert_eq!(color.g, 128); // 127.5 rounds to 128
+            assert_eq!(color.b, 0);
+        }
+    }
+
+    mod reflectivity_tests {
+        use super::*;
+
+        #[test]
+        fn test_reflectivity_ramp_creates_valid_ramp() {
+            let ramp = reflectivity_ramp();
+            
+            // Check it's for Reflectivity moment
+            assert_eq!(ramp.moment, RadarMoment::Reflectivity);
+            
+            // Check it has 10 stops
+            assert_eq!(ramp.stops.len(), 10);
+            
+            // Check stops are sorted
+            for i in 1..ramp.stops.len() {
+                assert!(ramp.stops[i].value >= ramp.stops[i - 1].value);
+            }
+            
+            // Check range
+            assert_eq!(ramp.stops.first().map(|s| s.value), Some(-30.0));
+            assert_eq!(ramp.stops.last().map(|s| s.value), Some(70.0));
+        }
+
+        #[test]
+        fn test_reflectivity_color_below_minimum() {
+            // Below -30 should return below_min_color
+            let color = reflectivity_color(-40.0);
+            assert_eq!(color, rgb(20, 20, 30));
+        }
+
+        #[test]
+        fn test_reflectivity_color_at_minimum() {
+            // At -30 should return the dark color
+            let color = reflectivity_color(-30.0);
+            assert_eq!(color, rgb(20, 20, 30));
+        }
+
+        #[test]
+        fn test_reflectivity_color_light_blue() {
+            // At 5.0 should return light blue (#00BFFF = rgb(0, 191, 255))
+            let color = reflectivity_color(5.0);
+            assert_eq!(color, rgb(0, 191, 255));
+        }
+
+        #[test]
+        fn test_reflectivity_color_blue() {
+            // At 10.0 should return blue
+            let color = reflectivity_color(10.0);
+            assert_eq!(color, rgb(0, 0, 255));
+        }
+
+        #[test]
+        fn test_reflectivity_color_cyan() {
+            // At 20.0 should return cyan
+            let color = reflectivity_color(20.0);
+            assert_eq!(color, rgb(0, 255, 255));
+        }
+
+        #[test]
+        fn test_reflectivity_color_green() {
+            // At 30.0 should return green
+            let color = reflectivity_color(30.0);
+            assert_eq!(color, rgb(0, 255, 0));
+        }
+
+        #[test]
+        fn test_reflectivity_color_yellow() {
+            // At 40.0 should return yellow
+            let color = reflectivity_color(40.0);
+            assert_eq!(color, rgb(255, 255, 0));
+        }
+
+        #[test]
+        fn test_reflectivity_color_orange() {
+            // At 50.0 should return orange
+            let color = reflectivity_color(50.0);
+            assert_eq!(color, rgb(255, 165, 0));
+        }
+
+        #[test]
+        fn test_reflectivity_color_red() {
+            // At 55.0 should return red
+            let color = reflectivity_color(55.0);
+            assert_eq!(color, rgb(255, 0, 0));
+        }
+
+        #[test]
+        fn test_reflectivity_color_magenta() {
+            // At 60.0 should return magenta
+            let color = reflectivity_color(60.0);
+            assert_eq!(color, rgb(255, 0, 255));
+        }
+
+        #[test]
+        fn test_reflectivity_color_white() {
+            // At 70.0 should return white
+            let color = reflectivity_color(70.0);
+            assert_eq!(color, rgb(255, 255, 255));
+        }
+
+        #[test]
+        fn test_reflectivity_color_above_maximum() {
+            // Above 70 should return above_max_color (white)
+            let color = reflectivity_color(80.0);
+            assert_eq!(color, rgb(255, 255, 255));
+        }
+
+        #[test]
+        fn test_reflectivity_interpolation() {
+            // Test interpolation between stops
+            // At 15.0 (between 10.0 blue and 20.0 cyan) should be halfway
+            let color = reflectivity_color(15.0);
+            assert_eq!(color.r, 0);
+            assert_eq!(color.g, 128); // 127.5 rounds to 128
+            assert_eq!(color.b, 255);
+        }
+
+        #[test]
+        fn test_reflectivity_interpolation_green_yellow() {
+            // At 35.0 (between 30.0 green and 40.0 yellow)
+            let color = reflectivity_color(35.0);
+            assert_eq!(color.r, 128); // 127.5 rounds to 128
+            assert_eq!(color.g, 255);
+            assert_eq!(color.b, 0);
+        }
+
+        #[test]
+        fn test_reflectivity_interpolation_orange_red() {
+            // At 52.5 (between 50.0 orange and 55.0 red)
+            let color = reflectivity_color(52.5);
+            assert_eq!(color.r, 255);
+            assert_eq!(color.g, 83); // 82.5 rounds to 83
+            assert_eq!(color.b, 0);
+        }
+    }
+
+    mod velocity_tests {
+        use super::*;
+
+        #[test]
+        fn test_velocity_ramp_creates_valid_ramp() {
+            let ramp = velocity_ramp();
+            
+            // Check it's for Velocity moment
+            assert_eq!(ramp.moment, RadarMoment::Velocity);
+            
+            // Check it has 11 stops
+            assert_eq!(ramp.stops.len(), 11);
+            
+            // Check stops are sorted
+            for i in 1..ramp.stops.len() {
+                assert!(ramp.stops[i].value >= ramp.stops[i - 1].value);
+            }
+            
+            // Check range
+            assert_eq!(ramp.stops.first().map(|s| s.value), Some(-50.0));
+            assert_eq!(ramp.stops.last().map(|s| s.value), Some(50.0));
+        }
+
+        #[test]
+        fn test_velocity_color_at_minimum_dark_blue() {
+            // At -50 should return dark blue (toward radar)
+            let color = velocity_color(-50.0);
+            assert_eq!(color, rgb(0, 0, 139));
+        }
+
+        #[test]
+        fn test_velocity_color_at_zero_white() {
+            // At 0.0 should return white
+            let color = velocity_color(0.0);
+            assert_eq!(color, rgb(255, 255, 255));
+        }
+
+        #[test]
+        fn test_velocity_color_at_maximum_dark_red() {
+            // At 50.0 should return dark red (away from radar)
+            let color = velocity_color(50.0);
+            assert_eq!(color, rgb(139, 0, 0));
+        }
+
+        #[test]
+        fn test_velocity_color_below_minimum() {
+            // Below -50 should return below_min_color (dark blue)
+            let color = velocity_color(-60.0);
+            assert_eq!(color, rgb(0, 0, 139));
+        }
+
+        #[test]
+        fn test_velocity_color_above_maximum() {
+            // Above 50 should return above_max_color (dark red)
+            let color = velocity_color(60.0);
+            assert_eq!(color, rgb(139, 0, 0));
+        }
+
+        #[test]
+        fn test_velocity_color_blue() {
+            // At -40 should return blue
+            let color = velocity_color(-40.0);
+            assert_eq!(color, rgb(0, 0, 255));
+        }
+
+        #[test]
+        fn test_velocity_color_light_blue() {
+            // At -30 should return light blue
+            let color = velocity_color(-30.0);
+            assert_eq!(color, rgb(0, 191, 255));
+        }
+
+        #[test]
+        fn test_velocity_color_pale_blue() {
+            // At -20 should return pale blue
+            let color = velocity_color(-20.0);
+            assert_eq!(color, rgb(135, 206, 250));
+        }
+
+        #[test]
+        fn test_velocity_color_pale_red() {
+            // At 20.0 should return pale red
+            let color = velocity_color(20.0);
+            assert_eq!(color, rgb(255, 182, 193));
+        }
+
+        #[test]
+        fn test_velocity_color_light_red() {
+            // At 30.0 should return light red
+            let color = velocity_color(30.0);
+            assert_eq!(color, rgb(255, 0, 0));
+        }
+
+        #[test]
+        fn test_velocity_color_medium_red() {
+            // At 40.0 should return medium red
+            let color = velocity_color(40.0);
+            assert_eq!(color, rgb(178, 34, 34));
+        }
+
+        #[test]
+        fn test_velocity_interpolation_blue_white() {
+            // At -25 (between -30 light blue and -20 pale blue)
+            let color = velocity_color(-25.0);
+            // Should be halfway between (0, 191, 255) and (135, 206, 250)
+            assert_eq!(color.r, 68); // 67.5 rounds to 68
+            assert_eq!(color.g, 199); // 198.5 rounds to 199
+            assert_eq!(color.b, 253); // 252.5 rounds to 253
+        }
+
+        #[test]
+        fn test_velocity_interpolation_white_red() {
+            // At 25 (between 20 pale red and 30 light red)
+            let color = velocity_color(25.0);
+            // Should be halfway between (255, 182, 193) and (255, 0, 0)
+            assert_eq!(color.r, 255);
+            assert_eq!(color.g, 91); // 91 rounds to 91
+            assert_eq!(color.b, 97); // 96.5 rounds to 97
+        }
+    }
+
+    mod zdr_tests {
+        use super::*;
+
+        #[test]
+        fn test_zdr_ramp_creates_valid_ramp() {
+            let ramp = zdr_ramp();
+            
+            // Check it's for Zdr moment
+            assert_eq!(ramp.moment, RadarMoment::Zdr);
+            
+            // Check it has 9 stops
+            assert_eq!(ramp.stops.len(), 9);
+            
+            // Check stops are sorted
+            for i in 1..ramp.stops.len() {
+                assert!(ramp.stops[i].value >= ramp.stops[i - 1].value);
+            }
+            
+            // Check range
+            assert_eq!(ramp.stops.first().map(|s| s.value), Some(-4.0));
+            assert_eq!(ramp.stops.last().map(|s| s.value), Some(8.0));
+        }
+
+        #[test]
+        fn test_zdr_color_at_minimum_dark_blue() {
+            // At -4.0 should return dark blue (light rain)
+            let color = zdr_color(-4.0);
+            assert_eq!(color, rgb(0, 0, 139));
+        }
+
+        #[test]
+        fn test_zdr_color_at_zero_green() {
+            // At 0.0 should return green (moderate rain)
+            let color = zdr_color(0.0);
+            assert_eq!(color, rgb(0, 128, 0));
+        }
+
+        #[test]
+        fn test_zdr_color_at_4_5_red_hail() {
+            // At 4.5 should return red (hail indicator)
+            let color = zdr_color(4.5);
+            assert_eq!(color, rgb(255, 0, 0));
+        }
+
+        #[test]
+        fn test_zdr_color_at_maximum_white() {
+            // At 8.0 should return white (giant hail)
+            let color = zdr_color(8.0);
+            assert_eq!(color, rgb(255, 255, 255));
+        }
+
+        #[test]
+        fn test_zdr_color_below_minimum() {
+            // Below -4 should return below_min_color (dark blue)
+            let color = zdr_color(-10.0);
+            assert_eq!(color, rgb(0, 0, 139));
+        }
+
+        #[test]
+        fn test_zdr_color_above_maximum() {
+            // Above 8 should return above_max_color (white)
+            let color = zdr_color(10.0);
+            assert_eq!(color, rgb(255, 255, 255));
+        }
+
+        #[test]
+        fn test_zdr_color_medium_blue() {
+            // At -2.0 should return medium blue
+            let color = zdr_color(-2.0);
+            assert_eq!(color, rgb(0, 0, 205));
+        }
+
+        #[test]
+        fn test_zdr_color_yellow_green() {
+            // At 1.0 should return yellow-green
+            let color = zdr_color(1.0);
+            assert_eq!(color, rgb(154, 205, 50));
+        }
+
+        #[test]
+        fn test_zdr_color_yellow() {
+            // At 2.0 should return yellow (heavy rain)
+            let color = zdr_color(2.0);
+            assert_eq!(color, rgb(255, 255, 0));
+        }
+
+        #[test]
+        fn test_zdr_color_orange() {
+            // At 3.0 should return orange (very heavy rain/hail)
+            let color = zdr_color(3.0);
+            assert_eq!(color, rgb(255, 165, 0));
+        }
+
+        #[test]
+        fn test_zdr_color_magenta() {
+            // At 6.0 should return magenta (large hail)
+            let color = zdr_color(6.0);
+            assert_eq!(color, rgb(255, 0, 255));
+        }
+
+        #[test]
+        fn test_zdr_interpolation_blue_green() {
+            // At -1.0 (between -2.0 medium blue and 0.0 green)
+            let color = zdr_color(-1.0);
+            // Should interpolate between (0, 0, 205) and (0, 128, 0)
+            assert_eq!(color.r, 0);
+            assert_eq!(color.g, 64); // 64 rounds to 64
+            assert_eq!(color.b, 103); // 102.5 rounds to 103
+        }
+
+        #[test]
+        fn test_zdr_interpolation_yellow_orange() {
+            // At 2.5 (between 2.0 yellow and 3.0 orange)
+            let color = zdr_color(2.5);
+            // Should interpolate between (255, 255, 0) and (255, 165, 0)
+            assert_eq!(color.r, 255);
+            assert_eq!(color.g, 210); // 210 rounds to 210
             assert_eq!(color.b, 0);
         }
     }

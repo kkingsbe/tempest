@@ -59,6 +59,7 @@ pub async fn cache_default() -> Result<Cache, FetchError> {
 
 /// A cache entry with metadata.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct CacheEntry {
     /// The key associated with this entry.
     key: String,

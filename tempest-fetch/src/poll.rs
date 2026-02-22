@@ -229,9 +229,6 @@ mod tests {
             max_retries: 1,
         };
         let _stream = poll_latest("KTLX", config);
-
-        // Just verify we can create the stream without panicking
-        assert!(true);
     }
 
     #[test]

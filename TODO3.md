@@ -6,15 +6,15 @@
 
 ## Tasks
 
-- [ ] Implement local disk cache with LRU eviction
+- [x] Implement local disk cache with LRU eviction
   - 📚 SKILLS: `./skills/rust-engineer.md`, `./skills/rust-best-practices.md`
   - Scope: Cache to ~/.config/tempest/cache/, configurable size limit with LRU eviction policy
 
-- [ ] Implement real-time polling for new volume scans
+- [x] Implement real-time polling for new volume scans
   - 📚 SKILLS: `./skills/rust-engineer.md`
   - Scope: Configurable poll interval to check for new NEXRAD data
 
-- [ ] Implement retry logic with exponential backoff
+- [x] Implement retry logic with exponential backoff
   - 📚 SKILLS: `./skills/rust-best-practices.md`
   - Scope: Handle transient failures gracefully with exponential backoff
 

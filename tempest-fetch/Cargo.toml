@@ -16,6 +16,7 @@ tracing = "0.1"
 chrono = { version = "0.4", features = ["serde"] }
 lru = "0.12"
 walkdir = "2.4"
+bzip2 = "1.0"
 
 [dev-dependencies]
 tokio-test = "0.4"

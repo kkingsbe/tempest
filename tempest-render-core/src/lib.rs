@@ -17,6 +17,15 @@ pub use types::{get_station, LatLng, RadarSite, STATIONS};
 // Re-export color module types
 pub use color::{ColorRamp, ColorStop, Rgb};
 
+// Re-export reflectivity color ramp functions
+pub use color::{reflectivity_color, reflectivity_ramp};
+
+// Re-export velocity color ramp functions
+pub use color::{velocity_color, velocity_ramp};
+
+// Re-export ZDR color ramp functions
+pub use color::{zdr_color, zdr_ramp};
+
 // Re-export projection functions
 pub use projection::project_volume_scan;
 
@@ -825,6 +834,7 @@ mod sweep_projection_tests {
 
     /// Test with KTLX real station coordinates
     #[test]
+    #[allow(clippy::needless_borrow)]
     fn test_project_sweep_with_ktlx() {
         let site = get_station("KTLX").expect("KTLX should be found");
         let mut sweep = Sweep::new(0.5);

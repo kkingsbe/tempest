@@ -343,7 +343,7 @@ fn parse_list_objects_response_via_keys(
 /// Example: `KTLX20240315_120021`
 fn parse_scan_filename(
     station: &str,
-    date: chrono::NaiveDate,
+    _date: chrono::NaiveDate,
     filename: &str,
 ) -> Option<ScanMeta> {
     // Filename format: {STATION_ID}{YYYYMMDD}_{HHMMSS}
@@ -488,9 +488,7 @@ mod tests {
 
     #[test]
     fn test_s3_client_default() {
-        let client = S3Client::default();
-        // Should not panic
-        assert!(true);
+        let _client = S3Client::default();
     }
 
     #[tokio::test]
