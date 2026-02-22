@@ -1,19 +1,21 @@
 # TODO4 - Agent 4
 
-> Sprint: 4
-> Focus Area: Coordinate Projection & Station Discovery (Phase 2 + Phase 3)
-> Last Updated: 2026-02-22
+> Sprint: 5
+> Focus Area: Phase 4 - GPU Rendering Foundation
+> Last Updated: 2026-02-22T22:50:46Z
 
 ## Tasks
 
-- [x] Implement coordinate projection (lat/lon to radar space)
-  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
-  - Scope: Convert geographic coordinates (lat/lon) to radar PPI (polar) coordinates. Implement in tempest-render-core.
-  - Note: Critical for Phase 2 - needed to overlay radar data on geographic maps
+- [ ] Set up wgpu radar renderer foundation
+  - 📚 SKILLS: `./skills/frontend-design.md`, `./skills/rust-engineer.md`
+  - Scope: Initialize wgpu context and basic rendering pipeline for radar data
 
-- [x] Implement station discovery (enumerate NEXRAD stations with metadata)
-  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md, ./skills/rust-best-practices/SKILL.md
-  - Scope: Station ID, lat/lon, elevation, name lookup. Populate station registry in tempest-fetch.
-  - Note: Carried over from Sprint 3 - TODO1. Use NOAA NEXRAD station list API or embedded station metadata.
+- [ ] Develop WGSL shaders for radar rendering
+  - 📚 SKILLS: `./skills/frontend-design.md`, `./skills/rust-engineer.md`
+  - Scope: Write WGSL vertex and fragment shaders for rendering radar sweeps
 
-- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_4' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] Implement vertex buffer layout for polar radar data
+  - 📚 SKILLS: `./skills/rust-engineer.md`
+  - Scope: Define vertex buffer structure to hold radial/azimuthal radar data
+
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_4' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
