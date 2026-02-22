@@ -1,0 +1,48 @@
+[settings]
+image_name = "gastown-agent"
+image_tag = "latest"
+log_dir = ".gastown/logs"
+timezone = "system"
+workspace_path = 'C:/Users/Kyle/Documents/code/gastown-demos/tempest'
+
+[[agent]]
+name = "tempest-dev-1"
+schedule = "0 */20 * * * *"
+readonly = false
+timeout = "30m"
+prompt_file = "prompts/DEV_PARALLEL_1.md"
+
+[[agent]]
+name = "tempest-dev-2"
+schedule = "0 */20 * * * *"
+readonly = false
+timeout = "30m"
+prompt_file = "prompts/DEV_PARALLEL_2.md"
+
+[[agent]]
+name = "tempest-dev-3"
+schedule = "0 */20 * * * *"
+readonly = false
+timeout = "30m"
+prompt_file = "prompts/DEV_PARALLEL_3.md"
+
+[[agent]]
+name = "tempest-dev-4"
+schedule = "0 */20 * * * *"
+readonly = false
+timeout = "30m"
+prompt_file = "prompts/DEV_PARALLEL_4.md"
+
+[[agent]]
+name = "tempest-summarizer"
+schedule = "0 0 * * * *"
+readonly = false
+timeout = "30m"
+prompt_file = "prompts/SUMMARIZER.md"
+
+[[agent]]
+name = "tempest-architect"
+schedule = "0 */45 * * * *"
+readonly = false
+timeout = "30m"
+prompt_file = "prompts/ARCHITECT_PARALLEL.md"
