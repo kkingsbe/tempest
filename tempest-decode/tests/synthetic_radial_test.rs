@@ -13,7 +13,7 @@ fn load_fixture(name: &str) -> Vec<u8> {
         .join("fixtures")
         .join(name);
 
-    std::fs::read(&fixture_path).expect(&format!("Failed to read fixture: {}", name))
+    std::fs::read(&fixture_path).unwrap_or_else(|_| panic!("Failed to read fixture: {}", name))
 }
 
 /// Test parsing the synthetic Message 31 radial data (legacy fixture).
@@ -284,7 +284,7 @@ fn test_fixture_properties() {
 
     assert_eq!(volume.station_id, "KTLX");
     assert_eq!(volume.vcp, 215);
-    assert!(volume.sweeps.len() > 0, "Should have sweeps");
+    assert!(!volume.sweeps.is_empty(), "Should have sweeps");
 
     // Test VCP 35 properties
     let vcp35_data = load_fixture("vcp35_clear_air.bin");

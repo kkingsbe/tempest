@@ -233,6 +233,9 @@ version = "0.1.0"
 [[package]]
 name = "tempest-render-core"
 version = "0.1.0"
+dependencies = [
+ "tempest-decode",
+]
 
 [[package]]
 name = "thiserror"

@@ -614,7 +614,7 @@ mod radial_data_tests {
 
     #[test]
     fn test_parse_moment_block_insufficient_bytes() {
-        let bytes: &[u8] = &[b'R', b'E', b'F']; // Only 3 bytes
+        let bytes: &[u8] = b"REF"; // Only 3 bytes
 
         let result = MomentBlock::parse(bytes);
         assert!(matches!(
@@ -628,7 +628,7 @@ mod radial_data_tests {
 
     #[test]
     fn test_radial_data_block_insufficient_bytes() {
-        let bytes: &[u8] = &[b'R', b'D', b'A']; // Only 3 bytes
+        let bytes: &[u8] = b"RDA"; // Only 3 bytes
 
         let result = RadialDataBlock::parse(bytes);
         assert!(matches!(

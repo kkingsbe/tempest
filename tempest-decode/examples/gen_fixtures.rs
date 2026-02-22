@@ -134,7 +134,7 @@ fn create_ref_moment(gate_count: u16) -> Vec<u8> {
     for i in 0..gate_count {
         // Create a simulated storm pattern
         let gate_range = i as f32 * 250.0;
-        let dBZ = if gate_range < 50000.0 {
+        let d_bz = if gate_range < 50000.0 {
             // Storm core - high reflectivity
             55.0 - (gate_range / 2000.0)
         } else {
@@ -143,8 +143,8 @@ fn create_ref_moment(gate_count: u16) -> Vec<u8> {
         };
 
         // Convert to NEXRAD value
-        let raw_value = ((dBZ + 32.0) / 0.5).round() as u8;
-        block.push(raw_value.min(255));
+        let raw_value = ((d_bz + 32.0) / 0.5).round() as u8;
+        block.push(raw_value);
     }
 
     block
@@ -200,7 +200,7 @@ fn create_vel_moment(gate_count: u16) -> Vec<u8> {
 
         // Convert to NEXRAD value
         let raw_value = ((velocity + 64.0_f32) / 2.0_f32).round() as u8;
-        block.push(raw_value.min(255));
+        block.push(raw_value);
     }
 
     block
@@ -251,7 +251,7 @@ fn create_sw_moment(gate_count: u16) -> Vec<u8> {
 
         // Convert to NEXRAD value
         let raw_value = (sw / 0.5_f32).round() as u8;
-        block.push(raw_value.min(255));
+        block.push(raw_value);
     }
 
     block
@@ -265,9 +265,9 @@ fn create_vcp_fixture(
     description: &str,
     num_radials: usize,
     gates_per_radial: u16,
-    has_vel: bool,
-    has_sw: bool,
+    moments: (bool, bool),
 ) -> (Vec<u8>, String) {
+    let (has_vel, has_sw) = moments;
     let data = create_msg31_radial(
         station_id,
         vcp,
@@ -317,8 +317,7 @@ fn main() {
         "Standard VCP 215 clear-air mode volume scan with REF, VEL, and SW moments",
         360,
         100,
-        true,
-        true,
+        (true, true),
     );
 
     let mut f1 = File::create(fixtures_dir.join("vcp215_clear_air.bin")).unwrap();
@@ -337,8 +336,7 @@ fn main() {
         "VCP 35 clear-air mode with reduced elevation cuts",
         360,
         100,
-        true,
-        true,
+        (true, true),
     );
 
     let mut f2 = File::create(fixtures_dir.join("vcp35_clear_air.bin")).unwrap();
@@ -357,8 +355,7 @@ fn main() {
         "VCP 12 severe weather mode with rapid scanning",
         360,
         100,
-        true,
-        true,
+        (true, true),
     );
 
     let mut f3 = File::create(fixtures_dir.join("vcp12_severe_weather.bin")).unwrap();
@@ -377,8 +374,7 @@ fn main() {
         "Super-resolution data with 0.5 degree azimuthal resolution and 250m gate spacing",
         720, // Double radials for 0.5 degree resolution
         200, // More gates for super-resolution
-        true,
-        true,
+        (true, true),
     );
 
     let mut f4 = File::create(fixtures_dir.join("super_resolution.bin")).unwrap();
@@ -397,8 +393,7 @@ fn main() {
         "Volume scan with only reflectivity moment (VEL and SW missing)",
         360,
         100,
-        false, // No VEL
-        false, // No SW
+        (false, false), // No VEL, No SW
     );
 
     let mut f5 = File::create(fixtures_dir.join("reflectivity_only.bin")).unwrap();
@@ -417,8 +412,7 @@ fn main() {
         "High altitude radar station (Pueblo, CO) with standard VCP 215",
         360,
         100,
-        true,
-        true,
+        (true, true),
     );
 
     let mut f6 = File::create(fixtures_dir.join("high_altitude_station.bin")).unwrap();
@@ -437,8 +431,7 @@ fn main() {
         "Volume scan with strong velocity aliasing near Nyquist velocity",
         360,
         100,
-        true,
-        true,
+        (true, true),
     );
 
     // Modify VEL data to show strong aliasing
