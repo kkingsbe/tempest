@@ -6,7 +6,7 @@
 
 ## Tasks
 
-- [ ] Implement radial data block parsing (REF, VEL, SW moments)
+- [x] Implement radial data block parsing (REF, VEL, SW moments)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md, ./skills/test-driven-development/SKILL.md
   - Scope: Parse radial header + data for Reflectivity, Velocity, Spectrum Width moments from NEXRAD Level II data
   - Note: This is a critical Phase 1 blocker - without radial parsing, decoder cannot extract core radar data

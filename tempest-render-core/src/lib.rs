@@ -7,11 +7,15 @@
 
 use std::fmt;
 
+pub mod color;
 pub mod projection;
 pub mod types;
 
 // Re-export types for convenient access from crate root
 pub use types::{get_station, LatLng, RadarSite, STATIONS};
+
+// Re-export color module types
+pub use color::{ColorRamp, ColorStop, Rgb};
 
 // Re-export projection functions
 pub use projection::project_volume_scan;
