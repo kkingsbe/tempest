@@ -234,6 +234,7 @@ version = "0.1.0"
 name = "tempest-render-core"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "tempest-decode",
 ]
 

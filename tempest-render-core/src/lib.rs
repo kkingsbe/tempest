@@ -7,10 +7,14 @@
 
 use std::fmt;
 
+pub mod projection;
 pub mod types;
 
 // Re-export types for convenient access from crate root
 pub use types::{get_station, LatLng, RadarSite, STATIONS};
+
+// Re-export projection functions
+pub use projection::project_volume_scan;
 
 /// RGBA color representation
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -432,7 +436,8 @@ pub fn polar_to_latlng(
     let lon1 = site.lon.to_radians();
 
     // Spherical law of cosines for intermediate point
-    let sin_lat2 = lat1.sin() * angular_distance.cos() + lat1.cos() * angular_distance.sin() * bearing_rad.cos();
+    let sin_lat2 = lat1.sin() * angular_distance.cos()
+        + lat1.cos() * angular_distance.sin() * bearing_rad.cos();
     let lat2 = sin_lat2.asin();
 
     // Calculate longitude difference
@@ -666,10 +671,12 @@ mod projection_tests {
         let site = RadarSite::new("TEST", 35.0, -97.0, 300.0);
         let result_10km = polar_to_latlng(&site, 90.0, 10_000.0, 0.5);
         let result_20km = polar_to_latlng(&site, 90.0, 20_000.0, 0.5);
-        
-        let dist_10km = ((result_10km.lat - site.lat).powi(2) + (result_10km.lng - site.lon).powi(2)).sqrt();
-        let dist_20km = ((result_20km.lat - site.lat).powi(2) + (result_20km.lng - site.lon).powi(2)).sqrt();
-        
+
+        let dist_10km =
+            ((result_10km.lat - site.lat).powi(2) + (result_10km.lng - site.lon).powi(2)).sqrt();
+        let dist_20km =
+            ((result_20km.lat - site.lat).powi(2) + (result_20km.lng - site.lon).powi(2)).sqrt();
+
         assert!(
             dist_20km > dist_10km,
             "20km should be further than 10km: {} vs {}",
@@ -683,7 +690,7 @@ mod projection_tests {
     fn test_with_ktlx_station() {
         let site = get_station("KTLX").expect("KTLX should be found");
         let result = polar_to_latlng(site, 90.0, 50_000.0, 0.5);
-        
+
         // 50km east should still be in Oklahoma
         assert!(result.lat > 34.0 && result.lat < 36.0);
         assert!(result.lng > -98.0 && result.lng < -96.0);
@@ -696,26 +703,28 @@ mod projection_tests {
         let site = RadarSite::new("TEST", 35.0, -97.0, 300.0);
         let range_m = 10_000.0;
         let elevation_deg: f64 = 0.5;
-        
+
         // Calculate expected beam height
         let r = range_m;
         let r_eff = EFFECTIVE_EARTH_RADIUS_M;
         let elev_rad = elevation_deg.to_radians();
         let term = r * r + r_eff * r_eff + 2.0 * r * r_eff * elev_rad.sin();
         let expected_height = term.sqrt() - r_eff + site.elevation_m;
-        
+
         // The height should be positive and approximately 87m above site
         assert!(expected_height > 0.0, "Beam height should be positive");
-        assert!((expected_height - 300.0 - 87.0).abs() < 50.0, 
-            "Beam height should be ~87m above site elevation: {}", 
-            expected_height - 300.0);
+        assert!(
+            (expected_height - 300.0 - 87.0).abs() < 50.0,
+            "Beam height should be ~87m above site elevation: {}",
+            expected_height - 300.0
+        );
     }
 }
 
 #[cfg(test)]
 mod sweep_projection_tests {
     use super::*;
-    use tempest_decode::{Gate, Radial, Sweep, Moment};
+    use tempest_decode::{Gate, Moment, Radial, Sweep};
 
     /// Test project_sweep with a simple single-gate radial
     #[test]
@@ -732,7 +741,7 @@ mod sweep_projection_tests {
 
         assert_eq!(projected.elevation, 0.5);
         assert_eq!(projected.points.len(), 1);
-        
+
         let point = &projected.points[0];
         assert!((point.lat - site.lat).abs() > 0.01); // Should be north of site
         assert_eq!(point.value, 30.0);
@@ -743,7 +752,7 @@ mod sweep_projection_tests {
     fn test_project_sweep_point_count() {
         let site = RadarSite::new("TEST", 35.0, -97.0, 300.0);
         let mut sweep = Sweep::new(0.5);
-        
+
         // Create 2 radials with 3 gates each = 6 points
         for az in [0.0, 90.0] {
             let mut radial = Radial::new(az);
@@ -765,14 +774,14 @@ mod sweep_projection_tests {
         let site = RadarSite::new("TEST", 35.0, -97.0, 300.0);
         let mut sweep = Sweep::new(0.5);
         let mut radial = Radial::new(0.0);
-        
+
         // Gate with only reflectivity
         let mut gate1 = Gate::new(10_000.0);
         gate1.reflectivity = Some(30.0);
         // Gate with only velocity
         let mut gate2 = Gate::new(20_000.0);
         gate2.velocity = Some(15.0);
-        
+
         radial.gates.push(gate1);
         radial.gates.push(gate2);
         sweep.radials.push(radial);
@@ -794,7 +803,7 @@ mod sweep_projection_tests {
         let site = RadarSite::new("TEST", 35.0, -97.0, 300.0);
         let mut sweep = Sweep::new(0.5);
         let mut radial = Radial::new(90.0); // East
-        
+
         // 50km range
         let mut gate = Gate::new(50_000.0);
         gate.reflectivity = Some(40.0);
@@ -802,7 +811,7 @@ mod sweep_projection_tests {
         sweep.radials.push(radial);
 
         let projected = project_sweep(&site, &sweep, Moment::Reflectivity);
-        
+
         let point = &projected.points[0];
         // 50km east should increase longitude
         assert!(point.lng > site.lon);
@@ -816,7 +825,7 @@ mod sweep_projection_tests {
         let site = get_station("KTLX").expect("KTLX should be found");
         let mut sweep = Sweep::new(0.5);
         let mut radial = Radial::new(45.0);
-        
+
         let mut gate = Gate::new(20_000.0); // 20km
         gate.zdr = Some(2.5);
         radial.gates.push(gate);
@@ -826,7 +835,7 @@ mod sweep_projection_tests {
 
         assert_eq!(projected.points.len(), 1);
         let point = &projected.points[0];
-        
+
         // Should be somewhere in Oklahoma
         assert!(point.lat > 34.0 && point.lat < 37.0);
         assert!(point.lng > -99.0 && point.lng < -96.0);
@@ -838,7 +847,7 @@ mod sweep_projection_tests {
     fn test_projected_sweep_len_and_is_empty() {
         let site = RadarSite::new("TEST", 35.0, -97.0, 300.0);
         let sweep = Sweep::new(0.5);
-        
+
         let projected = project_sweep(&site, &sweep, Moment::Reflectivity);
         assert!(projected.is_empty());
         assert_eq!(projected.len(), 0);
@@ -871,7 +880,12 @@ mod sweep_projection_tests {
 
         for moment in moments {
             let projected = project_sweep(&site, &sweep, moment);
-            assert_eq!(projected.points.len(), 1, "Moment {:?} should have 1 point", moment);
+            assert_eq!(
+                projected.points.len(),
+                1,
+                "Moment {:?} should have 1 point",
+                moment
+            );
         }
     }
 }
