@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = [
+    "tempest-decode",
+    "tempest-render-core",
+    "tempest-fetch",
+    "tempest-render",
+    "tempest-map",
+]
+
+[workspace.package]
+version = "0.1.0"
+rust-version = "1.70"
+edition = "2021"
+
+[workspace.dependencies]

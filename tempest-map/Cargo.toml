@@ -1,0 +1,8 @@
+[package]
+name = "tempest-map"
+description = "Phase 5: Interactive base map"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]

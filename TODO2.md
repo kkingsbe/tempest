@@ -6,7 +6,7 @@
 
 ## Tasks
 
-- [ ] Implement Message Type 31 header parsing
+- [x] Implement Message Type 31 header parsing
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md, ./skills/test-driven-development/SKILL.md
   - Scope: Parse WMO header, station ID, timestamp from Msg Type 31
 

@@ -1,0 +1,8 @@
+[package]
+name = "tempest-fetch"
+description = "Phase 3: S3 data pipeline and local cache"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]

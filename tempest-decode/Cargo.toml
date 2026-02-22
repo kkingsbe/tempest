@@ -1,0 +1,12 @@
+[package]
+name = "tempest-decode"
+description = "Phase 1: Archive2 decoder library"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+bytes = "1.5"
+anyhow = "1.0"
+thiserror = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
