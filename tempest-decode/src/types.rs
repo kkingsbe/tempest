@@ -1,5 +1,6 @@
 //! Shared types for NEXRAD data decoding.
 
+use crate::error::DecodeError;
 use chrono::{DateTime, Utc};
 
 /// Modified Julian Date (MJD) - days since May 23, 1968.
@@ -81,6 +82,205 @@ pub enum Moment {
     /// Differential Phase (degrees)
     Kdp,
 }
+
+/// Radial Data Block - appears after Msg31 header for each radial.
+///
+/// Per NEXRAD ICD, this contains moment data blocks (REF, VEL, SW).
+/// The block type is "RDAT" (4 bytes) followed by block length (4 bytes).
+#[derive(Debug, Clone, PartialEq)]
+pub struct RadialDataBlock {
+    /// Block type identifier (should be "RDAT")
+    pub block_type: [u8; 4],
+    /// Total length of this block in bytes (including header)
+    pub block_length: u32,
+}
+
+impl RadialDataBlock {
+    /// Required bytes for the block header (block type + length)
+    pub const HEADER_BYTES: usize = 8;
+
+    /// Parse a RadialDataBlock from raw bytes.
+    ///
+    /// # Arguments
+    /// * `data` - Raw bytes starting at the beginning of the radial data block
+    ///
+    /// # Returns
+    /// * `Ok(RadialDataBlock)` - Successfully parsed header
+    /// * `Err(DecodeError)` - If parsing fails
+    pub fn parse(data: &[u8]) -> Result<Self, DecodeError> {
+        if data.len() < Self::HEADER_BYTES {
+            return Err(DecodeError::InsufficientBytes {
+                needed: Self::HEADER_BYTES,
+                have: data.len(),
+            });
+        }
+
+        let block_type = [data[0], data[1], data[2], data[3]];
+        let block_length = u32::from_be_bytes([data[4], data[5], data[6], data[7]]);
+
+        Ok(Self {
+            block_type,
+            block_length,
+        })
+    }
+
+    /// Returns the block type as a string slice.
+    pub fn block_type_str(&self) -> Result<&str, std::str::Utf8Error> {
+        std::str::from_utf8(&self.block_type)
+    }
+}
+
+/// Moment Block for each moment type (REF, VEL, SW, ZDR, CC, KDP).
+///
+/// Per NEXRAD ICD:
+/// - 3 bytes: Moment name (e.g., "REF", "VEL", "SW")
+/// - 1 byte: Reserved
+/// - 2 bytes: Data word size (bits per gate)
+/// - 1 byte: Scale (number of bits for scale factor)
+/// - 1 byte: Offset (number of bits for offset factor)
+/// - 1 byte: Reserved
+/// - 2 bytes: Number of gates
+/// - 4 bytes: Range to first gate (meters)
+/// - 2 bytes: Gate spacing (meters)
+/// - N bytes: Packed gate data
+#[derive(Debug, Clone, PartialEq)]
+pub struct MomentBlock {
+    /// Moment name (3 bytes, e.g., "REF", "VEL", "SW")
+    pub moment_name: [u8; 3],
+    /// Reserved byte
+    pub reserved1: u8,
+    /// Data word size in bits
+    pub data_word_size: u8,
+    /// Number of bits for scale factor
+    pub scale_bits: u8,
+    /// Number of bits for offset factor
+    pub offset_bits: u8,
+    /// Reserved byte
+    pub reserved2: u8,
+    /// Number of gates in this moment
+    pub gate_count: u16,
+    /// Range from radar to first gate in meters
+    pub range_to_first_gate: f32,
+    /// Spacing between gates in meters
+    pub gate_spacing: f32,
+    /// Packed gate data (raw bytes)
+    pub data: Vec<u8>,
+}
+
+impl MomentBlock {
+    /// Minimum header bytes required before data
+    pub const HEADER_BYTES: usize = 16;
+
+    /// Parse a MomentBlock from raw bytes.
+    ///
+    /// Per NEXRAD ICD format:
+    /// - 3 bytes: Moment name (e.g., "REF", "VEL", "SW")
+    /// - 1 byte: Reserved
+    /// - 1 byte: Scale (raw byte, used as multiplier)
+    /// - 1 byte: Offset (raw byte, used as offset)
+    /// - 1 byte: Reserved
+    /// - 2 bytes: Number of gates
+    /// - 4 bytes: Range to first gate (meters, f32)
+    /// - 2 bytes: Gate spacing (meters)
+    /// - N bytes: Packed gate data
+    ///
+    /// # Arguments
+    /// * `data` - Raw bytes starting at the beginning of the moment block
+    ///
+    /// # Returns
+    /// * `Ok(MomentBlock)` - Successfully parsed moment block
+    /// * `Err(DecodeError)` - If parsing fails
+    pub fn parse(data: &[u8]) -> Result<Self, DecodeError> {
+        if data.len() < Self::HEADER_BYTES {
+            return Err(DecodeError::InsufficientBytes {
+                needed: Self::HEADER_BYTES,
+                have: data.len(),
+            });
+        }
+
+        let moment_name = [data[0], data[1], data[2]];
+        let reserved1 = data[3];
+        let data_word_size = data[4]; // Bits per gate
+        let scale_bits = data[5];
+        let offset_bits = data[6];
+        let reserved2 = data[7];
+
+        let gate_count = u16::from_be_bytes([data[8], data[9]]);
+        let range_to_first_gate = f32::from_be_bytes([data[10], data[11], data[12], data[13]]);
+        
+        // Gate spacing is 2 bytes, not 4 - convert u16 to f32
+        let gate_spacing_raw = u16::from_be_bytes([data[14], data[15]]);
+        let gate_spacing = gate_spacing_raw as f32;
+
+        // Calculate data size: each gate uses data_word_size bits
+        // Total bits = gate_count * data_word_size, total bytes = bits / 8 (rounded up)
+        let total_data_bits = gate_count as usize * data_word_size as usize;
+        let data_bytes_needed = (total_data_bits + 7) / 8; // Round up to byte boundary
+
+        if data.len() < Self::HEADER_BYTES + data_bytes_needed {
+            return Err(DecodeError::InsufficientBytes {
+                needed: Self::HEADER_BYTES + data_bytes_needed,
+                have: data.len(),
+            });
+        }
+
+        let data = data[Self::HEADER_BYTES..Self::HEADER_BYTES + data_bytes_needed].to_vec();
+
+        Ok(Self {
+            moment_name,
+            reserved1,
+            data_word_size,
+            scale_bits,
+            offset_bits,
+            reserved2,
+            gate_count,
+            range_to_first_gate,
+            gate_spacing,
+            data,
+        })
+    }
+
+    /// Returns the moment name as a string slice.
+    pub fn moment_name_str(&self) -> Result<&str, std::str::Utf8Error> {
+        std::str::from_utf8(&self.moment_name)
+    }
+
+    /// Decode the packed gate data into f32 values using scale and offset.
+    ///
+    /// Per NEXRAD ICD, the formula is: `value = (raw_value * scale) + offset`
+    ///
+    /// Note: The scale and offset are stored in the block header and must be
+    /// passed as parameters. This method assumes 8-bit packed data.
+    ///
+    /// # Arguments
+    /// * `scale` - Scale factor to convert raw bytes to real values
+    /// * `offset` - Offset to add after scaling
+    ///
+    /// # Returns
+    /// * `Vec<f32>` - Decoded gate values
+    pub fn decode_data(&self, scale: f32, offset: f32) -> Vec<f32> {
+        // For 8-bit data, each byte is one gate value
+        self.data.iter().map(|&byte| (byte as f32) * scale + offset).collect()
+    }
+
+    /// Decode 8-bit packed data assuming standard NEXRAD encoding.
+    ///
+    /// For most NEXRAD moments, 0-255 maps to various scales.
+    ///
+    /// # Returns
+    /// * `Vec<f32>` - Decoded gate values (or empty if data is not 8-bit)
+    pub fn decode_data_8bit(&self) -> Vec<f32> {
+        if self.data_word_size != 8 {
+            return Vec::new();
+        }
+
+        // Default: raw byte values (for standard 8-bit encoding)
+        self.data.iter().map(|&byte| byte as f32).collect()
+    }
+}
+
+/// Volume Coverage Pattern number
+pub type Vcp = u16;
 
 impl Moment {
     /// Get the two-character NEXRAD moment code

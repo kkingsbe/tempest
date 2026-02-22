@@ -10,8 +10,8 @@
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md, ./skills/test-driven-development/SKILL.md
   - Scope: Parse WMO header, station ID, timestamp from Msg Type 31
 
-- [ ] Implement Message Type 1 (Message Header Segment) parsing
+- [x] Implement Message Type 1 (Message Header Segment) parsing
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Parse ICS, East-West, South-North, Elev, etc.
 
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_2' with the current date.
+- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_2' with the current date.
