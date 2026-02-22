@@ -30,6 +30,33 @@ impl CacheConfig {
     }
 }
 
+impl Default for CacheConfig {
+    fn default() -> Self {
+        // Get home directory, fallback to /tmp if not available
+        let cache_dir = std::env::var("HOME")
+            .map(|home| PathBuf::from(home).join(".config/tempest/cache"))
+            .unwrap_or_else(|_| PathBuf::from("/tmp/tempest-cache"));
+
+        Self {
+            // Default cache size: 1GB
+            max_size_bytes: 1_073_741_824,
+            cache_dir,
+        }
+    }
+}
+
+/// Create a new Cache with default configuration.
+///
+/// Uses a default cache directory of `~/.config/tempest/cache/`
+/// and a maximum cache size of 1GB.
+///
+/// # Errors
+///
+/// Returns an error if the cache directory cannot be created.
+pub async fn cache_default() -> Result<Cache, FetchError> {
+    Cache::new(CacheConfig::default()).await
+}
+
 /// A cache entry with metadata.
 #[derive(Debug, Clone)]
 struct CacheEntry {
@@ -353,5 +380,35 @@ mod tests {
         assert_eq!(stats.entry_count, 2);
         assert!(stats.oldest.is_some());
         assert!(stats.newest.is_some());
+    }
+
+    #[test]
+    fn test_cache_config_default() {
+        let config = CacheConfig::default();
+        
+        // Verify default max size is 1GB
+        assert_eq!(config.max_size_bytes, 1_073_741_824);
+        
+        // Verify default cache directory contains expected path
+        let cache_dir_str = config.cache_dir.to_string_lossy();
+        assert!(cache_dir_str.contains(".config/tempest/cache") || 
+                cache_dir_str.contains("tempest-cache"));
+    }
+
+    #[tokio::test]
+    async fn test_cache_default_creation() {
+        // This test verifies we can create a Cache with default config
+        // Use a temp directory to avoid polluting the real cache
+        let temp_dir = TempDir::new().unwrap();
+        let config = CacheConfig {
+            max_size_bytes: CacheConfig::default().max_size_bytes,
+            cache_dir: temp_dir.path().to_path_buf(),
+        };
+        
+        let cache = Cache::new(config).await.unwrap();
+        
+        // Verify it's functional
+        let stats = cache.stats().await;
+        assert!(stats.is_empty());
     }
 }

@@ -42,11 +42,12 @@ pub use poll::{poll_latest, poll_latest_default, PollConfig};
 pub use s3::{fetch_scan, list_scans, S3Client};
 pub use station::{get_station, list_all_stations, registry, Station, StationRegistry};
 pub use types::{CacheStats, ScanMeta};
+pub use cache::{cache_default, Cache, CacheConfig};
 
 /// Re-export commonly used types for convenience
 pub mod prelude {
     pub use super::{
         fetch_scan, get_station, list_all_stations, list_scans, poll_latest, poll_latest_default,
-        CacheStats, FetchError, PollConfig, ScanMeta, S3Client, Station, StationRegistry,
+        CacheStats, CacheConfig, Cache, cache_default, FetchError, PollConfig, ScanMeta, S3Client, Station, StationRegistry,
     };
 }

@@ -18,13 +18,15 @@
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Parse ICS, East-West, South-North, Elev, etc.
 
-- [ ] Implement radial data block parsing (REF, VEL, SW moments)
+- [x] Implement radial data block parsing (REF, VEL, SW moments)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Parse radial header + data for Reflectivity, Velocity, Spectrum Width
+  - **IN SPRINT 4**
 
-- [ ] Acquire test fixtures (NEXRAD Level II data samples)
+- [x] Acquire test fixtures (NEXRAD Level II data samples)
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Download or create sample .bin files for testing decoder
+  - **IN SPRINT 4**
 
 - [x] Write unit tests for decoder
   - 📚 SKILLS: ./skills/test-driven-development/SKILL.md
@@ -36,7 +38,7 @@
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Create dBZ, velocity, ZDR color ramps
 
-- [ ] Implement coordinate projection (lat/lon to radar space)
+- [x] Implement coordinate projection (lat/lon to radar space)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Convert geographic coordinates to radar PPI coordinates
 
