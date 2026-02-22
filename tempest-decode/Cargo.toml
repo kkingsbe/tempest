@@ -5,6 +5,10 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 
+[[example]]
+name = "gen_fixtures"
+path = "examples/gen_fixtures.rs"
+
 [dependencies]
 bytes = "1.5"
 anyhow = "1.0"

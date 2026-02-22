@@ -1,3 +1,7 @@
 target
 .gastown
 discli.env
+
+# Test fixtures (large binary files)
+tempest-decode/tests/fixtures/
+*.bin

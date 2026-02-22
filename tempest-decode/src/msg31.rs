@@ -4,7 +4,7 @@
 //! which is the "Digital Radar Data" message used in Archive2 format.
 
 use crate::error::DecodeError;
-use crate::types::{Milliseconds, MomentBlock, Mjd, RadialDataBlock, StationId};
+use crate::types::{Milliseconds, Mjd, MomentBlock, RadialDataBlock, StationId};
 
 /// Message Type 31 header (first 12 bytes after message size).
 ///
@@ -332,10 +332,12 @@ pub fn parse_radial_data_block(
     let mut moments = Vec::new();
 
     // Parse all moment blocks until we reach the end of the radial data block
-    while offset + 8 <= rdb.block_length as usize && offset + MomentBlock::HEADER_BYTES <= data.len() {
+    while offset + 8 <= rdb.block_length as usize
+        && offset + MomentBlock::HEADER_BYTES <= data.len()
+    {
         // Check if we have a valid moment block signature (3 ASCII characters)
         let moment_name = [&data[offset], &data[offset + 1], &data[offset + 2]];
-        
+
         // Validate moment name is ASCII letters
         if !moment_name.iter().all(|&b| b.is_ascii_alphabetic()) {
             break;
@@ -446,32 +448,34 @@ mod radial_data_tests {
     #[test]
     fn test_parse_moment_block_ref() {
         // REF moment block: name (3) + reserved (1) + word size (1) + scale (1) + offset (1) + reserved (1) + gates (2) + range (4) + spacing (2) + data
-        let mut bytes = vec![0u8; 18 + 10]; // Header + 10 gates
+        let mut bytes = vec![0u8; 16 + 10]; // Header (16 bytes) + 10 gates of data
         bytes[0..3].copy_from_slice(b"REF"); // Moment name
         bytes[3] = 0; // Reserved
-        bytes[4] = 8; // Data word size = 8 bits
-        bytes[5] = 0; // Scale bits (not used directly)
+        bytes[4] = 8; // Data word size = 8 bits per gate
+        bytes[5] = 0; // Scale bits (not used directly in this simple parse)
         bytes[6] = 0; // Offset bits
         bytes[7] = 0; // Reserved
-        bytes[8] = 10; // Gate count high
-        bytes[9] = 0; // Gate count low = 10
-        // Range to first gate (4 bytes)
-        bytes[10] = 0x44; bytes[11] = 0x1C; bytes[12] = 0x00; bytes[13] = 0x00; // 5000.0 meters
-        // Gate spacing (2 bytes)
-        bytes[14] = 0x00; bytes[15] = 0xFA; // 250 meters
-        // Gate spacing continued (2 bytes)
-        bytes[16] = 0x00; bytes[17] = 0x00;
+        bytes[8] = 0; // Gate count high
+        bytes[9] = 10; // Gate count low = 10
+                       // Range to first gate (4 bytes) - 5000.0 as f32 = 0x459C4000
+        bytes[10] = 0x45;
+        bytes[11] = 0x9C;
+        bytes[12] = 0x40;
+        bytes[13] = 0x00;
+        // Gate spacing (2 bytes) - 250 as u16 = 0x00FA
+        bytes[14] = 0x00;
+        bytes[15] = 0xFA;
 
         // Add some test data
         for i in 0..10 {
-            bytes[18 + i] = (i * 10) as u8;
+            bytes[16 + i] = (i * 10) as u8;
         }
 
         let result = MomentBlock::parse(&bytes).unwrap();
         assert_eq!(result.moment_name, *b"REF");
         assert_eq!(result.gate_count, 10);
-        assert_eq!(result.range_to_first_gate, 5000.0);
-        assert_eq!(result.gate_spacing, 250.0);
+        assert!((result.range_to_first_gate - 5000.0).abs() < 0.01);
+        assert!((result.gate_spacing - 250.0).abs() < 0.01);
         assert_eq!(result.data.len(), 10);
     }
 
@@ -575,12 +579,13 @@ mod radial_data_tests {
     #[test]
     fn test_radial_header_parse() {
         // Radial header: radial_num (2) + calibration (4) + azimuth (4) + status (1) + elevation (4) + elev_num (1) + data_blocks (1)
+        // Actually per ICD: 2 + 4 + 4 + 1 + 4 + 1 + 1 = 17 bytes
         let bytes: &[u8] = &[
             0x00, 0x01, // Radial number = 1
             0x00, 0x00, 0x00, 0x00, // Calibration = 0
-            0x43, 0xB4, 0x00, 0x00, // Azimuth = 180.0 degrees
+            0x43, 0x34, 0x00, 0x00, // Azimuth = 180.0 degrees (0x43340000 = 180.0)
             0x01, // Radial status = 1
-            0x43, 0x20, 0x00, 0x00, // Elevation = 180.0 degrees
+            0x43, 0x34, 0x00, 0x00, // Elevation = 180.0 degrees (0x43340000 = 180.0)
             0x01, // Elevation number = 1
             0x03, // 3 data blocks
         ];
@@ -600,7 +605,10 @@ mod radial_data_tests {
         let result = RadialHeader::parse(bytes);
         assert!(matches!(
             result,
-            Err(DecodeError::InsufficientBytes { needed: 12, have: 2 })
+            Err(DecodeError::InsufficientBytes {
+                needed: 12,
+                have: 2
+            })
         ));
     }
 
@@ -611,7 +619,10 @@ mod radial_data_tests {
         let result = MomentBlock::parse(bytes);
         assert!(matches!(
             result,
-            Err(DecodeError::InsufficientBytes { needed: 16, have: 3 })
+            Err(DecodeError::InsufficientBytes {
+                needed: 16,
+                have: 3
+            })
         ));
     }
 

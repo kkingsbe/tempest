@@ -1,17 +1,17 @@
 # TODO1 - Agent 1
 
-> Sprint: 1
-> Focus Area: Project Setup
+> Sprint: 2
+> Focus Area: Decoder & Color Tables
 > Last Updated: 2026-02-22
 
 ## Tasks
 
-- [x] Set up Cargo workspace with root Cargo.toml
+- [ ] Implement radial data block parsing (REF, VEL, SW moments)
+  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md, ./skills/rust-best-practices/SKILL.md, ./skills/coding-guidelines/SKILL.md
+  - Scope: Parse radial data blocks for Reflectivity, Velocity, and Spectrum Width from NEXRAD Archive2 data. Should be in tempest-decode/src/
+
+- [ ] Implement color tables for radar moments
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
-  - Scope: Create workspace members: tempest-decode, tempest-render-core, tempest-fetch, tempest-render, tempest-map
+  - Scope: Define color lookup tables for REF, VEL, SW moments in tempest-render-core. Use NEXRAD standard color maps.
 
-- [x] Create tempest-decode crate skeleton
-  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md, ./skills/rust-best-practices/SKILL.md
-  - Scope: Basic crate structure with lib.rs and main.rs, add dependencies (bytes, anyhow)
-
-- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date.
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date.

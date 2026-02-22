@@ -1,17 +1,17 @@
 # TODO4 - Agent 4
 
-> Sprint: 1
-> Focus Area: Testing & CI
+> Sprint: 2
+> Focus Area: CI/Build
 > Last Updated: 2026-02-22
 
 ## Tasks
 
-- [x] Write unit tests for decoder
-  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md
-  - Scope: Test header parsing, radial data extraction
-
-- [x] Initial CI setup
+- [ ] Set up GitHub Actions CI pipeline
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
-  - Scope: Set up GitHub Actions or similar CI pipeline
+  - Scope: Create .github/workflows/ci.yml with cargo test, clippy, build steps.
 
-- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_4' with the current date.
+- [ ] Configure cargo deny (optional security audit)
+  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
+  - Scope: Add cargo-deny to check for vulnerable dependencies.
+
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_4' with the current date.

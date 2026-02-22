@@ -207,7 +207,7 @@ impl MomentBlock {
 
         let gate_count = u16::from_be_bytes([data[8], data[9]]);
         let range_to_first_gate = f32::from_be_bytes([data[10], data[11], data[12], data[13]]);
-        
+
         // Gate spacing is 2 bytes, not 4 - convert u16 to f32
         let gate_spacing_raw = u16::from_be_bytes([data[14], data[15]]);
         let gate_spacing = gate_spacing_raw as f32;
@@ -260,7 +260,10 @@ impl MomentBlock {
     /// * `Vec<f32>` - Decoded gate values
     pub fn decode_data(&self, scale: f32, offset: f32) -> Vec<f32> {
         // For 8-bit data, each byte is one gate value
-        self.data.iter().map(|&byte| (byte as f32) * scale + offset).collect()
+        self.data
+            .iter()
+            .map(|&byte| (byte as f32) * scale + offset)
+            .collect()
     }
 
     /// Decode 8-bit packed data assuming standard NEXRAD encoding.
