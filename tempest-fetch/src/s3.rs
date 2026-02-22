@@ -21,10 +21,10 @@ use chrono::{Datelike, TimeZone, Utc};
 use reqwest::Client;
 use tracing::{debug, warn};
 
+use crate::cache::Cache;
 use crate::error::FetchError;
 use crate::retry::{with_retry, RetryConfig};
 use crate::types::ScanMeta;
-use crate::cache::Cache;
 
 /// Base URL for the NOAA NEXRAD Level 2 S3 bucket.
 const NOAA_NEXRAD_BUCKET: &str = "https://noaa-nexrad-level2.s3.amazonaws.com";
@@ -69,7 +69,11 @@ impl S3Client {
     /// let client = S3Client::new().unwrap();
     /// let scans = client.list_scans("KTLX", NaiveDate::from_ymd_opt(2024, 3, 15).unwrap()).await;
     /// ```
-    pub async fn list_scans(&self, station: &str, date: chrono::NaiveDate) -> Result<Vec<ScanMeta>, FetchError> {
+    pub async fn list_scans(
+        &self,
+        station: &str,
+        date: chrono::NaiveDate,
+    ) -> Result<Vec<ScanMeta>, FetchError> {
         let path = format!(
             "/{}/{}/{:02}/{}",
             date.year(),
@@ -88,10 +92,7 @@ impl S3Client {
             let url = url.clone();
             let client = self.client.clone();
             async move {
-                let resp = client
-                    .get(&url)
-                    .send()
-                    .await?;
+                let resp = client.get(&url).send().await?;
 
                 let status = resp.status();
                 if status.as_u16() == 404 {
@@ -115,7 +116,12 @@ impl S3Client {
         .await?;
 
         let scans = parse_list_objects_response(&response, station, date)?;
-        debug!("Found {} scans for station {} on {}", scans.len(), station, date);
+        debug!(
+            "Found {} scans for station {} on {}",
+            scans.len(),
+            station,
+            date
+        );
 
         Ok(scans)
     }
@@ -150,10 +156,7 @@ impl S3Client {
             let url = url.clone();
             let client = self.client.clone();
             async move {
-                let resp = client
-                    .get(&url)
-                    .send()
-                    .await?;
+                let resp = client.get(&url).send().await?;
 
                 let status = resp.status();
                 if status.as_u16() == 404 {
@@ -380,9 +383,9 @@ fn parse_scan_filename(
     let second = u32::from_str(&time_part[4..6]).ok()?;
 
     // Create DateTime in UTC
-    let datetime = Utc.with_ymd_and_hms(year, month, day, hour, minute, second)
-        .single()
-        ?;
+    let datetime = Utc
+        .with_ymd_and_hms(year, month, day, hour, minute, second)
+        .single()?;
 
     Some(ScanMeta {
         station: station_upper.clone(),
@@ -406,7 +409,10 @@ fn parse_scan_filename(
 /// # Returns
 ///
 /// Returns a vector of `ScanMeta` containing metadata for each available scan.
-pub async fn list_scans(station: &str, date: chrono::NaiveDate) -> Result<Vec<ScanMeta>, FetchError> {
+pub async fn list_scans(
+    station: &str,
+    date: chrono::NaiveDate,
+) -> Result<Vec<ScanMeta>, FetchError> {
     let client = S3Client::new()?;
     client.list_scans(station, date).await
 }
@@ -495,7 +501,11 @@ mod tests {
     async fn test_list_scans_creates_client() {
         // This test just verifies the function can be called
         // The actual network request would fail in tests without proper setup
-        let result = list_scans("KTLX", chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap()).await;
+        let result = list_scans(
+            "KTLX",
+            chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap(),
+        )
+        .await;
         // We expect either success or an error, but not a panic
         // Note: This will make a real network call
         if let Err(e) = &result {

@@ -146,19 +146,13 @@ fn test_pipeline_meaningful_data() {
         .flat_map(|s| &s.radials)
         .map(|r| r.gates.len())
         .sum();
-    assert!(
-        total_gates > 0,
-        "Volume scan should have at least one gate"
-    );
+    assert!(total_gates > 0, "Volume scan should have at least one gate");
 
     // Verify gate ranges are reasonable (positive and within radar range)
     for sweep in &volume.sweeps {
         for radial in &sweep.radials {
             for gate in &radial.gates {
-                assert!(
-                    gate.range > 0.0,
-                    "Gate range should be positive"
-                );
+                assert!(gate.range > 0.0, "Gate range should be positive");
                 // NEXRAD typically has maximum range of ~460km
                 assert!(
                     gate.range <= 500_000.0,
@@ -173,7 +167,14 @@ fn test_pipeline_meaningful_data() {
     println!("  Total sweeps: {}", volume.sweeps.len());
     println!("  Total radials: {}", total_radials);
     println!("  Total gates: {}", total_gates);
-    println!("  Elevation angles: {:?}", volume.sweeps.iter().map(|s| s.elevation).collect::<Vec<_>>());
+    println!(
+        "  Elevation angles: {:?}",
+        volume
+            .sweeps
+            .iter()
+            .map(|s| s.elevation)
+            .collect::<Vec<_>>()
+    );
 }
 
 /// Test 4: Test error handling - verify decode returns appropriate error
@@ -187,10 +188,7 @@ fn test_pipeline_meaningful_data() {
 fn test_pipeline_error_handling() {
     // Test 1: Empty input should return InsufficientBytes error
     let empty_result = decode(b"");
-    assert!(
-        empty_result.is_err(),
-        "Empty input should return error"
-    );
+    assert!(empty_result.is_err(), "Empty input should return error");
     match empty_result {
         Err(DecodeError::InsufficientBytes { needed, have }) => {
             assert!(needed > 0, "Should require some bytes");
@@ -246,7 +244,8 @@ fn test_pipeline_error_handling() {
         Ok(volume) => {
             println!(
                 "Truncated fixture handled gracefully: station={}, sweeps={}",
-                volume.station_id, volume.sweeps.len()
+                volume.station_id,
+                volume.sweeps.len()
             );
         }
         Err(e) => {
@@ -272,10 +271,7 @@ fn test_simulated_s3_fetch_decode_workflow() {
     let bytes = load_fixture("high_altitude_station.bin");
 
     // Step 2: Validate S3 response
-    assert!(
-        !bytes.is_empty(),
-        "S3 should return non-empty data"
-    );
+    assert!(!bytes.is_empty(), "S3 should return non-empty data");
     assert!(
         bytes.len() > 100,
         "NEXRAD data should be at least 100 bytes"

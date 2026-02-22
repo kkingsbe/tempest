@@ -220,7 +220,11 @@ impl ColorRamp {
         }
 
         // Get the minimum and maximum values
-        let min_value = self.stops.first().map(|s| s.value).expect("stops not empty");
+        let min_value = self
+            .stops
+            .first()
+            .map(|s| s.value)
+            .expect("stops not empty");
         let max_value = self.stops.last().map(|s| s.value).expect("stops not empty");
 
         // Handle below minimum
@@ -297,18 +301,48 @@ pub fn reflectivity_ramp() -> ColorRamp {
     ColorRamp::new(
         RadarMoment::Reflectivity,
         vec![
-            ColorStop { value: -30.0, color: Rgb::new(20, 20, 30) },   // Very light - dark
-            ColorStop { value: 5.0, color: Rgb::new(0, 191, 255) },    // Light blue
-            ColorStop { value: 10.0, color: Rgb::new(0, 0, 255) },     // Blue
-            ColorStop { value: 20.0, color: Rgb::new(0, 255, 255) },   // Cyan
-            ColorStop { value: 30.0, color: Rgb::new(0, 255, 0) },     // Green
-            ColorStop { value: 40.0, color: Rgb::new(255, 255, 0) },   // Yellow
-            ColorStop { value: 50.0, color: Rgb::new(255, 165, 0) },   // Orange
-            ColorStop { value: 55.0, color: Rgb::new(255, 0, 0) },     // Red
-            ColorStop { value: 60.0, color: Rgb::new(255, 0, 255) },   // Magenta
-            ColorStop { value: 70.0, color: Rgb::new(255, 255, 255) }, // White - extreme
+            ColorStop {
+                value: -30.0,
+                color: Rgb::new(20, 20, 30),
+            }, // Very light - dark
+            ColorStop {
+                value: 5.0,
+                color: Rgb::new(0, 191, 255),
+            }, // Light blue
+            ColorStop {
+                value: 10.0,
+                color: Rgb::new(0, 0, 255),
+            }, // Blue
+            ColorStop {
+                value: 20.0,
+                color: Rgb::new(0, 255, 255),
+            }, // Cyan
+            ColorStop {
+                value: 30.0,
+                color: Rgb::new(0, 255, 0),
+            }, // Green
+            ColorStop {
+                value: 40.0,
+                color: Rgb::new(255, 255, 0),
+            }, // Yellow
+            ColorStop {
+                value: 50.0,
+                color: Rgb::new(255, 165, 0),
+            }, // Orange
+            ColorStop {
+                value: 55.0,
+                color: Rgb::new(255, 0, 0),
+            }, // Red
+            ColorStop {
+                value: 60.0,
+                color: Rgb::new(255, 0, 255),
+            }, // Magenta
+            ColorStop {
+                value: 70.0,
+                color: Rgb::new(255, 255, 255),
+            }, // White - extreme
         ],
-        Rgb::new(20, 20, 30),   // below -30
+        Rgb::new(20, 20, 30),    // below -30
         Rgb::new(255, 255, 255), // above 70
     )
 }
@@ -324,20 +358,53 @@ pub fn velocity_ramp() -> ColorRamp {
     ColorRamp::new(
         RadarMoment::Velocity,
         vec![
-            ColorStop { value: -50.0, color: Rgb::new(0, 0, 139) },       // Dark blue - toward
-            ColorStop { value: -40.0, color: Rgb::new(0, 0, 255) },        // Blue
-            ColorStop { value: -30.0, color: Rgb::new(0, 191, 255) },     // Light blue
-            ColorStop { value: -20.0, color: Rgb::new(135, 206, 250) },   // Pale blue
-            ColorStop { value: -10.0, color: Rgb::new(240, 248, 255) },   // Very light
-            ColorStop { value: 0.0, color: Rgb::new(255, 255, 255) },     // White - zero
-            ColorStop { value: 10.0, color: Rgb::new(255, 240, 245) },    // Very light pink
-            ColorStop { value: 20.0, color: Rgb::new(255, 182, 193) },    // Pale red
-            ColorStop { value: 30.0, color: Rgb::new(255, 0, 0) },         // Light red
-            ColorStop { value: 40.0, color: Rgb::new(178, 34, 34) },      // Medium red
-            ColorStop { value: 50.0, color: Rgb::new(139, 0, 0) },        // Dark red - away
+            ColorStop {
+                value: -50.0,
+                color: Rgb::new(0, 0, 139),
+            }, // Dark blue - toward
+            ColorStop {
+                value: -40.0,
+                color: Rgb::new(0, 0, 255),
+            }, // Blue
+            ColorStop {
+                value: -30.0,
+                color: Rgb::new(0, 191, 255),
+            }, // Light blue
+            ColorStop {
+                value: -20.0,
+                color: Rgb::new(135, 206, 250),
+            }, // Pale blue
+            ColorStop {
+                value: -10.0,
+                color: Rgb::new(240, 248, 255),
+            }, // Very light
+            ColorStop {
+                value: 0.0,
+                color: Rgb::new(255, 255, 255),
+            }, // White - zero
+            ColorStop {
+                value: 10.0,
+                color: Rgb::new(255, 240, 245),
+            }, // Very light pink
+            ColorStop {
+                value: 20.0,
+                color: Rgb::new(255, 182, 193),
+            }, // Pale red
+            ColorStop {
+                value: 30.0,
+                color: Rgb::new(255, 0, 0),
+            }, // Light red
+            ColorStop {
+                value: 40.0,
+                color: Rgb::new(178, 34, 34),
+            }, // Medium red
+            ColorStop {
+                value: 50.0,
+                color: Rgb::new(139, 0, 0),
+            }, // Dark red - away
         ],
-        Rgb::new(0, 0, 139),   // below -50
-        Rgb::new(139, 0, 0),   // above +50
+        Rgb::new(0, 0, 139), // below -50
+        Rgb::new(139, 0, 0), // above +50
     )
 }
 
@@ -352,17 +419,44 @@ pub fn zdr_ramp() -> ColorRamp {
     ColorRamp::new(
         RadarMoment::Zdr,
         vec![
-            ColorStop { value: -4.0, color: Rgb::new(0, 0, 139) },         // Dark blue - light rain
-            ColorStop { value: -2.0, color: Rgb::new(0, 0, 205) },          // Medium blue
-            ColorStop { value: 0.0, color: Rgb::new(0, 128, 0) },           // Green - moderate
-            ColorStop { value: 1.0, color: Rgb::new(154, 205, 50) },       // Yellow-green
-            ColorStop { value: 2.0, color: Rgb::new(255, 255, 0) },        // Yellow - heavy
-            ColorStop { value: 3.0, color: Rgb::new(255, 165, 0) },        // Orange - very heavy
-            ColorStop { value: 4.5, color: Rgb::new(255, 0, 0) },          // Red - hail
-            ColorStop { value: 6.0, color: Rgb::new(255, 0, 255) },        // Magenta - large hail
-            ColorStop { value: 8.0, color: Rgb::new(255, 255, 255) },      // White - giant hail
+            ColorStop {
+                value: -4.0,
+                color: Rgb::new(0, 0, 139),
+            }, // Dark blue - light rain
+            ColorStop {
+                value: -2.0,
+                color: Rgb::new(0, 0, 205),
+            }, // Medium blue
+            ColorStop {
+                value: 0.0,
+                color: Rgb::new(0, 128, 0),
+            }, // Green - moderate
+            ColorStop {
+                value: 1.0,
+                color: Rgb::new(154, 205, 50),
+            }, // Yellow-green
+            ColorStop {
+                value: 2.0,
+                color: Rgb::new(255, 255, 0),
+            }, // Yellow - heavy
+            ColorStop {
+                value: 3.0,
+                color: Rgb::new(255, 165, 0),
+            }, // Orange - very heavy
+            ColorStop {
+                value: 4.5,
+                color: Rgb::new(255, 0, 0),
+            }, // Red - hail
+            ColorStop {
+                value: 6.0,
+                color: Rgb::new(255, 0, 255),
+            }, // Magenta - large hail
+            ColorStop {
+                value: 8.0,
+                color: Rgb::new(255, 255, 255),
+            }, // White - giant hail
         ],
-        Rgb::new(0, 0, 139),   // below -4
+        Rgb::new(0, 0, 139),     // below -4
         Rgb::new(255, 255, 255), // above +8
     )
 }
@@ -427,7 +521,12 @@ mod tests {
         #[test]
         fn test_exact_stop_value() {
             let stops = vec![stop(0.0, 0, 0, 255), stop(50.0, 255, 0, 0)];
-            let ramp = ColorRamp::new(RadarMoment::Reflectivity, stops, rgb(0, 0, 0), rgb(255, 255, 255));
+            let ramp = ColorRamp::new(
+                RadarMoment::Reflectivity,
+                stops,
+                rgb(0, 0, 0),
+                rgb(255, 255, 255),
+            );
 
             // Exact match on first stop
             let color = ramp.get_color(0.0);
@@ -441,7 +540,12 @@ mod tests {
         #[test]
         fn test_interpolation_between_stops() {
             let stops = vec![stop(0.0, 0, 0, 255), stop(100.0, 255, 0, 0)];
-            let ramp = ColorRamp::new(RadarMoment::Reflectivity, stops, rgb(0, 0, 0), rgb(255, 255, 255));
+            let ramp = ColorRamp::new(
+                RadarMoment::Reflectivity,
+                stops,
+                rgb(0, 0, 0),
+                rgb(255, 255, 255),
+            );
 
             // Middle value should be exactly in the middle (with rounding)
             let color = ramp.get_color(50.0);
@@ -453,7 +557,12 @@ mod tests {
         #[test]
         fn test_below_minimum() {
             let stops = vec![stop(10.0, 0, 255, 0), stop(50.0, 255, 0, 0)];
-            let ramp = ColorRamp::new(RadarMoment::Reflectivity, stops, rgb(0, 0, 255), rgb(255, 255, 255));
+            let ramp = ColorRamp::new(
+                RadarMoment::Reflectivity,
+                stops,
+                rgb(0, 0, 255),
+                rgb(255, 255, 255),
+            );
 
             let color = ramp.get_color(0.0);
             assert_eq!(color, rgb(0, 0, 255)); // below_min_color
@@ -462,7 +571,12 @@ mod tests {
         #[test]
         fn test_above_maximum() {
             let stops = vec![stop(10.0, 0, 255, 0), stop(50.0, 255, 0, 0)];
-            let ramp = ColorRamp::new(RadarMoment::Reflectivity, stops, rgb(0, 0, 0), rgb(255, 255, 255));
+            let ramp = ColorRamp::new(
+                RadarMoment::Reflectivity,
+                stops,
+                rgb(0, 0, 0),
+                rgb(255, 255, 255),
+            );
 
             let color = ramp.get_color(100.0);
             assert_eq!(color, rgb(255, 255, 255)); // above_max_color
@@ -471,7 +585,12 @@ mod tests {
         #[test]
         fn test_empty_stops() {
             let stops: Vec<ColorStop> = vec![];
-            let ramp = ColorRamp::new(RadarMoment::Reflectivity, stops, rgb(0, 0, 255), rgb(255, 0, 0));
+            let ramp = ColorRamp::new(
+                RadarMoment::Reflectivity,
+                stops,
+                rgb(0, 0, 255),
+                rgb(255, 0, 0),
+            );
 
             let color = ramp.get_color(50.0);
             assert_eq!(color, rgb(0, 0, 255)); // below_min_color for empty
@@ -480,7 +599,12 @@ mod tests {
         #[test]
         fn test_single_stop() {
             let stops = vec![stop(50.0, 128, 128, 128)];
-            let ramp = ColorRamp::new(RadarMoment::Reflectivity, stops, rgb(0, 0, 255), rgb(255, 0, 0));
+            let ramp = ColorRamp::new(
+                RadarMoment::Reflectivity,
+                stops,
+                rgb(0, 0, 255),
+                rgb(255, 0, 0),
+            );
 
             let color = ramp.get_color(50.0);
             assert_eq!(color, rgb(128, 128, 128));
@@ -494,7 +618,12 @@ mod tests {
                 stop(50.0, 0, 255, 0),
                 stop(100.0, 255, 0, 0),
             ];
-            let ramp = ColorRamp::new(RadarMoment::Reflectivity, stops, rgb(0, 0, 0), rgb(255, 255, 255));
+            let ramp = ColorRamp::new(
+                RadarMoment::Reflectivity,
+                stops,
+                rgb(0, 0, 0),
+                rgb(255, 255, 255),
+            );
 
             // At 25.0, should be halfway between blue and green (with rounding)
             let color = ramp.get_color(25.0);
@@ -516,18 +645,18 @@ mod tests {
         #[test]
         fn test_reflectivity_ramp_creates_valid_ramp() {
             let ramp = reflectivity_ramp();
-            
+
             // Check it's for Reflectivity moment
             assert_eq!(ramp.moment, RadarMoment::Reflectivity);
-            
+
             // Check it has 10 stops
             assert_eq!(ramp.stops.len(), 10);
-            
+
             // Check stops are sorted
             for i in 1..ramp.stops.len() {
                 assert!(ramp.stops[i].value >= ramp.stops[i - 1].value);
             }
-            
+
             // Check range
             assert_eq!(ramp.stops.first().map(|s| s.value), Some(-30.0));
             assert_eq!(ramp.stops.last().map(|s| s.value), Some(70.0));
@@ -652,18 +781,18 @@ mod tests {
         #[test]
         fn test_velocity_ramp_creates_valid_ramp() {
             let ramp = velocity_ramp();
-            
+
             // Check it's for Velocity moment
             assert_eq!(ramp.moment, RadarMoment::Velocity);
-            
+
             // Check it has 11 stops
             assert_eq!(ramp.stops.len(), 11);
-            
+
             // Check stops are sorted
             for i in 1..ramp.stops.len() {
                 assert!(ramp.stops[i].value >= ramp.stops[i - 1].value);
             }
-            
+
             // Check range
             assert_eq!(ramp.stops.first().map(|s| s.value), Some(-50.0));
             assert_eq!(ramp.stops.last().map(|s| s.value), Some(50.0));
@@ -773,18 +902,18 @@ mod tests {
         #[test]
         fn test_zdr_ramp_creates_valid_ramp() {
             let ramp = zdr_ramp();
-            
+
             // Check it's for Zdr moment
             assert_eq!(ramp.moment, RadarMoment::Zdr);
-            
+
             // Check it has 9 stops
             assert_eq!(ramp.stops.len(), 9);
-            
+
             // Check stops are sorted
             for i in 1..ramp.stops.len() {
                 assert!(ramp.stops[i].value >= ramp.stops[i - 1].value);
             }
-            
+
             // Check range
             assert_eq!(ramp.stops.first().map(|s| s.value), Some(-4.0));
             assert_eq!(ramp.stops.last().map(|s| s.value), Some(8.0));

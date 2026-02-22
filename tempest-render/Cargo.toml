@@ -11,6 +11,8 @@ wgpu-types = "23"
 raw-window-handle = "0.6"
 futures-intrusive = "0.5"
 thiserror = "2"
+bytemuck = { version = "1", features = ["derive"] }
+tempest-decode = { path = "../tempest-decode" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }

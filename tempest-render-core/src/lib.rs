@@ -254,21 +254,32 @@ pub fn reflectivity_color_table() -> ColorTable {
 /// Negative (toward radar): Blue shades
 /// Zero: White
 /// Positive (away from radar): Red shades
+///
+/// # Color Stops
+/// - -100 m/s: Dark Blue (toward)
+/// - -75 m/s: Medium Blue
+/// - -50 m/s: Blue
+/// - -25 m/s: Light Blue
+/// - 0 m/s: White (zero velocity)
+/// - +25 m/s: Light Red
+/// - +50 m/s: Red
+/// - +75 m/s: Medium Red
+/// - +100 m/s: Dark Red (away)
 pub fn velocity_color_table() -> ColorTable {
     ColorTable::new(
         RadarMoment::Velocity,
-        -64.0,
-        64.0,
+        -100.0,
+        100.0,
         vec![
-            (-64.0, Rgba::new(0, 0, 139, 192)),     // Dark Blue
-            (-48.0, Rgba::new(0, 0, 255, 192)),     // Blue
-            (-32.0, Rgba::new(0, 150, 255, 192)),   // Light Blue
-            (-16.0, Rgba::new(150, 200, 255, 192)), // Pale Blue
+            (-100.0, Rgba::new(0, 0, 100, 192)),    // Dark Blue (toward)
+            (-75.0, Rgba::new(0, 0, 180, 192)),     // Medium Blue
+            (-50.0, Rgba::new(0, 0, 255, 192)),     // Blue
+            (-25.0, Rgba::new(100, 150, 255, 192)), // Light Blue
             (0.0, Rgba::new(255, 255, 255, 192)),   // White
-            (16.0, Rgba::new(255, 200, 150, 192)),  // Pale Orange
-            (32.0, Rgba::new(255, 150, 0, 192)),    // Orange
-            (48.0, Rgba::new(255, 0, 0, 192)),      // Red
-            (64.0, Rgba::new(139, 0, 0, 192)),      // Dark Red
+            (25.0, Rgba::new(255, 150, 150, 192)),  // Light Red
+            (50.0, Rgba::new(255, 50, 50, 192)),    // Red
+            (75.0, Rgba::new(200, 0, 0, 192)),      // Medium Red
+            (100.0, Rgba::new(139, 0, 0, 192)),     // Dark Red (away)
         ],
     )
 }
@@ -295,19 +306,25 @@ pub fn spectrum_width_color_table() -> ColorTable {
 /// Standard ZDR (Differential Reflectivity) Color Table
 ///
 /// ZDR in dB - indicates hail potential, rain vs snow
+/// Typical values range from -7.5 to +7.5 dB:
+///   - Negative ZDR: Light rain/snow (blues)
+///   - Zero ZDR: Moderate rain (greens)
+///   - Positive ZDR: Heavy rain/hail (yellows to reds to magenta)
 pub fn zdr_color_table() -> ColorTable {
     ColorTable::new(
         RadarMoment::Zdr,
-        -8.0,
-        8.0,
+        -7.5,
+        7.5,
         vec![
-            (-8.0, Rgba::new(0, 0, 139, 128)),   // Dark Blue
+            (-7.5, Rgba::new(25, 25, 112, 128)), // Midnight Blue - light snow/light rain
             (-4.0, Rgba::new(0, 0, 255, 128)),   // Blue
-            (-2.0, Rgba::new(0, 255, 255, 128)), // Cyan
-            (0.0, Rgba::new(0, 255, 0, 128)),    // Green
-            (2.0, Rgba::new(255, 255, 0, 128)),  // Yellow
-            (4.0, Rgba::new(255, 0, 0, 128)),    // Red
-            (8.0, Rgba::new(139, 0, 0, 128)),    // Dark Red
+            (-2.0, Rgba::new(0, 255, 255, 128)), // Cyan - light blue
+            (0.0, Rgba::new(0, 255, 0, 128)),    // Green - moderate rain
+            (1.5, Rgba::new(154, 205, 50, 128)), // YellowGreen
+            (3.0, Rgba::new(255, 255, 0, 128)),  // Yellow - heavy rain
+            (4.5, Rgba::new(255, 165, 0, 128)),  // Orange - very heavy rain/hail
+            (6.0, Rgba::new(255, 0, 0, 128)),    // Red - hail
+            (7.5, Rgba::new(255, 0, 255, 128)),  // Magenta - large hail
         ],
     )
 }

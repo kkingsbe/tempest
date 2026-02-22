@@ -37,7 +37,7 @@
 - [ ] Define color tables for radar moments
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Create dBZ, velocity, ZDR color ramps
-  - **IN SPRINT 5**
+  - **IN SPRINT 6**
 
 - [x] Implement coordinate projection (lat/lon to radar space)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
@@ -50,7 +50,7 @@
 - [ ] Define color tables for radar moments
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Create dBZ, velocity, ZDR color ramps
-  - **IN SPRINT 5**
+  - **IN SPRINT 6**
 
 - [ ] Implement coordinate projection (lat/lon to radar space)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
@@ -65,29 +65,29 @@
 - [ ] Implement S3 integration (fetch from noaa-nexrad-level2 bucket)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Unsigned S3 GET requests, reqwest HTTP client
-  - **IN SPRINT 5**
+  - **IN SPRINT 6**
 
 - [ ] Implement real-time polling for new volume scans
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Configurable poll interval, stream new scans
-  - **IN SPRINT 5**
+  - **IN SPRINT 6**
 
 - [ ] Implement local disk cache with LRU eviction
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Cache to ~/.config/tempest/cache/, configurable size limit
-  - **IN SPRINT 5**
+  - **IN SPRINT 6**
 
 - [ ] Implement retry logic with exponential backoff
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Handle transient failures gracefully
-  - **IN SPRINT 5**
+  - **IN SPRINT 6**
 
 ### Phase 4: GPU Rendering (tempest-render)
 
 - [ ] Implement wgpu radar renderer
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Render polar radar data to map coordinate system
-  - **IN SPRINT 5**
+  - **IN SPRINT 6**
 
 - [ ] Implement color table application in shaders
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md

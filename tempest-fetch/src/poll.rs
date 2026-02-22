@@ -140,10 +140,10 @@ pub fn poll_latest(
     // Create a stream that yields new scans
     let stream = async_stream::stream! {
         let mut interval = tokio::time::interval(config.poll_interval);
-        
+
         // Skip the first immediate tick
         interval.tick().await;
-        
+
         loop {
             // Get current date for listing
             let today = Utc::now().date_naive();

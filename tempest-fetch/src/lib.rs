@@ -28,6 +28,7 @@
 
 // Modules
 mod cache;
+mod decompress;
 mod error;
 mod poll;
 mod retry;
@@ -37,17 +38,20 @@ mod stations_data;
 mod types;
 
 // Public exports
+pub use cache::{cache_default, Cache, CacheConfig};
+pub use decompress::decompress_bz2;
+pub use decompress::decompress_gzip;
 pub use error::FetchError;
 pub use poll::{poll_latest, poll_latest_default, PollConfig};
 pub use s3::{fetch_scan, list_scans, S3Client};
 pub use station::{get_station, list_all_stations, registry, Station, StationRegistry};
 pub use types::{CacheStats, ScanMeta};
-pub use cache::{cache_default, Cache, CacheConfig};
 
 /// Re-export commonly used types for convenience
 pub mod prelude {
     pub use super::{
-        fetch_scan, get_station, list_all_stations, list_scans, poll_latest, poll_latest_default,
-        CacheStats, CacheConfig, Cache, cache_default, FetchError, PollConfig, ScanMeta, S3Client, Station, StationRegistry,
+        cache_default, decompress_bz2, decompress_gzip, fetch_scan, get_station, list_all_stations,
+        list_scans, poll_latest, poll_latest_default, Cache, CacheConfig, CacheStats, FetchError,
+        PollConfig, S3Client, ScanMeta, Station, StationRegistry,
     };
 }

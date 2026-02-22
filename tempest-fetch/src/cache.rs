@@ -386,14 +386,16 @@ mod tests {
     #[test]
     fn test_cache_config_default() {
         let config = CacheConfig::default();
-        
+
         // Verify default max size is 1GB
         assert_eq!(config.max_size_bytes, 1_073_741_824);
-        
+
         // Verify default cache directory contains expected path
         let cache_dir_str = config.cache_dir.to_string_lossy();
-        assert!(cache_dir_str.contains(".config/tempest/cache") || 
-                cache_dir_str.contains("tempest-cache"));
+        assert!(
+            cache_dir_str.contains(".config/tempest/cache")
+                || cache_dir_str.contains("tempest-cache")
+        );
     }
 
     #[tokio::test]
@@ -405,9 +407,9 @@ mod tests {
             max_size_bytes: CacheConfig::default().max_size_bytes,
             cache_dir: temp_dir.path().to_path_buf(),
         };
-        
+
         let cache = Cache::new(config).await.unwrap();
-        
+
         // Verify it's functional
         let stats = cache.stats().await;
         assert!(stats.is_empty());
