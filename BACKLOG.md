@@ -140,46 +140,56 @@
   - Scope: Toolbar for REF/VEL/SW/ZDR/CC/KDP
   - **IN SPRINT 8** (TODO4)
 
-- [ ] Implement elevation tilt selector
+- [x] Implement elevation tilt selector
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Dropdown/slider for sweep selection
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement color legend display
+- [x] Implement color legend display
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Value-to-color mapping with labels
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
 ### Phase 7: Timeline & Playback
 
-- [ ] Implement timeline bar UI
+- [x] Implement timeline bar UI
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Scan tick marks, click to jump, drag scrub
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement playback controls
+- [x] Implement playback controls
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Play/pause, speed (1x/2x/5x/10x), loop mode
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement time range selection
+- [x] Implement time range selection
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Presets (1h/6h/24h), custom date picker
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
 - [ ] Implement intelligent prefetching
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Preload next 3-5 scans during playback
+  - **IN SPRINT 10** (TODO1)
 
 ### Phase 8: Offline Mode & Release
 
-- [ ] Implement cache management UI
+- [x] Implement cache management UI
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Size display, manual clear, configurable limit
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement offline mode detection
+- [x] Implement offline mode detection
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Auto-detect network, browse cached data
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
 - [ ] Implement application polish
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Keyboard shortcuts, window title, config file
+  - **IN SPRINT 10** (TODO2)
 
 - [ ] Implement release build
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Cross-platform binaries, size optimization
+  - **IN SPRINT 10** (TODO3)
