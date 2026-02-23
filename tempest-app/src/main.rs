@@ -237,7 +237,7 @@ impl Sandbox for App {
             self.moment_switcher.view().map(Message::MomentSwitcher),
             // Elevation tilt selector
             self.elevation_tilt_selector
-                .view()
+                .view(&self.theme())
                 .map(Message::ElevationTiltSelector),
             // Color legend
             self.color_legend.view().map(Message::ColorLegend),

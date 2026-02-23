@@ -21,7 +21,7 @@ impl Sandbox for App {
 - **Suggested fix:** Migrate from `Sandbox` trait to the function-based `run()` API with explicit `update` and `view` functions
 - **Fix estimate:** L (45+ min)
 - **Queued:** 2026-02-23
-- **Status:** OPEN
+- **Status:** SCHEDULED for Sprint 15
 
 ---
 
@@ -44,7 +44,7 @@ impl Sandbox for App {
 - **Suggested fix:** Define a `mod spacing` with tokens and use throughout: `.spacing(spacing::SM)` instead of `.spacing(8)`
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23
-- **Status:** OPEN
+- **Status:** SCHEDULED for Sprint 15
 
 ---
 
@@ -67,7 +67,7 @@ color: iced::Color::from_rgb(0.15, 0.15, 0.2),
 - **Suggested fix:** Create a colors module with semantic color constants and replace all raw RGB values
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23T19:56:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED for Sprint 15
 
 ---
 

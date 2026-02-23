@@ -4,20 +4,8 @@
 //! Displays available elevation angles as buttons for user selection.
 
 use iced::widget::{button, row, text};
-use iced::{Element, Length};
+use iced::{Element, Length, Theme};
 
-/// Semantic color constants for this component
-mod colors {
-    use iced::Color;
-
-    // Accent color for headings
-    pub const ACCENT: Color = Color::from_rgb(0.2, 0.6, 1.0);
-
-    // Text colors
-    pub const TEXT_PRIMARY: Color = Color::from_rgb(1.0, 1.0, 1.0);
-    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.7, 0.7, 0.7);
-    pub const TEXT_UNSELECTED: Color = Color::from_rgb(0.7, 0.7, 0.8);
-}
 
 /// Messages produced by the ElevationTiltSelector component
 #[derive(Debug, Clone, Copy)]
@@ -113,10 +101,12 @@ impl ElevationTiltSelector {
     }
 
     /// Returns the view for this component
-    pub fn view(&self) -> Element<'_, ElevationTiltSelectorMessage> {
-        // Styling constants using semantic colors
-        let heading_style = iced::theme::Text::Color(colors::ACCENT);
-        let label_style = iced::theme::Text::Color(colors::TEXT_SECONDARY);
+    pub fn view(&self, theme: &Theme) -> Element<'_, ElevationTiltSelectorMessage> {
+        let p = theme.extended_palette();
+
+        // Styling constants using semantic colors from theme
+        let heading_style = iced::theme::Text::Color(p.primary.base.color);
+        let label_style = iced::theme::Text::Color(p.background.strong.color);
 
         // Show placeholder if no elevations available
         if self.available_elevations.is_empty() {
@@ -149,13 +139,13 @@ impl ElevationTiltSelector {
 
             let btn =
                 if is_selected {
-                    button(text(label).size(14).style(iced::theme::Text::Color(colors::TEXT_PRIMARY)))
+                    button(text(label).size(14).style(iced::theme::Text::Color(p.background.base.color)))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))
                     .style(iced::theme::Button::Primary)
                 } else {
-                    button(text(label).size(14).style(iced::theme::Text::Color(colors::TEXT_UNSELECTED)))
+                    button(text(label).size(14).style(iced::theme::Text::Color(p.background.weak.color)))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))

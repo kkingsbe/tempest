@@ -1,17 +1,14 @@
-# Sprint: 14 - Agent 1
+# TODO1 - Agent 1
 
-## Design Debt Fixes - Color Legend & Station Selector
+> Sprint: 15
+> Focus Area: Architecture - Deprecated Sandbox API Migration
+> Last Updated: 2026-02-23
 
-### Tasks
+## Tasks
 
-- [x] [DD-005] Fix ColorLegend padding - change .padding(10) to .padding(12)
-  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
-  - Scope: See DESIGN_DEBT.md DD-005 for full context.
-  - Fix estimate: S
+- [ ] [DD-001] Migrate from Sandbox trait to function-based API
+  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
+  - Scope: Replace `impl Sandbox for App` with function-based `run()` API in main.rs. See DESIGN_DEBT.md DD-001 for full context.
+  - Fix estimate: L
 
-- [x] [DD-003] Fix StationSelector raw RGB colors - replace with semantic color constants
-  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
-  - Scope: See DESIGN_DEBT.md DD-003 for full context.
-  - Fix estimate: M
-
-- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date.
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
