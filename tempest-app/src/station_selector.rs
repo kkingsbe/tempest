@@ -68,8 +68,7 @@ impl StationSelector {
                 .all_stations
                 .iter()
                 .filter(|s| {
-                    s.id.to_lowercase().contains(&query)
-                        || s.name.to_lowercase().contains(&query)
+                    s.id.to_lowercase().contains(&query) || s.name.to_lowercase().contains(&query)
                 })
                 .cloned()
                 .collect();
@@ -89,11 +88,7 @@ impl StationSelector {
                 self.update_filter();
                 // Clear selection if current selection is not in filtered list
                 if let Some(ref selected) = self.selected_station {
-                    if !self
-                        .filtered_stations
-                        .iter()
-                        .any(|s| s.id == selected.id)
-                    {
+                    if !self.filtered_stations.iter().any(|s| s.id == selected.id) {
                         self.selected_station = None;
                     }
                 }
@@ -109,8 +104,7 @@ impl StationSelector {
         // Station label styling
         let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
         let value_style = iced::theme::Text::Color(iced::Color::from_rgb(0.9, 0.9, 0.9));
-        let heading_style =
-            iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
+        let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
 
         // Create the filter input
         let filter_input = text_input(
@@ -129,14 +123,13 @@ impl StationSelector {
                 .as_ref()
                 .is_some_and(|s| s.id == station.id);
 
-            let btn = button(
-                text(format!("{} - {}", station.id, station.name))
-                    .style(if is_selected {
-                        iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0))
-                    } else {
-                        iced::theme::Text::Color(iced::Color::from_rgb(0.8, 0.8, 0.8))
-                    }),
-            )
+            let btn = button(text(format!("{} - {}", station.id, station.name)).style(
+                if is_selected {
+                    iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0))
+                } else {
+                    iced::theme::Text::Color(iced::Color::from_rgb(0.8, 0.8, 0.8))
+                },
+            ))
             .on_press(StationSelectorMessage::StationSelected(station.clone()))
             .width(Length::Fill)
             .padding(8);
@@ -156,18 +149,14 @@ impl StationSelector {
                     text("Name: ").style(label_style),
                     text(&station.name).style(value_style),
                     text("Location: ").style(label_style),
-                    text(format!("{:.4}°, {:.4}°", station.lat, station.lon))
-                        .style(value_style),
+                    text(format!("{:.4}°, {:.4}°", station.lat, station.lon)).style(value_style),
                     text("Elevation: ").style(label_style),
-                    text(format!("{:.0} m", station.elevation_m))
-                        .style(value_style),
+                    text(format!("{:.0} m", station.elevation_m)).style(value_style),
                 ]
                 .spacing(4)
                 .align_items(Alignment::Start);
 
-                container(details_column)
-                    .padding(15)
-                    .into()
+                container(details_column).padding(15).into()
             } else {
                 // No station selected - show placeholder
                 text("Select a station to view details")
@@ -177,7 +166,10 @@ impl StationSelector {
 
         // Count of filtered stations
         let count_text = if self.filter_text.is_empty() {
-            format!("Showing all {} stations (scroll to see more)", self.all_stations.len())
+            format!(
+                "Showing all {} stations (scroll to see more)",
+                self.all_stations.len()
+            )
         } else {
             format!(
                 "Found {} of {} stations",
@@ -188,7 +180,9 @@ impl StationSelector {
 
         // Build the main layout
         let content = column![
-            text("NEXRAD Station Selection").style(heading_style).size(20),
+            text("NEXRAD Station Selection")
+                .style(heading_style)
+                .size(20),
             text("").size(10),
             text("Search").style(label_style).size(14),
             filter_input,

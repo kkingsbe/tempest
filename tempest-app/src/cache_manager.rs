@@ -3,12 +3,11 @@
 //! A widget for managing the radar data cache - displaying statistics,
 //! clearing cache, and configuring cache limits.
 
-use iced::widget::{button, column, container, row, text, text_input, Button, Row};
+use iced::widget::{button, column, container, row, text, text_input};
 use iced::{Alignment, Element, Length};
 use std::sync::Arc;
+use tempest_fetch::{Cache, CacheStats};
 use tokio::sync::RwLock;
-use tempest_fetch::cache::Cache;
-use tempest_fetch::types::CacheStats;
 
 /// Messages produced by the CacheManager component
 #[derive(Debug, Clone)]
@@ -34,6 +33,7 @@ pub enum CacheManagerMessage {
 #[derive(Debug)]
 pub struct CacheManager {
     /// Reference to the cache (wrapped in Arc<RwLock> for async access)
+    #[allow(dead_code)]
     cache: Arc<RwLock<Cache>>,
     /// Current cache statistics (cached for display)
     stats: CacheStats,
@@ -64,6 +64,7 @@ impl CacheManager {
     }
 
     /// Creates a new CacheManager with explicit max size
+    #[allow(dead_code)]
     pub fn with_max_size(cache: Arc<RwLock<Cache>>, max_size_mb: u64) -> Self {
         let stats = CacheStats::default();
 
@@ -78,18 +79,14 @@ impl CacheManager {
     }
 
     /// Updates the cached statistics (call this periodically)
+    #[allow(dead_code)]
     pub async fn refresh_stats(&mut self) {
         let cache = self.cache.read().await;
         self.stats = cache.stats().await;
-        drop(cache);
-
-        // Also get the current max size from config
-        let config = &self.cache.read().await;
-        // We can't access config directly since we only have a read lock
-        // But we store it separately for display
     }
 
     /// Sets the current cache statistics
+    #[allow(dead_code)]
     pub fn set_stats(&mut self, stats: CacheStats) {
         self.stats = stats;
     }
@@ -130,18 +127,21 @@ impl CacheManager {
 
     /// Returns the max size input value
     #[must_use]
+    #[allow(dead_code)]
     pub fn max_size_input(&self) -> &str {
         &self.max_size_input
     }
 
     /// Returns whether settings are visible
     #[must_use]
+    #[allow(dead_code)]
     pub fn show_settings(&self) -> bool {
         self.show_settings
     }
 
     /// Returns whether clearing is in progress
     #[must_use]
+    #[allow(dead_code)]
     pub fn is_clearing(&self) -> bool {
         self.clearing
     }
@@ -190,13 +190,11 @@ impl CacheManager {
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
                 .padding(10)
-                .style(Button::Secondary)
         } else {
             button(text("Clear Cache").style(value_style))
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
                 .padding(10)
-                .style(Button::Destructive)
         };
 
         // Settings toggle button
@@ -207,8 +205,7 @@ impl CacheManager {
         };
         let settings_toggle = button(text(settings_toggle_text).style(label_style))
             .on_press(CacheManagerMessage::ToggleSettings)
-            .padding(5)
-            .style(Button::Text);
+            .padding(5);
 
         // Settings panel (conditional)
         let settings_panel: Element<'_, CacheManagerMessage> = if self.show_settings {
@@ -232,9 +229,7 @@ impl CacheManager {
             .spacing(8)
             .padding(10);
 
-            container(settings_content)
-                .padding(10)
-                .into()
+            container(settings_content).padding(10).into()
         } else {
             text("").into()
         };
@@ -243,7 +238,6 @@ impl CacheManager {
         let content = column![
             text("Cache Management").style(heading_style).size(20),
             text("").size(10),
-            
             // Statistics section
             text("Current Statistics").style(heading_style).size(16),
             text("").size(5),
@@ -261,28 +255,22 @@ impl CacheManager {
             .align_items(Alignment::Center),
             row![
                 text("Usage:").style(label_style),
-                text(format!("{:.1}%", usage_percent)).style(
-                    if usage_percent > 90.0 {
-                        warning_style
-                    } else if usage_percent > 70.0 {
-                        label_style
-                    } else {
-                        success_style
-                    }
-                ),
+                text(format!("{:.1}%", usage_percent)).style(if usage_percent > 90.0 {
+                    warning_style
+                } else if usage_percent > 70.0 {
+                    label_style
+                } else {
+                    success_style
+                }),
             ]
             .spacing(10)
             .align_items(Alignment::Center),
-            
             text("").size(15),
-            
             // Clear cache section
             text("Actions").style(heading_style).size(16),
             text("").size(5),
             clear_button,
-            
             text("").size(15),
-            
             // Settings section
             settings_toggle,
             settings_panel,

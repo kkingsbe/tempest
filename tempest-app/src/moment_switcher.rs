@@ -153,7 +153,9 @@ impl MomentSwitcher {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
                         .size(12)
-                        .style(iced::theme::Text::Color(iced::Color::from_rgb(1.0, 1.0, 1.0))),
+                        .style(iced::theme::Text::Color(iced::Color::from_rgb(
+                            1.0, 1.0, 1.0,
+                        ))),
                 )
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
@@ -163,7 +165,9 @@ impl MomentSwitcher {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
                         .size(12)
-                        .style(iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.8))),
+                        .style(iced::theme::Text::Color(iced::Color::from_rgb(
+                            0.7, 0.7, 0.8,
+                        ))),
                 )
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
