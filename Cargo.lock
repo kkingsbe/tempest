@@ -3781,6 +3781,7 @@ name = "tempest-app"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "iced",
  "image 0.25.9",
  "tempest-decode",

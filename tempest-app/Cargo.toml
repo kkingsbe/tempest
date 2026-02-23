@@ -7,6 +7,7 @@ rust-version.workspace = true
 
 [dependencies]
 iced = { version = "0.12", features = ["image", "svg"] }
+chrono = { version = "0.4", features = ["serde"] }
 tempest-decode = { path = "../tempest-decode" }
 tempest-fetch = { path = "../tempest-fetch" }
 # Note: tempest-render, tempest-render-core, tempest-map dependencies 
