@@ -299,6 +299,8 @@ struct RadarUniforms {
     aspect_ratio: f32,
     /// Current sweep rotation angle in degrees.
     sweep_rotation: f32,
+    /// Opacity multiplier for radar overlay (0.0-1.0).
+    opacity: f32,
     /// Padding for alignment.
     _padding: vec2<f32>,
 }
@@ -416,15 +418,147 @@ fn velocity_to_color(velocity: f32) -> vec4<f32> {
     return vec4<f32>(1.0 * intensity, 0.0, 0.0, 0.7 + 0.3 * intensity);
 }
 
+/// NWS Standard Radar Color Mapping for Spectrum Width
+/// Returns RGB color for spectrum width values (m/s).
+/// 
+/// Color scheme: Light blue (low) to Dark blue (high)
+fn spectrum_width_to_color(sw: f32) -> vec4<f32> {
+    // Spectrum width range: 0-30 m/s
+    let max_sw = 30.0;
+    let normalized = clamp(sw / max_sw, 0.0, 1.0);
+    
+    // Below threshold - transparent
+    if (sw < 0.5) {
+        return vec4<f32>(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    // Light blue to dark blue gradient
+    return vec4<f32>(0.2 * normalized, 0.4 * normalized, 1.0 * normalized, 0.5 + 0.5 * normalized);
+}
+
+/// NWS Standard Radar Color Mapping for ZDR (Differential Reflectivity)
+/// Returns RGB color for ZDR values (dB).
+/// 
+/// Color scheme: Browns -> Oranges -> Greens -> Blues
+fn zdr_to_color(zdr: f32) -> vec4<f32> {
+    // ZDR range: -4 to +8 dB
+    let min_zdr = -4.0;
+    let max_zdr = 8.0;
+    let normalized = clamp((zdr - min_zdr) / (max_zdr - min_zdr), 0.0, 1.0);
+    
+    // Below threshold - transparent
+    if (zdr < -3.5) {
+        return vec4<f32>(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    // Browns (-4 to -1 dB)
+    if (normalized < 0.25) {
+        let t = normalized / 0.25;
+        return vec4<f32>(0.6 + 0.2 * t, 0.4 * (1.0 - t), 0.2 * (1.0 - t), 0.6 + 0.2 * t);
+    }
+    
+    // Oranges to Greens (-1 to 3 dB)
+    if (normalized < 0.5) {
+        let t = (normalized - 0.25) / 0.25;
+        return vec4<f32>(0.8 * (1.0 - t), 0.4 + 0.4 * t, 0.2 * (1.0 - t), 0.8);
+    }
+    
+    // Greens to Blues (3 to 8 dB)
+    let t = (normalized - 0.5) / 0.5;
+    return vec4<f32>(0.0, 0.8 * (1.0 - t), 0.8 + 0.2 * t, 0.85 + 0.15 * t);
+}
+
+/// NWS Standard Radar Color Mapping for CC (Correlation Coefficient)
+/// Returns RGB color for CC values (0.0-1.0).
+/// 
+/// Color scheme: Red (low) -> Yellow -> Green -> Blue (high)
+fn cc_to_color(cc: f32) -> vec4<f32> {
+    // CC range: 0.0 to 1.0
+    let normalized = clamp(cc, 0.0, 1.0);
+    
+    // Below threshold - transparent
+    if (cc < 0.5) {
+        return vec4<f32>(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    // Red to Yellow (0.5-0.7)
+    if (normalized < 0.7) {
+        let t = (normalized - 0.5) / 0.2;
+        return vec4<f32>(1.0, 0.5 + 0.5 * t, 0.0, 0.6 + 0.2 * t);
+    }
+    
+    // Yellow to Green (0.7-0.85)
+    if (normalized < 0.85) {
+        let t = (normalized - 0.7) / 0.15;
+        return vec4<f32>(1.0 - t, 1.0, 0.0, 0.8);
+    }
+    
+    // Green to Blue (0.85-1.0)
+    let t = (normalized - 0.85) / 0.15;
+    return vec4<f32>(0.0, 1.0 - t, 1.0 * t, 0.85 + 0.15 * t);
+}
+
+/// NWS Standard Radar Color Mapping for KDP (Differential Phase)
+/// Returns RGB color for KDP values (degrees/km).
+/// 
+/// Color scheme: Browns -> Oranges -> Greens -> Blues
+fn kdp_to_color(kdp: f32) -> vec4<f32> {
+    // KDP range: -2 to +10 deg/km
+    let min_kdp = -2.0;
+    let max_kdp = 10.0;
+    let normalized = clamp((kdp - min_kdp) / (max_kdp - min_kdp), 0.0, 1.0);
+    
+    // Below threshold - transparent
+    if (kdp < -1.5) {
+        return vec4<f32>(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    // Browns (-2 to 0 deg/km)
+    if (normalized < 0.167) {
+        let t = normalized / 0.167;
+        return vec4<f32>(0.6 + 0.2 * t, 0.3 * (1.0 - t), 0.2 * (1.0 - t), 0.5 + 0.2 * t);
+    }
+    
+    // Browns to Oranges (0 to 2 deg/km)
+    if (normalized < 0.333) {
+        let t = (normalized - 0.167) / 0.166;
+        return vec4<f32>(0.8 + 0.1 * t, 0.1 * t, 0.0, 0.7 + 0.1 * t);
+    }
+    
+    // Oranges to Greens (2 to 5 deg/km)
+    if (normalized < 0.583) {
+        let t = (normalized - 0.333) / 0.25;
+        return vec4<f32>(0.9 * (1.0 - t), 0.1 + 0.6 * t, 0.0, 0.8);
+    }
+    
+    // Greens to Blues (5 to 10 deg/km)
+    let t = (normalized - 0.583) / 0.417;
+    return vec4<f32>(0.0, 0.7 * (1.0 - t), 0.8 + 0.2 * t, 0.8 + 0.2 * t);
+}
+
 /// Maps a radar value to color based on value type.
-/// value_type: 0.0 = reflectivity (dBZ), 1.0 = velocity (knots)
+/// value_type: 0.0 = reflectivity (dBZ), 1.0 = velocity (knots), 
+///             2.0 = spectrum_width (m/s), 3.0 = zdr (dB),
+///             4.0 = cc (0-1), 5.0 = kdp (deg/km)
 fn radar_value_to_color(value: f32, value_type: f32) -> vec4<f32> {
     if (value_type < 0.5) {
-        // Reflectivity mode
+        // Reflectivity (0.0)
         return dbz_to_color(value);
-    } else {
-        // Velocity mode
+    } else if (value_type < 1.5) {
+        // Velocity (1.0)
         return velocity_to_color(value);
+    } else if (value_type < 2.5) {
+        // Spectrum Width (2.0)
+        return spectrum_width_to_color(value);
+    } else if (value_type < 3.5) {
+        // ZDR (3.0)
+        return zdr_to_color(value);
+    } else if (value_type < 4.5) {
+        // CC (4.0)
+        return cc_to_color(value);
+    } else {
+        // KDP (5.0)
+        return kdp_to_color(value);
     }
 }
 
@@ -457,10 +591,15 @@ fn vertex_main(
 /// Fragment shader for radar rendering.
 ///
 /// Applies NWS standard color mapping based on radar value type.
+/// Multiplies the color alpha by the opacity uniform.
 @fragment
-fn fragment_main(input: RadarVertexOutput) -> @location(0) vec4<f32> {
+fn fragment_main(
+    input: RadarVertexOutput,
+    @uniforms(0) uniforms: RadarUniforms
+) -> @location(0) vec4<f32> {
     let color = radar_value_to_color(input.value, input.value_type);
-    return color;
+    // Apply opacity uniform to the color alpha
+    return vec4<f32>(color.rgb, color.a * uniforms.opacity);
 }
 "#;
 

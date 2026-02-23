@@ -4,6 +4,7 @@
 //! stations and a registry for looking them up by their ICAO identifier.
 
 use std::collections::HashMap;
+use std::fmt;
 use std::sync::OnceLock;
 
 /// Represents a NEXRAD weather radar station.
@@ -42,6 +43,12 @@ impl Station {
             lon,
             elevation_m,
         }
+    }
+}
+
+impl fmt::Display for Station {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} - {}", self.id, self.name)
     }
 }
 

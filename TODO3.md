@@ -1,21 +1,25 @@
 # TODO3 - Agent 3
 
-> Sprint: 6
-> Focus Area: Data Processing - Color Tables, Projection & Station Discovery
-> Last Updated: 2026-02-22T23:51:15Z
+> Sprint: 8
+> Focus Area: S3 Pipeline - Polling, Cache & Retry Logic
+> Last Updated: 2026-02-23
 
 ## Tasks
 
-- [ ] Define color tables for radar moments
-  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
-  - Scope: Create dBZ, velocity, ZDR color ramps
-  
-- [ ] Implement coordinate projection (lat/lon to radar space)
-  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
-  - Scope: Convert geographic coordinates to radar PPI coordinates
-  
-- [ ] Implement station discovery
-  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
-  - Scope: Station ID, lat/lon, elevation, name lookup
-  
+- [ ] Implement real-time polling for new volume scans
+  - 📚 SKILLS: `./skills/rust-best-practices/SKILL.md`, `./skills/rust-engineer/SKILL.md`, `./skills/rust-engineer/references/async.md`
+  - Scope: Implement polling mechanism in tempest-fetch to check for new NEXRAD scans
+  - Phase: Phase 3 - New
+
+- [ ] Implement local disk cache with LRU eviction
+  - 📚 SKILLS: `./skills/rust-best-practices/SKILL.md`, `./skills/rust-engineer/SKILL.md`
+  - Scope: Implement disk caching in tempest-fetch with LRU eviction policy
+  - Phase: Phase 3 - New
+  - Note: Depends on S3 integration from TODO2
+
+- [ ] Implement retry logic with exponential backoff
+  - 📚 SKILLS: `./skills/rust-best-practices/SKILL.md`, `./skills/rust-engineer/SKILL.md`
+  - Scope: Add retry logic to S3 fetches with exponential backoff
+  - Phase: Phase 3 - New
+
 - [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.

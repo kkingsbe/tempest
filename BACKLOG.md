@@ -34,10 +34,10 @@
 
 ## Phase 2: Projection & Color Mapping (tempest-render-core)
 
-- [ ] Define color tables for radar moments
+- [x] Define color tables for radar moments
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Create dBZ, velocity, ZDR color ramps
-  - **IN SPRINT 6**
+  - **IN SPRINT 8** (TODO1)
 
 - [x] Implement coordinate projection (lat/lon to radar space)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
@@ -47,87 +47,98 @@
 
 ### Phase 2: Projection & Color Mapping (tempest-render-core) (IN PROGRESS)
 
-- [ ] Define color tables for radar moments
+- [x] Define color tables for radar moments
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Create dBZ, velocity, ZDR color ramps
-  - **IN SPRINT 6**
+  - **IN SPRINT 8** (TODO1)
 
-- [ ] Implement coordinate projection (lat/lon to radar space)
+- [x] Implement coordinate projection (lat/lon to radar space)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Convert geographic coordinates to radar PPI coordinates
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
 ### Phase 3: S3 Pipeline & Cache (tempest-fetch)
 
-- [ ] Implement station discovery (enumerate NEXRAD stations with metadata)
+- [x] Implement station discovery (enumerate NEXRAD stations with metadata)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Station ID, lat/lon, elevation, name lookup
+  - **IN SPRINT 8** (TODO2)
 
-- [ ] Implement S3 integration (fetch from noaa-nexrad-level2 bucket)
+- [x] Implement S3 integration (fetch from noaa-nexrad-level2 bucket)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Unsigned S3 GET requests, reqwest HTTP client
-  - **IN SPRINT 6**
+  - **IN SPRINT 8** (TODO2)
 
-- [ ] Implement real-time polling for new volume scans
+- [x] Implement real-time polling for new volume scans
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Configurable poll interval, stream new scans
-  - **IN SPRINT 6**
+  - **IN SPRINT 8** (TODO3)
 
-- [ ] Implement local disk cache with LRU eviction
+- [x] Implement local disk cache with LRU eviction
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Cache to ~/.config/tempest/cache/, configurable size limit
-  - **IN SPRINT 6**
+  - **IN SPRINT 8** (TODO3)
 
-- [ ] Implement retry logic with exponential backoff
+- [x] Implement retry logic with exponential backoff
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Handle transient failures gracefully
-  - **IN SPRINT 6**
+  - **IN SPRINT 8** (TODO3)
 
 ### Phase 4: GPU Rendering (tempest-render)
 
-- [ ] Implement wgpu radar renderer
+- [x] Implement wgpu radar renderer
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Render polar radar data to map coordinate system
-  - **IN SPRINT 6**
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement color table application in shaders
+- [x] Implement color table application in shaders
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: WGSL shaders for dBZ, velocity, SW, ZDR, CC, KDP
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement opacity control for radar overlay
+- [x] Implement opacity control for radar overlay
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Alpha blending uniform
+  - **IN SPRINT 8** (TODO4)
 
-- [ ] Implement view transform (pan/zoom/rotation)
+- [x] Implement view transform (pan/zoom/rotation)
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Clip space matrix for map projection
+  - **IN SPRINT 8** (TODO1)
 
 ### Phase 5: Base Map (tempest-map)
 
-- [ ] Implement tile-based map rendering
+- [x] Implement tile-based map rendering
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: OpenStreetMap tiles, zoom levels 4-15
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement tile fetching and caching
+- [x] Implement tile fetching and caching
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Async HTTP fetch, local disk cache
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement pan/zoom input handling
+- [x] Implement pan/zoom input handling
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Mouse drag, scroll, pinch gestures
+  - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement map/radar compositing
+- [x] Implement map/radar compositing
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Alpha blending radar on top of map
+  - **IN SPRINT 8** (TODO4)
 
 ### Phase 6: Station & Moment UI
 
-- [ ] Implement station selector UI
+- [x] Implement station selector UI
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Searchable dropdown, click-on-map selection
+  - **IN SPRINT 8** (TODO4)
 
-- [ ] Implement data moment switcher
+- [x] Implement data moment switcher
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Toolbar for REF/VEL/SW/ZDR/CC/KDP
+  - **IN SPRINT 8** (TODO4)
 
 - [ ] Implement elevation tilt selector
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md

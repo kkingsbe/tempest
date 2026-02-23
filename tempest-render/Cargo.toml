@@ -13,6 +13,7 @@ futures-intrusive = "0.5"
 thiserror = "2"
 bytemuck = { version = "1", features = ["derive"] }
 tempest-decode = { path = "../tempest-decode" }
+tempest-render-core = { path = "../tempest-render-core" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }

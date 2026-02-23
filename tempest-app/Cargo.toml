@@ -1,0 +1,19 @@
+[package]
+name = "tempest-app"
+description = "Tempest - NEXRAD Weather Radar Application"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+iced = { version = "0.12", features = ["image", "svg"] }
+tempest-decode = { path = "../tempest-decode" }
+tempest-fetch = { path = "../tempest-fetch" }
+# Note: tempest-render, tempest-render-core, tempest-map dependencies 
+# temporarily removed due to wgpu version conflict with iced 0.12
+image = "0.25"
+anyhow = "1.0"
+
+[[bin]]
+name = "tempest"
+path = "src/main.rs"

@@ -466,6 +466,148 @@ pub fn zdr_color(value: f32) -> Rgb {
     zdr_ramp().get_color(value)
 }
 
+/// NEXRAD standard spectrum width color ramp
+/// Range: 0 to 30 m/s (typical NEXRAD spectrum width)
+///
+/// Colors: light blues → darker blues (low SW = narrow spectrum = good data quality,
+/// high SW = turbulent)
+pub fn spectrum_width_ramp() -> ColorRamp {
+    ColorRamp::new(
+        RadarMoment::SpectrumWidth,
+        vec![
+            ColorStop {
+                value: 0.0,
+                color: Rgb::new(240, 248, 255),
+            }, // Alice blue - very low
+            ColorStop {
+                value: 5.0,
+                color: Rgb::new(135, 206, 250),
+            }, // Light sky blue
+            ColorStop {
+                value: 10.0,
+                color: Rgb::new(0, 191, 255),
+            }, // Deep sky blue
+            ColorStop {
+                value: 15.0,
+                color: Rgb::new(0, 0, 255),
+            }, // Blue
+            ColorStop {
+                value: 20.0,
+                color: Rgb::new(0, 0, 205),
+            }, // Medium blue
+            ColorStop {
+                value: 25.0,
+                color: Rgb::new(0, 0, 139),
+            }, // Dark blue
+            ColorStop {
+                value: 30.0,
+                color: Rgb::new(25, 25, 112),
+            }, // Midnight blue - extreme
+        ],
+        Rgb::new(240, 248, 255), // below 0
+        Rgb::new(25, 25, 112),   // above 30
+    )
+}
+
+/// Get color for a spectrum width value in m/s
+pub fn spectrum_width_color(value: f32) -> Rgb {
+    spectrum_width_ramp().get_color(value)
+}
+
+/// NEXRAD standard correlation coefficient (CC) color ramp
+/// Range: 0.0 to 1.0 (correlation coefficient)
+///
+/// Colors: Red (low CC = poor data, maybe hail/debris) → Yellow → Green → Blue (high CC = clean data)
+pub fn cc_ramp() -> ColorRamp {
+    ColorRamp::new(
+        RadarMoment::Cc,
+        vec![
+            ColorStop {
+                value: 0.0,
+                color: Rgb::new(139, 0, 0),
+            }, // Dark red - very low CC
+            ColorStop {
+                value: 0.3,
+                color: Rgb::new(255, 0, 0),
+            }, // Red
+            ColorStop {
+                value: 0.5,
+                color: Rgb::new(255, 165, 0),
+            }, // Orange
+            ColorStop {
+                value: 0.7,
+                color: Rgb::new(255, 255, 0),
+            }, // Yellow
+            ColorStop {
+                value: 0.85,
+                color: Rgb::new(0, 255, 0),
+            }, // Green - good data
+            ColorStop {
+                value: 0.95,
+                color: Rgb::new(0, 191, 255),
+            }, // Light blue - very good
+            ColorStop {
+                value: 1.0,
+                color: Rgb::new(0, 0, 139),
+            }, // Dark blue - excellent
+        ],
+        Rgb::new(139, 0, 0), // below 0
+        Rgb::new(0, 0, 139), // above 1
+    )
+}
+
+/// Get color for a correlation coefficient value (0-1)
+pub fn cc_color(value: f32) -> Rgb {
+    cc_ramp().get_color(value)
+}
+
+/// NEXRAD standard differential phase (KDP) color ramp
+/// Range: -2 to +10 degrees/km
+///
+/// Colors: Browns → oranges → greens → blues (rain → mixed → heavy rain)
+pub fn kdp_ramp() -> ColorRamp {
+    ColorRamp::new(
+        RadarMoment::Kdp,
+        vec![
+            ColorStop {
+                value: -2.0,
+                color: Rgb::new(139, 69, 19),
+            }, // Brown - negative (unlikely)
+            ColorStop {
+                value: 0.0,
+                color: Rgb::new(210, 180, 140),
+            }, // Tan - very light
+            ColorStop {
+                value: 1.0,
+                color: Rgb::new(255, 165, 0),
+            }, // Orange - light rain
+            ColorStop {
+                value: 3.0,
+                color: Rgb::new(255, 255, 0),
+            }, // Yellow - moderate
+            ColorStop {
+                value: 5.0,
+                color: Rgb::new(0, 255, 0),
+            }, // Green - heavy rain
+            ColorStop {
+                value: 7.0,
+                color: Rgb::new(0, 191, 255),
+            }, // Deep sky blue - very heavy
+            ColorStop {
+                value: 10.0,
+                color: Rgb::new(0, 0, 139),
+            }, // Dark blue - extreme
+        ],
+        Rgb::new(139, 69, 19), // below -2
+        Rgb::new(0, 0, 139),   // above +10
+    )
+}
+
+/// Get color for a KDP value in degrees/km
+pub fn kdp_color(value: f32) -> Rgb {
+    kdp_ramp().get_color(value)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

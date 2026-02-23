@@ -1,21 +1,48 @@
-# PRD Clarification Questions
+# Architect Questions - PRD Ambiguities
 
-The following questions need clarification before implementation can proceed reliably:
+> Generated: 2026-02-23
+> Context: Sprint 7 periodic architect review
 
-1. **Station/S3 Discovery**: How should we list available radar stations/scans? Unsigned S3 requests don't support ListObjects operation.
+## Questions for Product Team
 
-2. **Map Dark Theme**: PRD claims "dark theme" using OpenStreetMap + shader inversion, but OSM is light-themed. Inversion creates a negative image, not a dark map. What's the desired approach?
+The following requirements in PRD.md need clarification before implementation:
 
-3. **Binary Size Target**: Target of <50MB is likely impossible with Rust + wgpu + static linking (realistic: 80-150MB). Is this acceptable?
+### 1. F3: Radar Rendering - Range-folding corrections
+- **Line ~107**: "Apply beam height and range-folding corrections for accurate geographic placement"
+- **Issue**: No specification of how range-folding should be detected or corrected algorithmically
+- **Question**: What algorithm should be used for range-folding detection and correction?
 
-4. **Playback Speed Definition**: "1x, 2x, 5x, 10x" - is 1x = 1 scan/second or real-time (1 volume per ~6 minutes)?
+### 2. F4: Timeline - Prefetching algorithm
+- **Line ~129**: "Intelligently prefetch adjacent scans"
+- **Issue**: No specific algorithm defined
+- **Question**: How many scans ahead should we prefetch? Should it adapt to bandwidth or playback direction?
 
-5. **Color Table Format**: States "data (not code)" but doesn't define format (JSON? TOML?).
+### 3. F1: Base Map - Dark theme implementation
+- **Line ~70**: "Dark theme map style optimized for weather radar overlay visibility"
+- **Issue**: No specific color scheme or definition provided
+- **Question**: What specific colors or CSS filters should be used for the dark theme?
 
-6. **Polling During Playback**: Default 60-second polling - should it continue during animated timeline playback?
+### 4. Testing - Git LFS setup
+- **Line ~166**: Mentions "test fixtures stored via Git LFS"
+- **Issue**: No `.gitattributes` file exists in the repository
+- **Question**: Should we set up Git LFS? What files should be tracked?
 
-7. **Visual Regression Threshold**: 1.5% pixel diff is very tight; may cause false CI failures across platforms. Should this be increased?
+### 5. Testing - Docker/MinIO
+- **Lines ~223, ~279, ~429**: Requires MinIO in Docker for integration tests
+- **Issue**: No Dockerfile or Docker Compose configuration exists
+- **Question**: Should we create Docker setup for integration tests, or use a different approach?
 
-8. **API Key Handling**: Commercial tile providers (Stadia, MapTiler) require API keys - should we add a configuration mechanism?
+### 6. Testing - Headless test harness
+- **Line ~277**: "Use a headless test harness that drives the application without a visible window"
+- **Issue**: No implementation specification
+- **Question**: Should we use an existing library (headless_whale) or build custom?
 
-Please prioritize questions 1-3 as they affect fundamental architecture.
+### 7. Testing - Golden images
+- **Lines ~257-269**: References golden reference images for visual regression
+- **Issue**: No golden images exist in repository
+- **Question**: Should we create golden images manually or generate them?
+
+### 8. Phase Integration
+- **Lines ~478-500**: Phase 5 defines Interactive Base Map
+- **Issue**: No explicit final Phase 6 for complete app integration
+- **Question**: Should there be a final integration phase combining Base Map + Radar + Timeline + S3 Fetch?

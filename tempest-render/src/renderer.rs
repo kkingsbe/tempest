@@ -6,7 +6,10 @@
 use thiserror::Error;
 use wgpu::{Buffer, Device, Instance, Queue, ShaderModule, VertexState};
 
+use crate::config::{RadarStyle, RenderConfig};
 use crate::pipeline::{vertex_attributes, PolarRadarVertex, RadarVertex, BASIC_SHADER_WGSL};
+use crate::vertices::{sweep_to_vertices, RadarVertexConfig, Sweep};
+use crate::ViewTransform;
 
 /// Custom error types for WGPU rendering operations.
 ///
@@ -45,6 +48,12 @@ pub type RenderResult<T> = Result<T, RenderError>;
 /// - [`Device`] - The logical GPU device
 /// - [`Queue`] - The command queue for submitting work
 ///
+/// Additionally, it maintains the current rendering state:
+/// - [`RenderConfig`] - Current render configuration
+/// - [`ViewTransform`] - Current view transformation
+/// - `opacity` - Current radar opacity (0.0-1.0)
+/// - `current_style` - Current radar display style
+///
 /// # Example
 ///
 /// ```ignore
@@ -61,6 +70,14 @@ pub struct WgpuRenderer {
     device: Device,
     /// The command queue for submitting GPU work.
     queue: Queue,
+    /// Current render configuration.
+    config: RenderConfig,
+    /// Current view transformation for map projection.
+    view_transform: ViewTransform,
+    /// Current opacity value for radar overlay (0.0-1.0).
+    opacity: f32,
+    /// Current radar display style.
+    current_style: RadarStyle,
 }
 
 impl WgpuRenderer {
@@ -110,7 +127,106 @@ impl WgpuRenderer {
             instance,
             device,
             queue,
+            config: RenderConfig::default(),
+            view_transform: ViewTransform::default(),
+            opacity: RenderConfig::default().default_opacity,
+            current_style: RadarStyle::default(),
         })
+    }
+
+    /// Applies a new render configuration.
+    ///
+    /// This updates the renderer's configuration including screen dimensions,
+    /// range settings, and display options.
+    ///
+    /// # Arguments
+    ///
+    /// * `config` - The new render configuration to apply
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// use tempest_render::config::RenderConfig;
+    /// use tempest_render::renderer::WgpuRenderer;
+    ///
+    /// async fn reconfigure() {
+    ///     let mut renderer = WgpuRenderer::new().await.expect("Failed to create renderer");
+    ///     renderer.configure(RenderConfig::new(1920, 1080));
+    /// }
+    /// ```
+    pub fn configure(&mut self, config: RenderConfig) {
+        self.config = config;
+    }
+
+    /// Sets the view transformation for map projection.
+    ///
+    /// This controls how geographic coordinates are mapped to screen space,
+    /// including zoom, rotation, and center position.
+    ///
+    /// # Arguments
+    ///
+    /// * `view` - The new view transformation to apply
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// use tempest_render::view_transform::ViewTransform;
+    /// use tempest_render::renderer::WgpuRenderer;
+    ///
+    /// async fn set_view() {
+    ///     let mut renderer = WgpuRenderer::new().await.expect("Failed to create renderer");
+    ///     renderer.set_view(ViewTransform::new(35.4183, -97.4514, 2.0, 16.0/9.0));
+    /// }
+    /// ```
+    pub fn set_view(&mut self, view: ViewTransform) {
+        self.view_transform = view;
+    }
+
+    /// Sets the radar overlay opacity.
+    ///
+    /// The opacity value controls how transparent the radar overlay appears.
+    /// Values are clamped to the valid range [0.0, 1.0].
+    ///
+    /// # Arguments
+    ///
+    /// * `opacity` - The new opacity value (0.0 = fully transparent, 1.0 = fully opaque)
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// use tempest_render::renderer::WgpuRenderer;
+    ///
+    /// async fn set_opacity() {
+    ///     let mut renderer = WgpuRenderer::new().await.expect("Failed to create renderer");
+    ///     renderer.set_opacity(0.5); // 50% opacity
+    /// }
+    /// ```
+    pub fn set_opacity(&mut self, opacity: f32) {
+        self.opacity = opacity.clamp(0.0, 1.0);
+    }
+
+    /// Returns a reference to the current render configuration.
+    #[inline]
+    pub fn config(&self) -> &RenderConfig {
+        &self.config
+    }
+
+    /// Returns a reference to the current view transformation.
+    #[inline]
+    pub fn view_transform(&self) -> &ViewTransform {
+        &self.view_transform
+    }
+
+    /// Returns the current opacity value.
+    #[inline]
+    pub fn opacity(&self) -> f32 {
+        self.opacity
+    }
+
+    /// Returns the current radar display style.
+    #[inline]
+    pub fn current_style(&self) -> RadarStyle {
+        self.current_style
     }
 
     /// Returns a reference to the GPU device.
@@ -137,6 +253,188 @@ impl WgpuRenderer {
     #[inline]
     pub fn instance(&self) -> &Instance {
         &self.instance
+    }
+}
+
+/// A sweep renderer for handling radar sweep data.
+///
+/// This struct manages the GPU resources for rendering a single radar sweep,
+/// including vertex buffers and render state.
+pub struct SweepRenderer {
+    /// The GPU vertex buffer containing sweep data.
+    vertex_buffer: Option<Buffer>,
+    /// Number of vertices in the current buffer.
+    vertex_count: usize,
+    /// The current radar display style.
+    style: RadarStyle,
+    /// Whether the sweep data needs to be re-uploaded.
+    dirty: bool,
+}
+
+impl SweepRenderer {
+    /// Creates a new SweepRenderer with default settings.
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// use tempest_render::renderer::SweepRenderer;
+    ///
+    /// let sweep_renderer = SweepRenderer::new();
+    /// ```
+    pub fn new() -> Self {
+        Self {
+            vertex_buffer: None,
+            vertex_count: 0,
+            style: RadarStyle::default(),
+            dirty: false,
+        }
+    }
+
+    /// Updates the sweep data by converting to vertices and uploading to GPU.
+    ///
+    /// This method:
+    /// 1. Converts the sweep data to GPU vertices using the specified style
+    /// 2. Creates or reuses a GPU buffer for the vertex data
+    /// 3. Marks the renderer as clean after upload
+    ///
+    /// # Arguments
+    ///
+    /// * `device` - The wgpu device to create buffers on
+    /// * `queue` - The wgpu queue to upload data through
+    /// * `sweep` - The radar sweep data to upload
+    /// * `style` - The radar display style to use
+    ///
+    /// # Errors
+    ///
+    /// Returns [`RenderError::BufferCreationFailed`] if vertex buffer creation fails.
+    /// Returns [`RenderError::RenderFailed`] if no valid vertices are produced.
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// use tempest_render::renderer::{SweepRenderer, WgpuRenderer};
+    /// use tempest_render::config::RadarStyle;
+    /// use tempest_decode::Sweep;
+    ///
+    /// async fn update(renderer: &WgpuRenderer, sweep: Sweep) {
+    ///     let mut sweep_renderer = SweepRenderer::new();
+    ///     sweep_renderer.update_sweep(renderer.device(), renderer.queue(), &sweep, RadarStyle::Reflectivity)
+    ///         .expect("Failed to update sweep");
+    /// }
+    /// ```
+    pub fn update_sweep(
+        &mut self,
+        device: &Device,
+        queue: &Queue,
+        sweep: &Sweep,
+        style: RadarStyle,
+    ) -> RenderResult<()> {
+        // Create vertex conversion config from default settings
+        let config = RadarVertexConfig::default();
+
+        // Convert sweep to vertices
+        let vertices = sweep_to_vertices(sweep, &config).map_err(|e| {
+            RenderError::RenderFailed(format!("Failed to convert sweep to vertices: {:?}", e))
+        })?;
+
+        self.vertex_count = vertices.len();
+
+        // Convert vertices to bytes for GPU upload
+        let vertex_data: &[u8] = bytemuck::cast_slice(&vertices);
+
+        // Create or recreate the vertex buffer
+        let buffer = device.create_buffer(&wgpu::BufferDescriptor {
+            label: Some("Sweep Vertex Buffer"),
+            size: vertex_data.len() as wgpu::BufferAddress,
+            usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
+            mapped_at_creation: true,
+        });
+
+        // Write vertex data to buffer
+        let mut mapping = buffer.slice(..).get_mapped_range_mut();
+        mapping.copy_from_slice(vertex_data);
+        drop(mapping);
+        buffer.unmap();
+
+        // Upload to GPU via queue
+        queue.write_buffer(&buffer, 0, vertex_data);
+
+        self.vertex_buffer = Some(buffer);
+        self.style = style;
+        self.dirty = false;
+
+        Ok(())
+    }
+
+    /// Renders the sweep using the provided render pass and view transform.
+    ///
+    /// This method issues draw commands to the render pass for the current sweep data.
+    /// It uses the view transform to handle polar coordinate to clip space transformation.
+    ///
+    /// # Arguments
+    ///
+    /// * `pass` - The wgpu render pass to issue draw commands to
+    /// * `view` - The view transformation for coordinate conversion
+    /// * `pipeline` - The render pipeline to use
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// use tempest_render::view_transform::ViewTransform;
+    /// use tempest_render::renderer::{SweepRenderer, RenderPipeline};
+    ///
+    /// fn render_sweep(pass: &mut wgpu::RenderPass, view: &ViewTransform, pipeline: &RenderPipeline) {
+    ///     let sweep_renderer = SweepRenderer::new();
+    ///     sweep_renderer.render(pass, view, pipeline);
+    /// }
+    /// ```
+    pub fn render<'a>(
+        &'a self,
+        pass: &mut wgpu::RenderPass<'a>,
+        _view: &ViewTransform,
+        pipeline: &'a RenderPipeline,
+    ) {
+        // Check if we have valid vertex data to render
+        let Some(buffer) = &self.vertex_buffer else {
+            return;
+        };
+
+        if self.vertex_count == 0 {
+            return;
+        }
+
+        // Set the render pipeline
+        pass.set_pipeline(pipeline.pipeline());
+
+        // Set the vertex buffer
+        pass.set_vertex_buffer(0, buffer.slice(..));
+
+        // Draw the vertices
+        pass.draw(0..self.vertex_count as u32, 0..1);
+    }
+
+    /// Returns the number of vertices in the current sweep.
+    #[inline]
+    pub fn vertex_count(&self) -> usize {
+        self.vertex_count
+    }
+
+    /// Returns the current radar display style.
+    #[inline]
+    pub fn style(&self) -> RadarStyle {
+        self.style
+    }
+
+    /// Returns true if the sweep data needs to be re-uploaded.
+    #[inline]
+    pub fn is_dirty(&self) -> bool {
+        self.dirty
+    }
+}
+
+impl Default for SweepRenderer {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -362,5 +660,151 @@ mod tests {
 
         // The test passes as long as we can attempt creation
         let _ = result;
+    }
+
+    /// Tests for WgpuRenderer configuration methods.
+    mod renderer_configuration {
+        use super::*;
+
+        #[tokio::test]
+        #[ignore]
+        async fn test_configure() {
+            let result = WgpuRenderer::new().await;
+            if result.is_err() {
+                // Skip test on headless systems
+                return;
+            }
+
+            let mut renderer = result.unwrap();
+
+            let new_config = RenderConfig::new(1920, 1080);
+            renderer.configure(new_config);
+
+            assert_eq!(renderer.config().width, 1920);
+            assert_eq!(renderer.config().height, 1080);
+        }
+
+        #[tokio::test]
+        #[ignore]
+        async fn test_set_view() {
+            let result = WgpuRenderer::new().await;
+            if result.is_err() {
+                // Skip test on headless systems
+                return;
+            }
+
+            let mut renderer = result.unwrap();
+
+            let new_view = ViewTransform::new(40.0, -100.0, 2.0, 16.0 / 9.0);
+            renderer.set_view(new_view);
+
+            assert!((renderer.view_transform().zoom() - 2.0).abs() < 0.001);
+            assert!((renderer.view_transform().center_lat() - 40.0).abs() < 0.001);
+            assert!((renderer.view_transform().center_lon() - (-100.0)).abs() < 0.001);
+        }
+
+        #[tokio::test]
+        #[ignore]
+        async fn test_set_opacity_valid_range() {
+            let result = WgpuRenderer::new().await;
+            if result.is_err() {
+                // Skip test on headless systems
+                return;
+            }
+
+            let mut renderer = result.unwrap();
+
+            // Test valid opacity values
+            renderer.set_opacity(0.0);
+            assert!((renderer.opacity() - 0.0).abs() < 0.001);
+
+            renderer.set_opacity(0.5);
+            assert!((renderer.opacity() - 0.5).abs() < 0.001);
+
+            renderer.set_opacity(1.0);
+            assert!((renderer.opacity() - 1.0).abs() < 0.001);
+        }
+
+        #[tokio::test]
+        #[ignore]
+        async fn test_set_opacity_clamped_above_range() {
+            let result = WgpuRenderer::new().await;
+            if result.is_err() {
+                // Skip test on headless systems
+                return;
+            }
+
+            let mut renderer = result.unwrap();
+
+            // Test values above 1.0 are clamped to 1.0
+            renderer.set_opacity(1.5);
+            assert!((renderer.opacity() - 1.0).abs() < 0.001);
+
+            renderer.set_opacity(2.0);
+            assert!((renderer.opacity() - 1.0).abs() < 0.001);
+        }
+
+        #[tokio::test]
+        #[ignore]
+        async fn test_set_opacity_clamped_below_range() {
+            let result = WgpuRenderer::new().await;
+            if result.is_err() {
+                // Skip test on headless systems
+                return;
+            }
+
+            let mut renderer = result.unwrap();
+
+            // Test values below 0.0 are clamped to 0.0
+            renderer.set_opacity(-0.5);
+            assert!((renderer.opacity() - 0.0).abs() < 0.001);
+
+            renderer.set_opacity(-1.0);
+            assert!((renderer.opacity() - 0.0).abs() < 0.001);
+        }
+
+        #[tokio::test]
+        #[ignore]
+        async fn test_default_values() {
+            let result = WgpuRenderer::new().await;
+            if result.is_err() {
+                // Skip test on headless systems
+                return;
+            }
+
+            let renderer = result.unwrap();
+
+            // Check default config
+            assert_eq!(renderer.config().width, 800);
+            assert_eq!(renderer.config().height, 600);
+
+            // Check default opacity
+            assert!((renderer.opacity() - 0.7).abs() < 0.001);
+
+            // Check default style
+            assert_eq!(renderer.current_style(), RadarStyle::Reflectivity);
+        }
+    }
+
+    /// Tests for SweepRenderer.
+    mod sweep_renderer {
+        use super::*;
+
+        #[test]
+        fn test_sweep_renderer_creation() {
+            let sweep_renderer = SweepRenderer::new();
+
+            assert_eq!(sweep_renderer.vertex_count(), 0);
+            assert_eq!(sweep_renderer.style(), RadarStyle::Reflectivity);
+            assert!(!sweep_renderer.is_dirty());
+        }
+
+        #[test]
+        fn test_sweep_renderer_default() {
+            let sweep_renderer: SweepRenderer = Default::default();
+
+            assert_eq!(sweep_renderer.vertex_count(), 0);
+            assert_eq!(sweep_renderer.style(), RadarStyle::Reflectivity);
+        }
     }
 }

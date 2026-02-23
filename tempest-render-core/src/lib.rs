@@ -26,6 +26,15 @@ pub use color::{velocity_color, velocity_ramp};
 // Re-export ZDR color ramp functions
 pub use color::{zdr_color, zdr_ramp};
 
+// Re-export spectrum width color ramp functions
+pub use color::{spectrum_width_color, spectrum_width_ramp};
+
+// Re-export CC (correlation coefficient) color ramp functions
+pub use color::{cc_color, cc_ramp};
+
+// Re-export KDP (differential phase) color ramp functions
+pub use color::{kdp_color, kdp_ramp};
+
 // Re-export projection functions
 pub use projection::project_volume_scan;
 

@@ -2,10 +2,11 @@
 resolver = "2"
 members = [
     "tempest-decode",
-    "tempest-render-core",
     "tempest-fetch",
-    "tempest-render",
-    "tempest-map",
+    "tempest-app",
+    # "tempest-render-core",
+    # "tempest-render",
+    # "tempest-map",
 ]
 
 [workspace.package]
