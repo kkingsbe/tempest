@@ -7,6 +7,19 @@
 use iced::widget::{button, row, text};
 use iced::{Element, Length};
 
+/// Semantic color constants for this module
+mod colors {
+    use iced::Color;
+
+    // Accent color for headings and interactive highlights
+    pub const ACCENT: Color = Color::from_rgb(0.2, 0.6, 1.0);
+
+    // Text colors
+    pub const TEXT_PRIMARY: Color = Color::from_rgb(1.0, 1.0, 1.0);
+    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.7, 0.7, 0.7);
+    pub const TEXT_UNSELECTED: Color = Color::from_rgb(0.7, 0.7, 0.8);
+}
+
 /// Supported radar moments/data types
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum Moment {
@@ -138,9 +151,9 @@ impl MomentSwitcher {
 
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, MomentSwitcherMessage> {
-        // Styling constants
-        let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
-        let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
+        // Styling constants using semantic colors
+        let heading_style = iced::theme::Text::Color(colors::ACCENT);
+        let label_style = iced::theme::Text::Color(colors::TEXT_SECONDARY);
 
         // Build row of moment buttons
         let mut moment_buttons = row!().spacing(8);
@@ -153,9 +166,7 @@ impl MomentSwitcher {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
                         .size(12)
-                        .style(iced::theme::Text::Color(iced::Color::from_rgb(
-                            1.0, 1.0, 1.0,
-                        ))),
+                        .style(iced::theme::Text::Color(colors::TEXT_PRIMARY)),
                 )
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
@@ -165,9 +176,7 @@ impl MomentSwitcher {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
                         .size(12)
-                        .style(iced::theme::Text::Color(iced::Color::from_rgb(
-                            0.7, 0.7, 0.8,
-                        ))),
+                        .style(iced::theme::Text::Color(colors::TEXT_UNSELECTED)),
                 )
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
@@ -194,7 +203,7 @@ impl MomentSwitcher {
             moment_buttons,
             current_info,
         ]
-        .spacing(15)
+        .spacing(12)
         .align_items(iced::Alignment::Center);
 
         content.into()

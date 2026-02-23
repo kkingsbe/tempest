@@ -6,6 +6,14 @@ use iced::widget::{button, column, container, scrollable, text, text_input, Colu
 use iced::{Alignment, Element, Length};
 use tempest_fetch::{list_all_stations, Station};
 
+/// Semantic color palette for the StationSelector component
+mod colors {
+    use iced::Color;
+    pub const TEXT_PRIMARY: Color = Color::from_rgb(0.9, 0.9, 0.9);
+    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.7, 0.7, 0.7);
+    pub const ACCENT: Color = Color::from_rgb(0.2, 0.6, 1.0);
+}
+
 /// Maximum number of stations to show in the list
 const MAX_VISIBLE_STATIONS: usize = 15;
 
@@ -102,9 +110,9 @@ impl StationSelector {
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, StationSelectorMessage> {
         // Station label styling
-        let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
-        let value_style = iced::theme::Text::Color(iced::Color::from_rgb(0.9, 0.9, 0.9));
-        let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
+        let label_style = iced::theme::Text::Color(colors::TEXT_SECONDARY);
+        let value_style = iced::theme::Text::Color(colors::TEXT_PRIMARY);
+        let heading_style = iced::theme::Text::Color(colors::ACCENT);
 
         // Create the filter input
         let filter_input = text_input(

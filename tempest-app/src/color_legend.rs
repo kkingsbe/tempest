@@ -175,7 +175,7 @@ impl ColorLegend {
             min_label,
         ]
         .spacing(8)
-        .padding(10);
+        .padding(12);
 
         // Wrap in a dark container
         container(content)

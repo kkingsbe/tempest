@@ -5,9 +5,16 @@
 use iced::widget::{container, row, text};
 use iced::{Color, Element, Length};
 
-/// Offline indicator colors matching dark theme
-const ONLINE_COLOR: Color = Color::from_rgb(0.3, 0.9, 0.3); // Green
-const OFFLINE_COLOR: Color = Color::from_rgb(0.9, 0.3, 0.3); // Red
+/// Semantic color palette for the OfflineIndicator component
+mod colors {
+    use iced::Color;
+    pub const SUCCESS: Color = Color::from_rgb(0.3, 0.9, 0.3);
+    pub const DANGER: Color = Color::from_rgb(0.9, 0.3, 0.3);
+}
+
+/// Offline indicator colors
+const ONLINE_COLOR: Color = colors::SUCCESS;
+const OFFLINE_COLOR: Color = colors::DANGER;
 
 /// Messages for the offline indicator component
 #[derive(Debug, Clone, Copy, Default)]
@@ -85,7 +92,7 @@ impl OfflineIndicator {
 
         // Wrap in a container positioned at top-right
         container(indicator)
-            .padding(10)
+            .padding(12)
             .width(Length::Shrink)
             .height(Length::Shrink)
             .into()

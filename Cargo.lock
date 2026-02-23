@@ -4045,8 +4045,10 @@ name = "tempest-app"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bzip2",
  "chrono",
  "directories",
+ "flate2",
  "futures",
  "iced",
  "image 0.25.9",

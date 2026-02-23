@@ -102,8 +102,8 @@ impl ElevationTiltSelector {
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, ElevationTiltSelectorMessage> {
         // Styling constants matching existing components
-        let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
-        let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
+        let heading_style = iced::theme::Text::Primary;
+        let label_style = iced::theme::Text::Secondary;
 
         // Show placeholder if no elevations available
         if self.available_elevations.is_empty() {
@@ -136,17 +136,13 @@ impl ElevationTiltSelector {
 
             let btn =
                 if is_selected {
-                    button(text(label).size(14).style(iced::theme::Text::Color(
-                        iced::Color::from_rgb(1.0, 1.0, 1.0),
-                    )))
+                    button(text(label).size(14).style(iced::theme::Text::Primary))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))
                     .style(iced::theme::Button::Primary)
                 } else {
-                    button(text(label).size(14).style(iced::theme::Text::Color(
-                        iced::Color::from_rgb(0.7, 0.7, 0.8),
-                    )))
+                    button(text(label).size(14).style(iced::theme::Text::Secondary))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))

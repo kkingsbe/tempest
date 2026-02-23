@@ -424,9 +424,9 @@ mod data_polling {
         let month = now.format("%m").to_string().parse::<u32>().unwrap();
         let day = now.format("%d").to_string().parse::<u32>().unwrap();
 
-        // Build scan filenames using dynamic date
-        let scan1 = format!("KTLX_{}{:02}{:02}_123456", year, month, day);
-        let scan2 = format!("KTLX_{}{:02}{:02}_124000", year, month, day);
+        // Build scan filenames using dynamic date (NEXRAD format: KTLXYYYYMMDD_HHMMSS)
+        let scan1 = format!("KTLX{}{:02}{:02}_123456", year, month, day);
+        let scan2 = format!("KTLX{}{:02}{:02}_124000", year, month, day);
 
         // Register mock scan list with 2 scans
         mock_server.register_list_scans_response(
@@ -531,8 +531,8 @@ mod data_polling {
         let month = now.format("%m").to_string().parse::<u32>().unwrap();
         let day = now.format("%d").to_string().parse::<u32>().unwrap();
 
-        // Build scan filename using dynamic date
-        let scan = format!("KTLX_{}{:02}{:02}_123456", year, month, day);
+        // Build scan filename using dynamic date (NEXRAD format: KTLXYYYYMMDD_HHMMSS)
+        let scan = format!("KTLX{}{:02}{:02}_123456", year, month, day);
 
         // Register mock scan list with 1 scan
         mock_server.register_list_scans_response(
