@@ -11,13 +11,17 @@ use iced::{Element, Length};
 mod colors {
     use iced::Color;
 
-    // Accent color for headings and interactive highlights
-    pub const ACCENT: Color = Color::from_rgb(0.2, 0.6, 1.0);
+    // Accent / interactive
+    pub const ACCENT: Color = Color::from_rgb(0.35, 0.55, 1.0);
+    pub const ACCENT_HOVER: Color = Color::from_rgb(0.45, 0.65, 1.0);
 
     // Text colors
-    pub const TEXT_PRIMARY: Color = Color::from_rgb(1.0, 1.0, 1.0);
-    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.7, 0.7, 0.7);
-    pub const TEXT_UNSELECTED: Color = Color::from_rgb(0.7, 0.7, 0.8);
+    pub const TEXT_PRIMARY: Color = Color::from_rgb(0.93, 0.93, 0.95);
+    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.6, 0.6, 0.65);
+    pub const TEXT_MUTED: Color = Color::from_rgb(0.4, 0.4, 0.45);
+
+    // For unselected state, use TEXT_MUTED or create TEXT_UNSELECTED based on skill
+    pub const TEXT_UNSELECTED: Color = Color::from_rgb(0.4, 0.4, 0.45);
 }
 
 /// Supported radar moments/data types

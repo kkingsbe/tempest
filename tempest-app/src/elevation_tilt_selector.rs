@@ -6,6 +6,19 @@
 use iced::widget::{button, row, text};
 use iced::{Element, Length};
 
+/// Semantic color constants for this component
+mod colors {
+    use iced::Color;
+
+    // Accent color for headings
+    pub const ACCENT: Color = Color::from_rgb(0.2, 0.6, 1.0);
+
+    // Text colors
+    pub const TEXT_PRIMARY: Color = Color::from_rgb(1.0, 1.0, 1.0);
+    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.7, 0.7, 0.7);
+    pub const TEXT_UNSELECTED: Color = Color::from_rgb(0.7, 0.7, 0.8);
+}
+
 /// Messages produced by the ElevationTiltSelector component
 #[derive(Debug, Clone, Copy)]
 pub enum ElevationTiltSelectorMessage {
@@ -101,9 +114,9 @@ impl ElevationTiltSelector {
 
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, ElevationTiltSelectorMessage> {
-        // Styling constants matching existing components
-        let heading_style = iced::theme::Text::Primary;
-        let label_style = iced::theme::Text::Secondary;
+        // Styling constants using semantic colors
+        let heading_style = iced::theme::Text::Color(colors::ACCENT);
+        let label_style = iced::theme::Text::Color(colors::TEXT_SECONDARY);
 
         // Show placeholder if no elevations available
         if self.available_elevations.is_empty() {
@@ -113,7 +126,7 @@ impl ElevationTiltSelector {
                     .style(label_style)
                     .size(14),
             ]
-            .spacing(15)
+            .spacing(12)
             .align_items(iced::Alignment::Center);
 
             return content.into();
@@ -136,13 +149,13 @@ impl ElevationTiltSelector {
 
             let btn =
                 if is_selected {
-                    button(text(label).size(14).style(iced::theme::Text::Primary))
+                    button(text(label).size(14).style(iced::theme::Text::Color(colors::TEXT_PRIMARY)))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))
                     .style(iced::theme::Button::Primary)
                 } else {
-                    button(text(label).size(14).style(iced::theme::Text::Secondary))
+                    button(text(label).size(14).style(iced::theme::Text::Color(colors::TEXT_UNSELECTED)))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))
@@ -171,7 +184,7 @@ impl ElevationTiltSelector {
             elevation_buttons,
             current_text,
         ]
-        .spacing(15)
+        .spacing(12)
         .align_items(iced::Alignment::Center);
 
         content.into()
