@@ -3,7 +3,7 @@
 //! A widget for navigating through radar scan times with playback controls.
 
 use chrono::{DateTime, Utc};
-use iced::widget::{container, text};
+use iced::widget::{button, container, row, text};
 use iced::Element;
 
 /// Valid playback speeds
@@ -206,15 +206,277 @@ impl TimelineState {
         }
     }
 
-    /// Returns the view for this component (stub implementation)
+    /// Returns the view for this component
     ///
-    /// Full rendering will be implemented in subtask 2.
+    /// Renders a horizontal timeline bar with tick marks for each scan time,
+    /// current position indicator, playback controls, and metadata display.
     pub fn view(&self) -> Element<'_, TimelineMessage> {
-        // Stub: just return a simple container with placeholder text
-        // Full rendering will be implemented in subtask 2
-        container(text("Timeline"))
-            .padding(10)
+        // Styling constants - dark theme with blue accent
+        let accent_color = iced::Color::from_rgb(0.2, 0.6, 1.0);
+        let dark_bg_light = iced::Color::from_rgb(0.12, 0.12, 0.18);
+        let text_gray = iced::Color::from_rgb(0.7, 0.7, 0.7);
+
+        // Calculate position (0.0 to 1.0) for current scan
+        let position = if self.scan_times.is_empty() {
+            0.0
+        } else {
+            self.current_index as f32 / (self.scan_times.len() - 1).max(1) as f32
+        };
+
+        // Build metadata display
+        let current_time_str = if let Some(time) = self.current_time() {
+            time.format("%Y-%m-%d %H:%M UTC").to_string()
+        } else {
+            "No scan loaded".to_string()
+        };
+
+        let scan_count_str = if self.scan_times.is_empty() {
+            "No scans".to_string()
+        } else {
+            format!(
+                "{} of {} scans",
+                self.current_index + 1,
+                self.scan_times.len()
+            )
+        };
+
+        // Build the timeline bar using a custom interactive widget
+        let timeline_bar = self.build_timeline_bar(position, accent_color, dark_bg_light);
+
+        // Build playback controls
+        let playback_controls = self.build_playback_controls(accent_color, &text_gray);
+
+        // Build time range selection buttons
+        let time_range_controls = self.build_time_range_controls(accent_color, &text_gray);
+
+        // Build the header with current time and metadata
+        let header = row![
+            text("RADAR SCANS")
+                .size(14)
+                .font(iced::font::Font::MONOSPACE),
+            text("•").size(14),
+            text(&current_time_str)
+                .size(16)
+                .font(iced::font::Font::MONOSPACE),
+        ]
+        .spacing(12)
+        .align_items(iced::Alignment::Center);
+
+        // Build footer with scan count and VCP info
+        let footer = row![
+            text(&scan_count_str).size(12),
+            text("•").size(12),
+            text(format!("Range: {}h", self.time_range_hours)).size(12),
+        ]
+        .spacing(12)
+        .align_items(iced::Alignment::Center);
+
+        // Assemble the full layout with controls row
+        let controls_row = row![playback_controls, time_range_controls]
+            .spacing(20)
+            .align_items(iced::Alignment::Center);
+
+        let content = container(
+            iced::widget::column![header, timeline_bar, controls_row, footer]
+                .spacing(8)
+                .align_items(iced::Alignment::Start),
+        )
+        .padding(16)
+        .width(iced::Length::Fill)
+        .into();
+
+        content
+    }
+
+    /// Builds playback control buttons (play/pause, speed, loop)
+    fn build_playback_controls(
+        &self,
+        accent_color: iced::Color,
+        text_color: &iced::Color,
+    ) -> Element<'_, TimelineMessage> {
+        // Play/Pause button with icon
+        let play_pause_text = if self.is_playing { "⏸ Pause" } else { "▶ Play" };
+        let play_pause_btn = button(
+            text(play_pause_text)
+                .size(14)
+                .font(iced::font::Font::MONOSPACE),
+        )
+        .on_press(TimelineMessage::PlayPauseToggled)
+        .padding(8);
+
+        // Step backward button
+        let step_back_btn = button(text("⏮").size(14))
+            .on_press(TimelineMessage::StepBackward)
+            .padding(8);
+
+        // Step forward button
+        let step_forward_btn = button(text("⏭").size(14))
+            .on_press(TimelineMessage::StepForward)
+            .padding(8);
+
+        // Speed label
+        let speed_label = text("Speed:").size(12).font(iced::font::Font::MONOSPACE);
+
+        // Build speed buttons row
+        let mut speed_buttons_row = row![].spacing(2);
+        for &speed in &VALID_SPEEDS {
+            let is_selected = self.playback_speed == speed;
+            let btn = button(text(format!("{}x", speed)).size(11))
+                .on_press(TimelineMessage::SpeedChanged(speed))
+                .padding(4);
+            speed_buttons_row = speed_buttons_row.push(btn);
+        }
+
+        // Loop toggle button
+        let loop_text = if self.is_looping { "🔁 Loop: On" } else { "🔁 Loop" };
+        let loop_btn = button(text(loop_text).size(12))
+            .on_press(TimelineMessage::LoopToggled)
+            .padding(6);
+
+        // Combine all controls
+        row![
+            play_pause_btn,
+            step_back_btn,
+            step_forward_btn,
+            speed_label,
+            speed_buttons_row,
+            loop_btn,
+        ]
+        .spacing(8)
+        .align_items(iced::Alignment::Center)
+        .into()
+    }
+
+    /// Builds time range selection buttons (1h, 6h, 24h)
+    fn build_time_range_controls(
+        &self,
+        accent_color: iced::Color,
+        text_color: &iced::Color,
+    ) -> Element<'_, TimelineMessage> {
+        let range_label = text("Range:").size(12).font(iced::font::Font::MONOSPACE);
+
+        // Build range buttons row
+        let mut range_buttons_row = row![].spacing(2);
+        for &hours in &VALID_TIME_RANGES {
+            let is_selected = self.time_range_hours == hours;
+            let btn_text = if is_selected {
+                format!("{}h ✓", hours)
+            } else {
+                format!("{}h", hours)
+            };
+            let btn = button(text(btn_text).size(12))
+                .on_press(TimelineMessage::TimeRangeChanged(hours))
+                .padding(6);
+            range_buttons_row = range_buttons_row.push(btn);
+        }
+
+        row![range_label, range_buttons_row]
+            .spacing(8)
+            .align_items(iced::Alignment::Center)
             .into()
+    }
+
+    /// Builds the interactive timeline bar with tick marks
+    fn build_timeline_bar(
+        &self,
+        _position: f32,
+        accent_color: iced::Color,
+        _track_color: iced::Color,
+    ) -> Element<'_, TimelineMessage> {
+        const TIMELINE_HEIGHT: f32 = 48.0;
+        const TICK_HEIGHT: f32 = 20.0;
+        const LABEL_HEIGHT: f32 = 18.0;
+        const TOTAL_HEIGHT: f32 = TIMELINE_HEIGHT + TICK_HEIGHT + LABEL_HEIGHT;
+
+        if self.scan_times.is_empty() {
+            // Empty state
+            return container(text("No scan times available").size(14))
+                .width(iced::Length::Fill)
+                .height(iced::Length::Fixed(TOTAL_HEIGHT))
+                .center_x()
+                .center_y()
+                .into();
+        }
+
+        let scan_count = self.scan_times.len();
+
+        // Build tick marks and labels
+        let mut ticks_content = row![].spacing(0).align_items(iced::Alignment::End);
+
+        // Determine label frequency based on number of scans
+        let label_interval = if scan_count <= 6 {
+            1
+        } else if scan_count <= 12 {
+            2
+        } else if scan_count <= 24 {
+            4
+        } else {
+            (scan_count / 6).max(1)
+        };
+
+        for (i, scan_time) in self.scan_times.iter().enumerate() {
+            let is_current = i == self.current_index;
+            let is_near_current = (i as isize - self.current_index as isize).abs() <= 1;
+
+            // Tick color: accent for current, lighter for near, dim for others
+            let _tick_color = if is_current {
+                accent_color
+            } else if is_near_current {
+                iced::Color::from_rgb(0.4, 0.7, 1.0)
+            } else {
+                iced::Color::from_rgb(0.3, 0.3, 0.4)
+            };
+
+            // Build tick mark - use a simple text-based tick
+            let tick = if is_current {
+                // Larger, highlighted tick for current position
+                container(text("|").size((TICK_HEIGHT + 8.0) as u16))
+                    .height(iced::Length::Fixed(TICK_HEIGHT + 8.0))
+            } else {
+                container(text("|").size(TICK_HEIGHT as u16))
+                    .height(iced::Length::Fixed(TICK_HEIGHT))
+            };
+
+            // Add label below tick at intervals
+            let tick_with_label = if i % label_interval == 0 || is_current {
+                let label_text = scan_time.format("%H:%M").to_string();
+                let label = text(&label_text).size(10).font(iced::font::Font::MONOSPACE);
+
+                container(
+                    iced::widget::column![tick, label]
+                        .spacing(2)
+                        .align_items(iced::Alignment::Center),
+                )
+                .height(iced::Length::Fixed(TICK_HEIGHT + LABEL_HEIGHT + 10.0))
+            } else {
+                container(tick).height(iced::Length::Fixed(TICK_HEIGHT))
+            };
+
+            // Make each tick clickable
+            let tick_position = if scan_count == 1 {
+                0.0
+            } else {
+                i as f32 / (scan_count - 1) as f32
+            };
+
+            let tick_button = button(tick_with_label)
+                .on_press(TimelineMessage::TimelineClicked(tick_position))
+                .padding(0);
+
+            ticks_content = ticks_content.push(tick_button);
+        }
+
+        // Return the ticks content - without the track variable since it's unused
+        container(
+            iced::widget::column![
+                // Tick marks
+                ticks_content,
+            ]
+            .spacing(4),
+        )
+        .width(iced::Length::Fill)
+        .height(iced::Length::Fixed(TOTAL_HEIGHT))
+        .into()
     }
 }
 
@@ -313,11 +575,7 @@ mod tests {
     #[test]
     fn test_step_forward() {
         let mut timeline = TimelineState::new();
-        let times = vec![
-            Utc::now(),
-            Utc::now(),
-            Utc::now(),
-        ];
+        let times = vec![Utc::now(), Utc::now(), Utc::now()];
         timeline.update(TimelineMessage::ScanTimesUpdated(times));
         assert_eq!(timeline.current_index(), 0);
 
@@ -336,11 +594,7 @@ mod tests {
     fn test_step_forward_with_loop() {
         let mut timeline = TimelineState::new();
         timeline.update(TimelineMessage::LoopToggled);
-        let times = vec![
-            Utc::now(),
-            Utc::now(),
-            Utc::now(),
-        ];
+        let times = vec![Utc::now(), Utc::now(), Utc::now()];
         timeline.update(TimelineMessage::ScanTimesUpdated(times));
         assert_eq!(timeline.current_index(), 0);
 
@@ -358,11 +612,7 @@ mod tests {
     #[test]
     fn test_step_backward() {
         let mut timeline = TimelineState::new();
-        let times = vec![
-            Utc::now(),
-            Utc::now(),
-            Utc::now(),
-        ];
+        let times = vec![Utc::now(), Utc::now(), Utc::now()];
         timeline.update(TimelineMessage::ScanTimesUpdated(times));
         timeline.update(TimelineMessage::StepForward);
         timeline.update(TimelineMessage::StepForward);
@@ -383,11 +633,7 @@ mod tests {
     fn test_step_backward_with_loop() {
         let mut timeline = TimelineState::new();
         timeline.update(TimelineMessage::LoopToggled);
-        let times = vec![
-            Utc::now(),
-            Utc::now(),
-            Utc::now(),
-        ];
+        let times = vec![Utc::now(), Utc::now(), Utc::now()];
         timeline.update(TimelineMessage::ScanTimesUpdated(times));
         assert_eq!(timeline.current_index(), 0);
 
@@ -399,13 +645,7 @@ mod tests {
     #[test]
     fn test_timeline_click() {
         let mut timeline = TimelineState::new();
-        let times = vec![
-            Utc::now(),
-            Utc::now(),
-            Utc::now(),
-            Utc::now(),
-            Utc::now(),
-        ];
+        let times = vec![Utc::now(), Utc::now(), Utc::now(), Utc::now(), Utc::now()];
         timeline.update(TimelineMessage::ScanTimesUpdated(times));
         assert_eq!(timeline.current_index(), 0);
 
