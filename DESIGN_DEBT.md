@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-23T19:34:00.000Z
-> Total Open: 7
+> Last Updated: 2026-02-23T21:04:00.000Z
+> Total Open: 11
 
 ---
 
@@ -152,3 +152,86 @@ iced::Color::from_rgb(0.7, 0.7, 0.8),
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-23T19:56:00Z
 - **Status:** OPEN
+
+---
+
+### DD-008: Raw RGB Color Values in MomentSwitcher
+
+- **Component:** `tempest-app/src/moment_switcher.rs`
+- **Usage count:** 1 import in main.rs
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Color system: "Semantic naming (accent, danger, success) — never raw hex values" (lines 151-178)
+- **Evidence:**
+```rust
+let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
+let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
+// ... in buttons:
+iced::Color::from_rgb(1.0, 1.0, 1.0),
+iced::Color::from_rgb(0.7, 0.7, 0.8),
+```
+- **Line(s):** 142, 143, 156-158, 168-170
+- **Expected:** Use semantic color constants like `colors::ACCENT`, `colors::TEXT_SECONDARY`, `colors::TEXT_PRIMARY`
+- **Suggested fix:** Create a `mod colors` with semantic tokens and replace all raw RGB values
+- **Fix estimate:** M (15–45 min)
+- **Queued:** 2026-02-23T21:04:00Z
+- **Status:** OPEN
+
+---
+
+### DD-009: Non-8-Point Spacing in MomentSwitcher
+
+- **Component:** `tempest-app/src/moment_switcher.rs`
+- **Usage count:** 1 import in main.rs
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Spacing Scale: "Must use 8-point scale: XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32)" (lines 21-31)
+- **Evidence:**
+```rust
+        .spacing(15)
+```
+- **Line(s):** 197
+- **Expected:** Use MD(12) or BASE(16) - 15px falls between, use nearest scale value
+- **Suggested fix:** Change `.spacing(15)` to `.spacing(12)` (MD) or `.spacing(16)` (BASE)
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-23T21:04:00Z
+- **Status:** OPEN
+
+---
+
+### DD-010: Raw RGB Color Values in OfflineIndicator
+
+- **Component:** `tempest-app/src/offline_indicator.rs`
+- **Usage count:** 1 import in main.rs
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Color system: "Semantic naming (accent, danger, success) — never raw hex values" (lines 151-178)
+- **Evidence:**
+```rust
+const ONLINE_COLOR: Color = Color::from_rgb(0.3, 0.9, 0.3);
+const OFFLINE_COLOR: Color = Color::from_rgb(0.9, 0.3, 0.3);
+```
+- **Line(s):** 9, 10
+- **Expected:** Use semantic color constants like `colors::SUCCESS`, `colors::DANGER`
+- **Suggested fix:** Create a `mod colors` with semantic tokens and use `colors::SUCCESS` instead of raw RGB
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-23T21:04:00Z
+- **Status:** OPEN
+
+---
+
+### DD-011: Non-8-Point Padding in OfflineIndicator
+
+- **Component:** `tempest-app/src/offline_indicator.rs`
+- **Usage count:** 1 import in main.rs
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Spacing Scale: "Must use 8-point scale: XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32)" (lines 21-31)
+- **Evidence:**
+```rust
+            .padding(10)
+```
+- **Line(s):** 88
+- **Expected:** Use MD(12) or SM(8) - prefer MD(12) for container padding
+- **Suggested fix:** Change `.padding(10)` to `.padding(12)` (MD) or `.padding(8)` (SM)
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-23T21:04:00Z
+- **Status:** OPEN
+
+---
