@@ -45,8 +45,11 @@ jobs:
         run: cargo clippy --all-targets --all-features -- -D warnings
 
   test:
-    name: Unit Tests
-    runs-on: ubuntu-latest
+    name: Test (${{ matrix.platform }})
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -75,8 +78,11 @@ jobs:
         run: cargo test --lib
 
   build:
-    name: Release Build
-    runs-on: ubuntu-latest
+    name: Build Release (${{ matrix.platform }})
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

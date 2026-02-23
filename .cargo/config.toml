@@ -1,0 +1,85 @@
+# Tempest NEXRAD Weather Radar Application
+# Cross-platform build configuration
+#
+# This file configures default build targets and platform-specific settings.
+# See build.sh for the full build automation script.
+#
+# Build targets:
+#   Linux:      x86_64-unknown-linux-gnu (default)
+#   macOS:      x86_64-apple-darwin, aarch64-apple-darwin
+#   Windows:    x86_64-pc-windows-msvc
+#
+# To build for a specific target:
+#   cargo build --target x86_64-unknown-linux-gnu --release
+#   cargo build --target x86_64-apple-darwin --release
+#   cargo build --target aarch64-apple-darwin --release
+#   cargo build --target x86_64-pc-windows-msvc --release
+#
+# Or use the build.sh script:
+#   ./build.sh linux      # Linux x86_64
+#   ./build.sh macos      # macOS Intel
+#   ./build.sh macos-arm  # macOS Apple Silicon
+#   ./build.sh windows    # Windows
+#   ./build.sh all        # All platforms
+
+[build]
+# Default target when running `cargo build` without --target flag
+# Will use the host platform's default target
+# target = "x86_64-unknown-linux-gnu"  # Uncomment to set a default
+
+# Number of parallel jobs for compilation
+# jobs = 4
+
+# Include Rust runtime in binaries (not needed for panic=abort)
+# include-rustc-args = false
+
+# Use incremental compilation when available
+incremental = true
+
+# Default Rust edition (can be overridden in Cargo.toml
+# rustflags = ["-C", "target-cpu=native"]
+
+[target.x86_64-unknown-linux-gnu]
+# Linux x86_64 configuration
+# Most common target for Linux servers and desktops
+linker = "gcc"
+
+[target.x86_64-apple-darwin]
+# macOS Intel configuration
+# For building on Intel-based Macs
+rustflags = [
+    "-C", "link-arg=-mmacosx-version-min=10.15",
+]
+
+[target.aarch64-apple-darwin]
+# macOS Apple Silicon configuration
+# For building on M1/M2/M3 Macs
+rustflags = [
+    "-C", "link-arg=-mmacosx-version-min=10.15",
+]
+
+[target.x86_64-pc-windows-msvc]
+# Windows MSVC configuration
+# For building on Windows with Microsoft Visual C++ toolchain
+# Note: Requires Visual Studio or standalone build tools installed
+
+# Cross-compilation from Linux/macOS requires x86_64-pc-windows-gnu instead
+# Use: rustup target add x86_64-pc-windows-gnu
+# Then build with: cargo build --target x86_64-pc-windows-gnu
+
+# Optional: Add Windows-specific rustflags
+# rustflags = ["-C", "target-feature=+crt-static"]
+
+[alias]
+# Custom cargo aliases for convenience
+# Usage: cargo <alias-name>
+
+# Build for all supported platforms
+# Note: Requires all targets to be installed: rustup target add <target>
+multiplatform = "build --release --locked --all"
+
+# Check all targets without building
+check-all = "check --all-targets --all-features"
+
+# Run tests for all targets
+test-all = "test --all-targets --all-features"
