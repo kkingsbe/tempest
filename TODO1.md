@@ -1,15 +1,17 @@
-# TODO1 - Agent 1
+# Sprint: 14 - Agent 1
 
-> Sprint: 13
-> Focus Area: Golden-value tests and Coverage
-> Last Updated: 2026-02-23
+## Design Debt Fixes - Color Legend & Station Selector
 
-## Tasks
+### Tasks
 
-- [x] Implement golden-value tests for Tempest decoder
-  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
-  - Scope: Verify decoded values at specific positions match expected values. Use synthetic fixtures.
-- [x] Set up cargo-tarpaulin for coverage tracking
-  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`
-  - Scope: Configure ≥95% decoder, ≥90% render-core, ≥85% overall targets in .cargo/config
-- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] [DD-005] Fix ColorLegend padding - change .padding(10) to .padding(12)
+  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
+  - Scope: See DESIGN_DEBT.md DD-005 for full context.
+  - Fix estimate: S
+
+- [ ] [DD-003] Fix StationSelector raw RGB colors - replace with semantic color constants
+  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
+  - Scope: See DESIGN_DEBT.md DD-003 for full context.
+  - Fix estimate: M
+
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date.

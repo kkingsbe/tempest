@@ -1,15 +1,17 @@
-# TODO3 - Agent 3
+# Sprint: 14 - Agent 3
 
-> Sprint: 13
-> Focus Area: E2E Tests
-> Last Updated: 2026-02-23
+## Design Debt Fixes - Elevation Tilt Selector
 
-## Tasks
+### Tasks
 
-- [ ] Set up E2E test harness with mock S3
-  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
-  - Scope: Headless browser/harness that tests full fetch→decode→render pipeline
-- [ ] Add E2E tests for station discovery and data loading
-  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`
-  - Scope: Test station list loading, data polling, timeline interaction
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] [DD-006] Fix ElevationTiltSelector raw RGB colors - replace with semantic color constants
+  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
+  - Scope: See DESIGN_DEBT.md DD-006 for full context.
+  - Fix estimate: M
+
+- [ ] [DD-007] Fix ElevationTiltSelector spacing - change .spacing(15) to .spacing(12)
+  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
+  - Scope: See DESIGN_DEBT.md DD-007 for full context.
+  - Fix estimate: S
+
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date.

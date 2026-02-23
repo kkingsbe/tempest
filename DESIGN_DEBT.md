@@ -65,7 +65,8 @@ let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0
 - **Suggested fix:** Create `mod colors` with semantic tokens and use `colors::TEXT_SECONDARY` instead of inline `Color::from_rgb(0.7, 0.7, 0.7)`
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
 
@@ -107,7 +108,8 @@ color: iced::Color::from_rgb(0.15, 0.15, 0.2),
 - **Suggested fix:** Change `.padding(10)` to `.padding(12)` (MD) or `.padding(8)` (SM)
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-23T19:56:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
 
@@ -131,7 +133,8 @@ iced::Color::from_rgb(0.7, 0.7, 0.8),
 - **Suggested fix:** Create/use semantic color constants and replace all raw RGB values
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23T19:56:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
 
@@ -151,7 +154,8 @@ iced::Color::from_rgb(0.7, 0.7, 0.8),
 - **Suggested fix:** Change `.spacing(15)` to `.spacing(12)` (MD) or `.spacing(16)` (BASE)
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-23T19:56:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
 
@@ -174,7 +178,8 @@ iced::Color::from_rgb(0.7, 0.7, 0.8),
 - **Suggested fix:** Create a `mod colors` with semantic tokens and replace all raw RGB values
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23T21:04:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
 
@@ -193,7 +198,8 @@ iced::Color::from_rgb(0.7, 0.7, 0.8),
 - **Suggested fix:** Change `.spacing(15)` to `.spacing(12)` (MD) or `.spacing(16)` (BASE)
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-23T21:04:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
 
@@ -213,7 +219,8 @@ const OFFLINE_COLOR: Color = Color::from_rgb(0.9, 0.3, 0.3);
 - **Suggested fix:** Create a `mod colors` with semantic tokens and use `colors::SUCCESS` instead of raw RGB
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-23T21:04:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
 
@@ -232,6 +239,7 @@ const OFFLINE_COLOR: Color = Color::from_rgb(0.9, 0.3, 0.3);
 - **Suggested fix:** Change `.padding(10)` to `.padding(12)` (MD) or `.padding(8)` (SM)
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-23T21:04:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED
+- **Sprint:** 14
 
 ---
