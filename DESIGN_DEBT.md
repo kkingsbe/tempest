@@ -1,7 +1,7 @@
 # Design Debt
 
 > Last Updated: 2026-02-23T19:34:00.000Z
-> Total Open: 3
+> Total Open: 7
 
 ---
 
@@ -65,4 +65,90 @@ let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0
 - **Suggested fix:** Create `mod colors` with semantic tokens and use `colors::TEXT_SECONDARY` instead of inline `Color::from_rgb(0.7, 0.7, 0.7)`
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23
+- **Status:** OPEN
+
+---
+
+### DD-004: Raw RGB Color Values in ColorLegend
+
+- **Component:** `tempest-app/src/color_legend.rs`
+- **Usage count:** 6 (from grep analysis)
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Color system: "Semantic naming (accent, danger, success) — never raw hex values"
+- **Evidence:**
+```rust
+let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
+let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
+let dark_bg = iced::Background::Color(iced::Color::from_rgb(0.1, 0.1, 0.15));
+// ...
+color: iced::Color::from_rgb(0.15, 0.15, 0.2),
+```
+- **Line(s):** 113, 114, 115, 186
+- **Expected:** Use semantic color constants like `colors::ACCENT`, `colors::TEXT_SECONDARY`, `colors::BG_PRIMARY`
+- **Suggested fix:** Create a colors module with semantic color constants and replace all raw RGB values
+- **Fix estimate:** M (15–45 min)
+- **Queued:** 2026-02-23T19:56:00Z
+- **Status:** OPEN
+
+---
+
+### DD-005: Non-8-Point Spacing in ColorLegend
+
+- **Component:** `tempest-app/src/color_legend.rs`
+- **Usage count:** 6
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Spacing Scale: "Must use 8-point scale: XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32)"
+- **Evidence:**
+```rust
+.padding(10)
+```
+- **Line(s):** 178
+- **Expected:** Use MD(12) or SM(8) - prefer MD(12) for container padding
+- **Suggested fix:** Change `.padding(10)` to `.padding(12)` (MD) or `.padding(8)` (SM)
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-23T19:56:00Z
+- **Status:** OPEN
+
+---
+
+### DD-006: Raw RGB Color Values in ElevationTiltSelector
+
+- **Component:** `tempest-app/src/elevation_tilt_selector.rs`
+- **Usage count:** 5
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Color system: "Semantic naming (accent, danger, success) — never raw hex values"
+- **Evidence:**
+```rust
+let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
+let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
+// ...
+iced::Color::from_rgb(1.0, 1.0, 1.0),
+// ...
+iced::Color::from_rgb(0.7, 0.7, 0.8),
+```
+- **Line(s):** 105, 106, 140, 148
+- **Expected:** Use semantic color constants
+- **Suggested fix:** Create/use semantic color constants and replace all raw RGB values
+- **Fix estimate:** M (15–45 min)
+- **Queued:** 2026-02-23T19:56:00Z
+- **Status:** OPEN
+
+---
+
+### DD-007: Non-8-Point Spacing in ElevationTiltSelector
+
+- **Component:** `tempest-app/src/elevation_tilt_selector.rs`
+- **Usage count:** 5
+- **Priority:** High
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — Spacing Scale: "Must use 8-point scale"
+- **Evidence:**
+```rust
+.spacing(15)  // Line 116
+.spacing(15)  // Line 178
+```
+- **Line(s):** 116, 178
+- **Expected:** Use MD(12) or BASE(16) - 15px falls between, use nearest scale value
+- **Suggested fix:** Change `.spacing(15)` to `.spacing(12)` (MD) or `.spacing(16)` (BASE)
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-23T19:56:00Z
 - **Status:** OPEN
