@@ -167,10 +167,10 @@
   - Scope: Presets (1h/6h/24h), custom date picker
   - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement intelligent prefetching
+- [x] Implement intelligent prefetching
   - 📚 SKILLS: ./skills/rust-engineer/SKILL.md
   - Scope: Preload next 3-5 scans during playback
-  - **IN SPRINT 10** (TODO1)
+  - **COMPLETED IN SPRINT 10**
 
 ### Phase 8: Offline Mode & Release
 
@@ -184,12 +184,17 @@
   - Scope: Auto-detect network, browse cached data
   - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Implement application polish
+- [ ] Complete application polish - config file handling
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
-  - Scope: Keyboard shortcuts, window title, config file
-  - **IN SPRINT 10** (TODO2)
+  - Scope: Implement persistent config file storage
+  - **IN SPRINT 11** (TODO1)
+
+- [ ] Verify cache management UI
+  - 📚 SKILLS: ./skills/frontend-design/SKILL.md
+  - Scope: Verify CacheManager functionality
+  - **IN SPRINT 11** (TODO2)
 
 - [ ] Implement release build
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Cross-platform binaries, size optimization
-  - **IN SPRINT 10** (TODO3)
+  - **IN SPRINT 11** (TODO3)

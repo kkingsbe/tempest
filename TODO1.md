@@ -1,17 +1,17 @@
 # TODO1 - Agent 1
 
-> Sprint: 10
-> Focus Area: Phase 7 - Timeline & Playback
-> Last Updated: 2026-02-23T07:50:25Z
+> Sprint: 11
+> Focus Area: Phase 8 - Application Polish (Config)
+> Last Updated: 2026-02-23T09:00:00Z
 
 ## Tasks
 
-- [ ] Implement intelligent prefetching for radar scans during playback
-  - 📚 SKILLS: ./skills/rust-engineer/SKILL.md, ./skills/frontend-design/SKILL.md
-  - Scope: Preload next 3-5 scans during playback to ensure smooth animation
-  - Implementation: Integrate with existing timeline.rs to trigger prefetch when playback is active
-  - Location: tempest-app/src/, tempest-fetch/src/prefetch.rs
+- [ ] Complete config file handling for application polish
+  - 📚 SKILLS: ./skills/frontend-design/SKILL.md, ./skills/rust-best-practices/SKILL.md
+  - Scope: Implement persistent configuration storage (station preferences, window size, playback speed, etc.)
+  - Location: tempest-app/src/config.rs
+  - Details: Create a config file (JSON or TOML) that persists user preferences between sessions
 
 - [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
   - 📚 SKILLS: ./skills/test-driven-development/SKILL.md
-  - Scope: Verify all existing implementations work correctly
+  - Scope: Verify all implementations work correctly

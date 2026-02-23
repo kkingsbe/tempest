@@ -19,6 +19,8 @@ tempest-render-core = { path = "../tempest-render-core" }
 image = "0.25"
 anyhow = "1.0"
 directories = "5"
+tracing = "0.1"
+futures = "0.3"
 
 [[bin]]
 name = "tempest"

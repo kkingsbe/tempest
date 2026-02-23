@@ -17,6 +17,10 @@ pub struct AppConfig {
     pub default_moment: String,
     /// Polling interval in seconds for fetching new data (default: 60)
     pub polling_interval_seconds: u64,
+    /// Window width in pixels (default: 1200.0)
+    pub window_width: f32,
+    /// Window height in pixels (default: 800.0)
+    pub window_height: f32,
 }
 
 impl Default for AppConfig {
@@ -26,6 +30,8 @@ impl Default for AppConfig {
             default_station: None,
             default_moment: "REF".to_string(),
             polling_interval_seconds: 60,
+            window_width: 1200.0,
+            window_height: 800.0,
         }
     }
 }
@@ -59,7 +65,6 @@ impl AppConfig {
     }
 
     /// Save configuration to ~/.tempest/config.toml
-    #[allow(dead_code)]
     pub fn save(&self) -> Result<(), String> {
         let config_dir =
             Self::config_dir().ok_or_else(|| "Could not determine config directory".to_string())?;

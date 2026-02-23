@@ -16,6 +16,8 @@ pub enum CacheManagerMessage {
     ClearCache,
     /// Max size input changed (in MB)
     MaxSizeChanged(String),
+    /// Apply the max size setting
+    ApplyMaxSize,
     /// Toggle the settings panel visibility
     ToggleSettings,
     /// Refresh cache statistics
@@ -33,8 +35,7 @@ pub enum CacheManagerMessage {
 #[derive(Debug)]
 pub struct CacheManager {
     /// Reference to the cache (wrapped in Arc<RwLock> for async access)
-    #[allow(dead_code)]
-    cache: Arc<RwLock<Cache>>,
+    cache: Option<Arc<RwLock<Cache>>>,
     /// Current cache statistics (cached for display)
     stats: CacheStats,
     /// Input field value for max size (in MB)
@@ -54,7 +55,7 @@ impl CacheManager {
         let max_size_mb = 1024; // Default 1GB = 1024 MB
 
         Self {
-            cache,
+            cache: Some(cache),
             stats,
             max_size_input: max_size_mb.to_string(),
             show_settings: false,
@@ -69,7 +70,7 @@ impl CacheManager {
         let stats = CacheStats::default();
 
         Self {
-            cache,
+            cache: Some(cache),
             stats,
             max_size_input: max_size_mb.to_string(),
             show_settings: false,
@@ -81,8 +82,10 @@ impl CacheManager {
     /// Updates the cached statistics (call this periodically)
     #[allow(dead_code)]
     pub async fn refresh_stats(&mut self) {
-        let cache = self.cache.read().await;
-        self.stats = cache.stats().await;
+        if let Some(cache) = &self.cache {
+            let cache = cache.read().await;
+            self.stats = cache.stats().await;
+        }
     }
 
     /// Sets the current cache statistics
@@ -95,14 +98,39 @@ impl CacheManager {
     pub fn update(&mut self, message: CacheManagerMessage) -> Option<CacheManagerMessage> {
         match message {
             CacheManagerMessage::ClearCache => {
-                self.clearing = true;
-                // The actual clearing will be done asynchronously
-                // Return a message to trigger the async operation
-                Some(CacheManagerMessage::ClearCache)
+                // Spawn async task to clear the cache
+                // We need to do this because update() is synchronous but cache.clear() is async
+                if let Some(cache) = self.cache.clone() {
+                    self.clearing = true;
+                    let cache = cache.clone();
+                    tokio::spawn(async move {
+                        let result = async {
+                            let mut cache = cache.write().await;
+                            cache.clear().await
+                        }
+                        .await;
+                        match result {
+                            Ok(()) => {
+                                tracing::info!("Cache cleared successfully");
+                            }
+                            Err(e) => {
+                                tracing::error!("Failed to clear cache: {}", e);
+                            }
+                        }
+                    });
+                }
+                None
             }
             CacheManagerMessage::MaxSizeChanged(value) => {
                 // Validate and store the input
                 self.max_size_input = value;
+                None
+            }
+            CacheManagerMessage::ApplyMaxSize => {
+                // Parse the input and apply as the current max size
+                if let Ok(size) = self.max_size_input.parse::<u64>() {
+                    self.current_max_size_mb = size;
+                }
                 None
             }
             CacheManagerMessage::ToggleSettings => {
@@ -125,11 +153,50 @@ impl CacheManager {
         }
     }
 
-    /// Returns the max size input value
+    /// Clears the cache asynchronously
+    ///
+    /// This method must be called from an async context. It acquires a write lock
+    /// on the cache and clears all entries.
+    ///
+    /// Note: Prefer using the ClearCache message which handles this automatically
+    /// via tokio::spawn in the update method.
+    #[allow(dead_code)]
+    pub async fn clear_cache(&mut self) {
+        let cache = match &self.cache {
+            Some(c) => c,
+            None => {
+                tracing::warn!("Cache not initialized, cannot clear");
+                return;
+            }
+        };
+
+        self.clearing = true;
+
+        let result = async {
+            let mut cache = cache.write().await;
+            cache.clear().await
+        }
+        .await;
+
+        match result {
+            Ok(()) => {
+                // Refresh stats after clearing
+                self.stats = cache.read().await.stats().await;
+                tracing::info!("Cache cleared successfully");
+            }
+            Err(e) => {
+                tracing::error!("Failed to clear cache: {}", e);
+            }
+        }
+
+        self.clearing = false;
+    }
+
+    /// Returns the current max size setting (in MB)
     #[must_use]
     #[allow(dead_code)]
-    pub fn max_size_input(&self) -> &str {
-        &self.max_size_input
+    pub fn current_max_size_mb(&self) -> u64 {
+        self.current_max_size_mb
     }
 
     /// Returns whether settings are visible
@@ -214,17 +281,27 @@ impl CacheManager {
                 .width(Length::Fixed(150.0))
                 .padding(8);
 
+            let apply_button = button(text("Apply").style(value_style))
+                .on_press(CacheManagerMessage::ApplyMaxSize)
+                .width(Length::Fixed(80.0))
+                .padding(8);
+
             let settings_content = column![
                 text("Cache Settings").style(heading_style).size(14),
+                text("").size(5),
                 row![
                     text("Maximum Size (MB):").style(label_style),
                     max_size_input,
+                    apply_button,
                 ]
                 .spacing(10)
                 .align_items(Alignment::Center),
                 text(format!("Current limit: {} MB", self.current_max_size_mb))
                     .style(label_style)
                     .size(12),
+                text("Note: Cache limit requires app restart to take effect")
+                    .style(label_style)
+                    .size(10),
             ]
             .spacing(8)
             .padding(10);
@@ -289,7 +366,18 @@ impl CacheManager {
 
 impl Default for CacheManager {
     fn default() -> Self {
-        // This won't actually work without a real cache, but required for derive
-        panic!("CacheManager::default() should not be called - use CacheManager::new()");
+        // Return a sensible default with no cache initialized
+        // This allows the struct to be used in contexts where a full cache isn't available
+        let stats = CacheStats::default();
+        let max_size_mb = 1024; // Default 1GB = 1024 MB
+
+        Self {
+            cache: None,
+            stats,
+            max_size_input: max_size_mb.to_string(),
+            show_settings: false,
+            current_max_size_mb: max_size_mb,
+            clearing: false,
+        }
     }
 }

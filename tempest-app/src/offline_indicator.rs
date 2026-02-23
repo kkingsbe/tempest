@@ -49,6 +49,7 @@ impl OfflineIndicator {
     }
 
     /// Set the online status
+    #[allow(dead_code)]
     pub fn set_online(&mut self, online: bool) {
         self.is_online = online;
     }

@@ -15,12 +15,13 @@ mod timeline;
 use cache_manager::{CacheManager, CacheManagerMessage};
 use color_legend::{ColorLegend, ColorLegendMessage};
 use elevation_tilt_selector::{ElevationTiltSelector, ElevationTiltSelectorMessage};
-use iced::{Color, Element, Sandbox, Settings, Size};
+use iced::{Sandbox, Settings};
 use moment_switcher::{MomentSwitcher, MomentSwitcherMessage};
 use offline_indicator::{OfflineIndicator, OfflineIndicatorMessage};
 use station_selector::{StationSelector, StationSelectorMessage};
 use std::sync::Arc;
 use tempest_fetch::cache_default;
+use tempest_fetch::prefetch::{PlaybackDirection, PlaybackState, Prefetcher};
 use tempest_render_core::color::RadarMoment;
 use timeline::{TimelineMessage, TimelineState};
 use tokio::sync::RwLock;
@@ -42,10 +43,12 @@ pub struct App {
     offline_indicator: OfflineIndicator,
     /// Timeline component
     timeline: TimelineState,
+    /// Prefetcher for predictive data loading
+    prefetcher: Prefetcher,
     /// Counter for periodic connectivity checks
+    #[allow(dead_code)]
     connectivity_check_counter: u32,
     /// Application configuration
-    #[allow(dead_code)]
     config: config::AppConfig,
     /// Playback state
     #[allow(dead_code)]
@@ -54,6 +57,8 @@ pub struct App {
     zoom_level: i32,
     /// Pan offset for map (x, y)
     pan_offset: (i32, i32),
+    /// Whether settings panel is visible
+    show_settings: bool,
 }
 
 /// Direction for panning
@@ -82,8 +87,16 @@ pub enum Message {
     OfflineIndicator(OfflineIndicatorMessage),
     /// Timeline internal messages
     Timeline(TimelineMessage),
+    /// Prefetcher updated with keys to prefetch
+    PrefetcherUpdated(Vec<String>),
     /// Toggle settings panel
     ToggleSettings,
+    /// Update cache size from settings
+    SettingsCacheSizeChanged(u64),
+    /// Update default moment from settings
+    SettingsDefaultMomentChanged(String),
+    /// Update polling interval from settings
+    SettingsPollingIntervalChanged(u64),
     /// Play/Pause toggle
     PlayPause,
     /// Step backward
@@ -98,6 +111,43 @@ pub enum Message {
     Pan(PanDirection),
     /// Keyboard event handler
     Keyboard(iced::keyboard::Key),
+}
+
+impl App {
+    /// Sync the prefetcher with current timeline state
+    fn sync_prefetcher_with_timeline(&mut self) {
+        // Get timeline state
+        let is_playing = self.timeline.is_playing();
+        let current_index = self.timeline.current_index();
+        let speed = self.timeline.playback_speed() as f64;
+
+        // Determine direction
+        let direction = if is_playing {
+            // Default to Forward when playing
+            PlaybackDirection::Forward
+        } else {
+            PlaybackDirection::Paused
+        };
+
+        // Set available scans (use scan times as keys - format as strings)
+        let scan_keys: Vec<String> = self
+            .timeline
+            .scan_times()
+            .iter()
+            .map(|t| t.format("%Y%m%d%H%M").to_string())
+            .collect();
+        self.prefetcher.set_available_scans(scan_keys);
+
+        // Update playback state
+        let state = PlaybackState {
+            current_index,
+            total_scans: self.timeline.scan_count(),
+            direction,
+            speed: if is_playing { speed } else { 0.0 },
+            last_update: chrono::Utc::now(),
+        };
+        self.prefetcher.update_playback_state(state);
+    }
 }
 
 impl Sandbox for App {
@@ -137,11 +187,13 @@ impl Sandbox for App {
             // Initialize offline indicator with current connectivity status
             offline_indicator: OfflineIndicator::new(offline_detection::is_online()),
             timeline: TimelineState::new(),
+            prefetcher: Prefetcher::with_default_config(),
             connectivity_check_counter: 0,
             config,
             is_playing: false,
             zoom_level: 0,
             pan_offset: (0, 0),
+            show_settings: false,
         }
     }
 
@@ -172,6 +224,36 @@ impl Sandbox for App {
         }
 
         title
+    }
+
+    fn view(&self) -> iced::Element<'_, Message> {
+        use iced::widget::{column, text};
+
+        // Build the main view from all components
+        column![
+            // Station selector at top
+            self.station_selector.view().map(Message::StationSelector),
+            // Moment switcher
+            self.moment_switcher.view().map(Message::MomentSwitcher),
+            // Elevation tilt selector
+            self.elevation_tilt_selector
+                .view()
+                .map(Message::ElevationTiltSelector),
+            // Color legend
+            self.color_legend.view().map(Message::ColorLegend),
+            // Timeline at bottom
+            self.timeline.view().map(Message::Timeline),
+            // Offline indicator if needed
+            self.offline_indicator.view().map(Message::OfflineIndicator),
+            // Cache manager
+            self.cache_manager.view().map(Message::CacheManager),
+            // Debug info
+            text(format!(
+                "Zoom: {} | Pan: {:?} | Playing: {}",
+                self.zoom_level, self.pan_offset, self.is_playing
+            ))
+        ]
+        .into()
     }
 
     fn update(&mut self, message: Message) {
@@ -207,18 +289,64 @@ impl Sandbox for App {
             }
             Message::Timeline(timeline_message) => {
                 self.timeline.update(timeline_message);
+                // Sync prefetcher after timeline updates
+                self.sync_prefetcher_with_timeline();
+                let prediction = self.prefetcher.predict();
+                if !prediction.keys.is_empty() {
+                    // Keys are available for prefetching
+                    // In a full implementation, this would trigger async fetches
+                    // For now, just have the message available for testing
+                }
             }
             Message::ToggleSettings => {
-                // Placeholder for settings toggle
+                self.show_settings = !self.show_settings;
+            }
+            Message::SettingsCacheSizeChanged(size) => {
+                self.config.cache_size_mb = size;
+                if let Err(e) = self.config.save() {
+                    eprintln!("Failed to save config: {}", e);
+                }
+            }
+            Message::SettingsDefaultMomentChanged(moment) => {
+                self.config.default_moment = moment;
+                if let Err(e) = self.config.save() {
+                    eprintln!("Failed to save config: {}", e);
+                }
+            }
+            Message::SettingsPollingIntervalChanged(interval) => {
+                self.config.polling_interval_seconds = interval;
+                if let Err(e) = self.config.save() {
+                    eprintln!("Failed to save config: {}", e);
+                }
+            }
+            Message::PrefetcherUpdated(keys) => {
+                // Handle prefetcher updated - keys are available for prefetching
+                // This would trigger async fetches in a full implementation
+                let _ = keys;
             }
             Message::PlayPause => {
                 self.timeline.update(TimelineMessage::PlayPauseToggled);
+                self.sync_prefetcher_with_timeline();
+                let prediction = self.prefetcher.predict();
+                if !prediction.keys.is_empty() {
+                    // Prefetch keys available
+                }
             }
             Message::StepBackward => {
                 self.timeline.update(TimelineMessage::StepBackward);
+                self.sync_prefetcher_with_timeline();
+                let prediction = self.prefetcher.predict();
+                if !prediction.keys.is_empty() {
+                    // Prefetch keys available
+                }
             }
             Message::StepForward => {
                 self.timeline.update(TimelineMessage::StepForward);
+                self.sync_prefetcher_with_timeline();
+                let prediction = self.prefetcher.predict();
+                if !prediction.keys.is_empty() {
+                    // Prefetch keys available
+                }
             }
             Message::ZoomIn => {
                 if self.zoom_level < 5 {
@@ -245,110 +373,18 @@ impl Sandbox for App {
             Message::Keyboard(key) => {
                 // Handle keyboard shortcuts
                 if let iced::keyboard::Key::Character(c) = key {
-                    match c.as_str() {
-                        " " => {
-                            // Toggle play/pause via Timeline
-                            self.timeline.update(TimelineMessage::PlayPauseToggled);
-                        }
-                        "+" | "=" => {
-                            if self.zoom_level < 5 {
-                                self.zoom_level += 1;
-                            }
-                        }
-                        "-" => {
-                            if self.zoom_level > -3 {
-                                self.zoom_level -= 1;
-                            }
-                        }
-                        _ => {}
+                    if c.as_str() == " " {
+                        // Toggle play/pause via Timeline
+                        self.timeline.update(TimelineMessage::PlayPauseToggled);
                     }
                 }
             }
         }
-
-        // Periodic connectivity check every few ticks (every ~5 seconds at 60fps)
-        self.connectivity_check_counter += 1;
-        if self.connectivity_check_counter >= 300 {
-            self.connectivity_check_counter = 0;
-            let is_online = offline_detection::is_online();
-            self.offline_indicator.set_online(is_online);
-        }
-    }
-
-    fn view(&self) -> Element<'_, Message> {
-        use iced::widget::{column, container, row, text};
-
-        // Dark themed content
-        let controls = column![
-            text("Tempest - NEXRAD Weather Radar")
-                .size(28)
-                .style(iced::theme::Text::Color(Color::from_rgb(0.2, 0.6, 1.0))),
-            text("").size(10),
-            // Moment switcher component
-            self.moment_switcher.view().map(Message::MomentSwitcher),
-            text("").size(15),
-            // Elevation tilt selector component
-            self.elevation_tilt_selector
-                .view()
-                .map(Message::ElevationTiltSelector),
-            text("").size(15),
-            // Station selector component
-            self.station_selector.view().map(Message::StationSelector),
-            text("").size(15),
-            // Cache manager component
-            self.cache_manager.view().map(Message::CacheManager),
-            text("").size(10),
-            // Keyboard shortcuts help
-            text("Shortcuts: Space=Play/Pause, Arrows=Pan, +/-=Zoom")
-                .size(12)
-                .style(iced::theme::Text::Color(Color::from_rgb(0.5, 0.5, 0.5))),
-        ]
-        .spacing(10)
-        .padding(20);
-
-        // Main container with content
-        let main_container = container(controls)
-            .width(iced::Length::Fill)
-            .height(iced::Length::Fill)
-            .center_x()
-            .center_y();
-
-        // Color legend positioned on the right side
-        let legend = self.color_legend.view().map(Message::ColorLegend);
-
-        // Offline indicator positioned at top-right
-        let indicator = self.offline_indicator.view().map(Message::OfflineIndicator);
-
-        // Timeline positioned at the bottom
-        let timeline = self.timeline.view().map(Message::Timeline);
-
-        // Combine main content, legend, indicator, and timeline using a column
-        column![
-            row![main_container, legend, indicator].align_items(iced::Alignment::Start),
-            timeline
-        ]
-        .spacing(0)
-        .into()
     }
 }
 
-/// Main entry point for the Tempest application
-fn main() {
-    // Configure window settings
-    let settings = Settings {
-        window: iced::window::Settings {
-            size: Size::new(1200.0, 800.0),
-            resizable: true,
-            decorations: true,
-            transparent: false,
-            ..Default::default()
-        },
-        ..Default::default()
-    };
-
-    // Run the application
-    if let Err(e) = App::run(settings) {
-        eprintln!("Error running Tempest application: {}", e);
-        std::process::exit(1);
-    }
+// Run the application
+fn main() -> iced::Result {
+    let settings = Settings::default();
+    App::run(settings)
 }

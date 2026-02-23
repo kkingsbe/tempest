@@ -291,11 +291,15 @@ impl TimelineState {
     /// Builds playback control buttons (play/pause, speed, loop)
     fn build_playback_controls(
         &self,
-        accent_color: iced::Color,
-        text_color: &iced::Color,
+        _accent_color: iced::Color,
+        _text_color: &iced::Color,
     ) -> Element<'_, TimelineMessage> {
         // Play/Pause button with icon
-        let play_pause_text = if self.is_playing { "⏸ Pause" } else { "▶ Play" };
+        let play_pause_text = if self.is_playing {
+            "⏸ Pause"
+        } else {
+            "▶ Play"
+        };
         let play_pause_btn = button(
             text(play_pause_text)
                 .size(14)
@@ -320,7 +324,7 @@ impl TimelineState {
         // Build speed buttons row
         let mut speed_buttons_row = row![].spacing(2);
         for &speed in &VALID_SPEEDS {
-            let is_selected = self.playback_speed == speed;
+            let _is_selected = self.playback_speed == speed;
             let btn = button(text(format!("{}x", speed)).size(11))
                 .on_press(TimelineMessage::SpeedChanged(speed))
                 .padding(4);
@@ -328,7 +332,11 @@ impl TimelineState {
         }
 
         // Loop toggle button
-        let loop_text = if self.is_looping { "🔁 Loop: On" } else { "🔁 Loop" };
+        let loop_text = if self.is_looping {
+            "🔁 Loop: On"
+        } else {
+            "🔁 Loop"
+        };
         let loop_btn = button(text(loop_text).size(12))
             .on_press(TimelineMessage::LoopToggled)
             .padding(6);
@@ -350,8 +358,8 @@ impl TimelineState {
     /// Builds time range selection buttons (1h, 6h, 24h)
     fn build_time_range_controls(
         &self,
-        accent_color: iced::Color,
-        text_color: &iced::Color,
+        _accent_color: iced::Color,
+        _text_color: &iced::Color,
     ) -> Element<'_, TimelineMessage> {
         let range_label = text("Range:").size(12).font(iced::font::Font::MONOSPACE);
 

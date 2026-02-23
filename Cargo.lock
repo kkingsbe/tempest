@@ -3831,6 +3831,7 @@ dependencies = [
  "anyhow",
  "chrono",
  "directories",
+ "futures",
  "iced",
  "image 0.25.9",
  "serde",
@@ -3839,6 +3840,7 @@ dependencies = [
  "tempest-render-core",
  "tokio",
  "toml",
+ "tracing",
 ]
 
 [[package]]
