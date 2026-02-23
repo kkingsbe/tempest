@@ -3,9 +3,9 @@ resolver = "2"
 members = [
     "tempest-decode",
     "tempest-fetch",
-    # "tempest-app",
-    "tempest-render",
-    # "tempest-render-core",
+    "tempest-app",
+    "tempest-render-core",
+    # "tempest-render",
     # "tempest-map",
 ]
 

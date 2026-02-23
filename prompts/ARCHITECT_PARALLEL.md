@@ -120,7 +120,13 @@ Work through these tasks **in order**. Update `ARCHITECT_STATE.md` after each on
   - **Tooling skills** — linting, testing, build configuration conventions
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 2: Gap Analysis & Sprint Planning
+### Task 2: Check Inbox
+
+- Read `comms/inbox/` to see if the user has provided any new context or information
+- If an inbox item contains a bug report, break it down and distribute it to the various `TODO<N>.md` docs for the current sprint. After processing a file, it can be removed from `comms/inbox`
+
+
+### Task 3: Gap Analysis & Sprint Planning
 
 - Read `PRD.md` (Requirements) and `BACKLOG.md` (Future Work)
 - Compare to all `TODO<N>.md` files (Current Work) and `src/` (Reality)
@@ -129,7 +135,7 @@ Work through these tasks **in order**. Update `ARCHITECT_STATE.md` after each on
 - **Skill alignment:** When refining backlog items, note which skills from Task 1 are relevant and add them as annotations (see format below)
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 3: Design Debt Review
+### Task 4: Design Debt Review
 
 - Read `DESIGN_DEBT.md` if it exists — if it doesn't exist yet, skip this task
 - Identify all entries with **status: OPEN**
@@ -148,7 +154,7 @@ Work through these tasks **in order**. Update `ARCHITECT_STATE.md` after each on
   sprint number — do not mark them RESOLVED (that happens when the fix is committed)
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 4: Sprint Management (The Gatekeeper & Load Balancer)
+### Task 5: Sprint Management (The Gatekeeper & Load Balancer)
 
 #### Step 1: Check the Sprint Gate
 
@@ -254,7 +260,7 @@ When a task in one agent's queue depends on another agent's work, use this forma
 
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 5: Blocker Review
+### Task 6: Blocker Review
 
 - Read `BLOCKERS.md`
 - If you can solve a blocker by making an architectural decision, write the solution
@@ -263,14 +269,14 @@ When a task in one agent's queue depends on another agent's work, use this forma
   Agent A). If found, resolve by reassigning tasks.
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 6: Communication
+### Task 7: Communication
 
 - If the PRD is ambiguous or impossible to implement, write a specific question to
   `comms/outbox/` for the user to answer
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 - Use the discli skill (read ./skills/DISCLI.md) to send out a progress update.
 
-### Task 7: Cleanup (Final Task)
+### Task 8: Cleanup (Final Task)
 
 - Delete `.architect_in_progress` marker
 - Delete `ARCHITECT_STATE.md`

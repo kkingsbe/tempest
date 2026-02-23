@@ -46,3 +46,10 @@ schedule = "0 */45 * * * *"
 readonly = false
 timeout = "30m"
 prompt_file = "prompts/ARCHITECT_PARALLEL.md"
+
+[[agent]]
+name = "tempest-design-review"
+schedule = "0 0 */1 * * *"
+readonly = false
+timeout = "30m"
+prompt_file = "prompts/DESIGN_REVIEW.md"
