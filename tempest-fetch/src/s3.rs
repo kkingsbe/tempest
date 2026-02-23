@@ -36,6 +36,8 @@ const NOAA_NEXRAD_BUCKET: &str = "https://noaa-nexrad-level2.s3.amazonaws.com";
 pub struct S3Client {
     /// HTTP client for making requests.
     client: Client,
+    /// Base URL for the S3 bucket (can be customized for testing).
+    base_url: String,
 }
 
 impl S3Client {
@@ -45,7 +47,32 @@ impl S3Client {
             .build()
             .map_err(|e| FetchError::internal(format!("Failed to create HTTP client: {}", e)))?;
 
-        Ok(Self { client })
+        Ok(Self {
+            client,
+            base_url: NOAA_NEXRAD_BUCKET.to_string(),
+        })
+    }
+
+    /// Create a new S3Client with a custom base URL.
+    ///
+    /// This is primarily useful for testing with mock S3 servers.
+    ///
+    /// # Arguments
+    ///
+    /// * `base_url` - Custom base URL for the S3 bucket (e.g., mock server URL)
+    ///
+    /// # Returns
+    ///
+    /// Returns a new S3Client configured to use the custom base URL.
+    pub fn with_base_url(base_url: impl Into<String>) -> Result<Self, FetchError> {
+        let client = Client::builder()
+            .build()
+            .map_err(|e| FetchError::internal(format!("Failed to create HTTP client: {}", e)))?;
+
+        Ok(Self {
+            client,
+            base_url: base_url.into(),
+        })
     }
 
     /// List all available volume scans for a given station and date.
@@ -82,7 +109,7 @@ impl S3Client {
             station.to_uppercase()
         );
 
-        let url = format!("{}{}?list-type=2&delimiter=/", NOAA_NEXRAD_BUCKET, path);
+        let url = format!("{}{}?list-type=2&delimiter=/", self.base_url, path);
 
         debug!("Listing scans from S3: {}", url);
 
@@ -146,7 +173,7 @@ impl S3Client {
             scan.filename
         );
 
-        let url = format!("{}{}/{}", NOAA_NEXRAD_BUCKET, path, scan.filename);
+        let url = format!("{}{}/{}/{}", self.base_url, path, scan.filename);
 
         debug!("Fetching scan from S3: {}", url);
 

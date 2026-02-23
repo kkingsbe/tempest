@@ -1,0 +1,82 @@
+# Tempest Coverage Configuration
+# Cargo-tarpaulin configuration for coverage tracking
+#
+# Coverage Targets:
+#   - tempest-decode: ≥95% line coverage
+#   - tempest-render-core: ≥90% line coverage
+#   - Overall workspace: ≥85% line coverage
+#
+# Note: tempest-render-core is currently not in the active workspace members
+
+[tarpaulin]
+# Output directory for coverage reports
+output-dir = "./coverage"
+
+# Generate HTML reports
+html = true
+
+# Generate XML reports (for CI integration)
+xml = true
+
+# Run tests in release mode (optional, remove for debug)
+# release = true
+
+# Follow links for tests in external crates
+follow-tests = true
+
+# Number of parallel jobs (default uses all cores)
+# jobs = 4
+
+# Timeout for each test (in seconds)
+timeout = 300
+
+# Skip failed tests and continue
+skip-failed = false
+
+# Exclude coverage for specific file patterns
+exclude = [
+    # Test files
+    "**/tests/**",
+    # Example binaries
+    "**/examples/**",
+    # Build artifacts
+    "**/target/**",
+    # Generated fixtures
+    "**/fixtures/**",
+    "**/generated/**",
+    # Benchmark and doc tests
+    "**/benches/**",
+    "**/doc/**",
+    # Archives
+    "**/archive/**",
+]
+
+# Exclude specific packages from coverage
+exclude-packages = [
+    "tempest-app",  # CLI application, may have platform-specific code
+]
+
+# Include only specific packages (optional, leave empty for all)
+# include = [
+#     "tempest-decode",
+#     "tempest-fetch",
+#     "tempest-render-core",
+# ]
+
+# Set coverage thresholds
+[tarpaulin.thresholds]
+# Overall workspace coverage target
+lines = 85
+functions = 85
+branches = 80
+
+# Package-specific coverage targets
+# These are informational - tarpaulin will warn but not fail
+# Individual crate targets need to be tracked separately
+
+[workspace]
+# Enable workspace-wide coverage tracking
+workspace-annotation = true
+
+# Include all workspace members
+all = true

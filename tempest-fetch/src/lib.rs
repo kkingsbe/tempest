@@ -30,6 +30,7 @@
 mod cache;
 mod decompress;
 mod error;
+mod mock_s3;
 mod poll;
 pub mod prefetch;
 mod prefetch_service;

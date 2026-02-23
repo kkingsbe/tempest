@@ -10,3 +10,5 @@ tempest-decode = { path = "../tempest-decode" }
 
 [dev-dependencies]
 chrono = "0.4"
+insta = "1.39"  # Snapshot testing library
+image = "0.25"  # For image creation and comparison
