@@ -1,19 +1,22 @@
 # TODO1 - Agent 1
 
-> Sprint: 8
-> Focus Area: Rendering Pipeline - Color Tables & View Transform
+> Sprint: 9
+> Focus Area: Timeline & Playback UI Components
 > Last Updated: 2026-02-23
 
 ## Tasks
 
-- [ ] Define color tables for radar moments (dBZ, velocity, ZDR color ramps)
-  - 📚 SKILLS: `./skills/rust-best-practices/SKILL.md`, `./skills/rust-engineer/SKILL.md`
-  - Scope: Implement color lookup tables in tempest-render-core for REF, VEL, SW, ZDR, CC, KDP moments
-  - Phase: Phase 2 (Partially complete from Sprint 7)
+- [ ] Implement Timeline Bar UI
+  - 📚 SKILLS: `./skills/frontend-design/SKILL.md`
+  - Scope: Scan tick marks, click to jump, drag scrub. Shows radar scan times on a horizontal timeline.
+  - Dependencies: Requires color tables and view transform (completed in Sprint 8)
 
-- [ ] Implement view transform (pan/zoom/rotation)
-  - 📚 SKILLS: `./skills/rust-best-practices/SKILL.md`, `./skills/rust-engineer/SKILL.md`
-  - Scope: Implement view transformation matrix in tempest-render for interactive radar display
-  - Phase: Phase 4 (From Sprint 7)
+- [ ] Implement Playback Controls
+  - 📚 SKILLS: `./skills/frontend-design/SKILL.md`
+  - Scope: Play/pause button, speed controls (1x/2x/5x/10x), loop mode toggle.
 
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] Implement Time Range Selection
+  - 📚 SKILLS: `./skills/frontend-design/SKILL.md`
+  - Scope: Preset buttons (1h/6h/24h), custom date picker for historical data.
+
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date.
