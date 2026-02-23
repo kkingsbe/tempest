@@ -1,0 +1,23 @@
+# Golden Reference Images Directory
+
+This directory contains golden reference images for visual regression tests.
+
+## Adding New Golden References
+
+To add a new golden reference:
+
+1. Run the test with `UPDATE_GOLDEN=1 cargo test --test visual_regression <test_name>`
+2. This will generate the baseline image in this directory
+3. Commit the new image to the repository
+
+## Image Format
+
+- Resolution: 1920x1080 (as per PRD)
+- Format: PNG with RGBA channels
+- Naming: `<test_name>.png` (e.g., `reflectivity_sweep.png`)
+
+## CI Behavior
+
+- CI runs tests without golden update mode
+- If any test exceeds the 1.5% diff threshold, CI fails
+- The diff image is saved as a CI artifact for inspection

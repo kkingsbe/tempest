@@ -26,7 +26,6 @@
 
 use bytes::Bytes;
 use chrono::{TimeZone, Utc};
-use mockito::{Matcher, Server as MockServer, ServerGuard};
 use std::collections::HashMap;
 use std::sync::Mutex;
 
@@ -37,8 +36,8 @@ use crate::types::ScanMeta;
 /// This struct wraps a `mockito::Server` and provides convenience methods
 /// to register mock responses for various NEXRAD bucket paths.
 pub struct MockS3Server {
-    /// The underlying mockito server.
-    server: ServerGuard,
+    /// The underlying mockito server (using ServerGuard for mutable access).
+    server: mockito::ServerGuard,
     /// Storage for registered scan data (key: filename, value: data).
     scan_data: Mutex<HashMap<String, Vec<u8>>>,
 }
@@ -50,8 +49,8 @@ impl MockS3Server {
     ///
     /// Returns a new `MockS3Server` instance bound to a random available port.
     pub async fn new() -> Result<Self, crate::FetchError> {
-        let server = MockServer::new_async().await;
-        
+        let server = mockito::Server::new_async().await;
+
         Ok(Self {
             server,
             scan_data: Mutex::new(HashMap::new()),
@@ -79,7 +78,7 @@ impl MockS3Server {
     /// * `date` - The date in YYYY/MM/DD format as separate components
     /// * `scans` - Vector of scan filenames to include in the response
     pub fn register_list_scans_response(
-        &self,
+        &mut self,
         station: &str,
         year: i32,
         month: u32,
@@ -105,9 +104,9 @@ impl MockS3Server {
 
         let path = format!("/{}/{}/{:02}/{}?list-type=2&delimiter=/", year, month, day, station);
 
+        // Use &str to avoid the &String issue
         self.server
-            .get(&path)
-            .match_header("Accept", "application/xml")
+            .mock("GET", path.as_str())
             .with_status(200)
             .with_header("Content-Type", "application/xml")
             .with_body(xml)
@@ -126,7 +125,7 @@ impl MockS3Server {
     /// * `filename` - The scan filename
     /// * `data` - The raw scan data to return
     pub fn register_scan_data(
-        &self,
+        &mut self,
         station: &str,
         year: i32,
         month: u32,
@@ -135,7 +134,7 @@ impl MockS3Server {
         data: Vec<u8>,
     ) {
         let path = format!("/{}/{}/{:02}/{}/{}", year, month, day, station, filename);
-        
+
         // Store for later reference
         {
             let mut scans = self.scan_data.lock().unwrap();
@@ -143,7 +142,7 @@ impl MockS3Server {
         }
 
         self.server
-            .get(&path)
+            .mock("GET", path.as_str())
             .with_status(200)
             .with_header("Content-Type", "application/octet-stream")
             .with_header("Content-Length", &data.len().to_string())
@@ -160,7 +159,7 @@ impl MockS3Server {
     /// * `filename` - The scan filename (should end with .bz2)
     /// * `compressed_data` - The bzip2 compressed scan data
     pub fn register_compressed_scan_data(
-        &self,
+        &mut self,
         station: &str,
         year: i32,
         month: u32,
@@ -171,7 +170,7 @@ impl MockS3Server {
         let path = format!("/{}/{}/{:02}/{}/{}", year, month, day, station, filename);
 
         self.server
-            .get(&path)
+            .mock("GET", path.as_str())
             .with_status(200)
             .with_header("Content-Type", "application/x-bzip2")
             .with_header("Content-Length", &compressed_data.len().to_string())
@@ -183,7 +182,7 @@ impl MockS3Server {
     ///
     /// This sets up common NEXRAD stations with sample data that can be
     /// used in E2E tests.
-    pub fn register_standard_stations(&self) {
+    pub fn register_standard_stations(&mut self) {
         // Register KTLX (Oklahoma City) scans
         self.register_list_scans_response(
             "KTLX",
@@ -212,10 +211,41 @@ impl MockS3Server {
     ///
     /// # Returns
     ///
-    /// Returns a ScanMeta with the current timestamp.
+    /// Returns a ScanMeta with the date derived from the filename.
+    ///
+    /// NEXRAD filenames follow the pattern: {STATION}{YYYYMMDD}_{HHMMSS}
+    /// This method parses the date from the filename.
+    ///
+    /// # Arguments
+    ///
+    /// * `station` - The station ID (e.g., "KTLX")
+    /// * `filename` - The scan filename (e.g., "KTLX20240315_120021")
+    ///
+    /// # Returns
+    ///
+    /// Returns a ScanMeta with the date parsed from the filename.
     pub fn create_scan_meta(&self, station: &str, filename: &str) -> ScanMeta {
-        let now = Utc::now();
-        ScanMeta::new(station, now, filename, 1024, now)
+        // Parse date from filename: KTLX20240315_120021 -> 2024-03-15
+        let date = if filename.len() >= 13 {
+            let year: i32 = filename[station.len()..station.len() + 4]
+                .parse()
+                .unwrap_or(2024);
+            let month: u32 = filename[station.len() + 4..station.len() + 6]
+                .parse()
+                .unwrap_or(1);
+            let day: u32 = filename[station.len() + 6..station.len() + 8]
+                .parse()
+                .unwrap_or(1);
+
+            chrono::NaiveDate::from_ymd_opt(year, month, day)
+                .map(|d| d.and_hms_opt(12, 0, 0).unwrap())
+                .unwrap_or_else(|| Utc::now().naive_utc())
+        } else {
+            Utc::now().naive_utc()
+        };
+
+        let date_time = Utc.from_utc_datetime(&date);
+        ScanMeta::new(station, date_time, filename, 1024, date_time)
     }
 
     /// Get the stored scan data by filename.
@@ -249,8 +279,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_register_list_scans() {
-        let server = MockS3Server::new().await.unwrap();
-        
+        let mut server = MockS3Server::new().await.unwrap();
+
         server.register_list_scans_response(
             "KTLX",
             2024,
@@ -261,15 +291,15 @@ mod tests {
 
         // Verify URL is accessible
         let url = server.url();
-        assert!(url.contains("mockito"));
+        assert!(url.starts_with("http://127.0.0.1") || url.starts_with("http://localhost"));
     }
 
     #[tokio::test]
     async fn test_register_scan_data() {
-        let server = MockS3Server::new().await.unwrap();
-        
+        let mut server = MockS3Server::new().await.unwrap();
+
         let test_data = b"NEXRAD Level II Test Data";
-        
+
         server.register_scan_data(
             "KTLX",
             2024,
@@ -282,15 +312,15 @@ mod tests {
         // Verify data is stored
         let stored = server.get_scan_data("KTLX20240315_120021");
         assert!(stored.is_some());
-        assert_eq!(stored.unwrap(), test_data);
+        assert_eq!(stored.unwrap().as_ref(), test_data.as_slice());
     }
 
     #[tokio::test]
     async fn test_scan_meta_creation() {
         let server = MockS3Server::new().await.unwrap();
-        
+
         let meta = server.create_scan_meta("KTLX", "KTLX20240315_120021");
-        
+
         assert_eq!(meta.station, "KTLX");
         assert_eq!(meta.filename, "KTLX20240315_120021");
     }

@@ -173,7 +173,7 @@ impl S3Client {
             scan.filename
         );
 
-        let url = format!("{}{}/{}/{}", self.base_url, path, scan.filename);
+        let url = format!("{}{}", self.base_url, path);
 
         debug!("Fetching scan from S3: {}", url);
 

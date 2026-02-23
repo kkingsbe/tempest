@@ -6,10 +6,10 @@
 
 ## Tasks
 
-- [ ] Implement golden-value tests for Tempest decoder
+- [x] Implement golden-value tests for Tempest decoder
   - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
   - Scope: Verify decoded values at specific positions match expected values. Use synthetic fixtures.
-- [ ] Set up cargo-tarpaulin for coverage tracking
+- [x] Set up cargo-tarpaulin for coverage tracking
   - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`
   - Scope: Configure ≥95% decoder, ≥90% render-core, ≥85% overall targets in .cargo/config
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.

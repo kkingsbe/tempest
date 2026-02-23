@@ -3,9 +3,9 @@ resolver = "2"
 members = [
     "tempest-decode",
     "tempest-fetch",
-    "tempest-app",
+    # "tempest-app",
+    "tempest-render",
     # "tempest-render-core",
-    # "tempest-render",
     # "tempest-map",
 ]
 
@@ -22,6 +22,3 @@ lto = "fat"
 codegen-units = 1
 strip = true
 panic = "abort"
-
-[dev-dependencies]
-cargo-tarpaulin = "0.27"

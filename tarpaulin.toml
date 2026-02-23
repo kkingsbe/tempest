@@ -27,8 +27,8 @@ follow-tests = true
 # Number of parallel jobs (default uses all cores)
 # jobs = 4
 
-# Timeout for each test (in seconds)
-timeout = 300
+# Timeout for each test (as a duration)
+timeout = "5m"
 
 # Skip failed tests and continue
 skip-failed = false

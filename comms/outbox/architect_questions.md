@@ -61,4 +61,15 @@ The PRD non-functional requirements mention "<500MB memory" for the overall appl
 - What's the acceptable memory ceiling for the application during normal operation?
 - Should we track memory usage per component (decode, render, fetch)?
 
+### 3. PRD vs BACKLOG Discrepancies - Target Values
+During gap analysis, I identified conflicting target values between PRD.md and BACKLOG.md:
+
+| Metric | PRD.md | BACKLOG.md |
+|--------|--------|------------|
+| Visual regression threshold | ≤ 1.5% (line 260) | 3% (line 211) |
+| Decoder coverage target | ≥ 95% (line 330) | ≥ 90% (line 206) |
+
+- **Question**: Which values should we use? The stricter PRD targets (1.5%, 95%) or the more relaxed BACKLOG targets (3%, 90%)?
+- **Context**: The BACKLOG items for Sprint 13+ reference these targets. We need alignment before proceeding with test coverage implementation.
+
 Please advise so we can add these items to the BACKLOG with appropriate scope.

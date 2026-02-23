@@ -30,12 +30,12 @@
 mod cache;
 mod decompress;
 mod error;
-mod mock_s3;
+pub mod mock_s3;
 mod poll;
 pub mod prefetch;
 mod prefetch_service;
 mod retry;
-mod s3;
+pub mod s3;
 mod station;
 mod stations_data;
 mod types;

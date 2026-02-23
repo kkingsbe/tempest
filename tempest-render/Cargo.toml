@@ -17,3 +17,6 @@ tempest-render-core = { path = "../tempest-render-core" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
+image = "0.25"
+similar = "2"
+futures = "0.3"
