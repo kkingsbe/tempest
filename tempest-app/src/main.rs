@@ -155,7 +155,7 @@ impl Sandbox for App {
 
     fn new() -> Self {
         // Load configuration
-        let config = config::AppConfig::load();
+        let config = config::AppConfig::load_or_default();
 
         // Create a tokio runtime for async cache initialization
         let runtime = tokio::runtime::Builder::new_current_thread()

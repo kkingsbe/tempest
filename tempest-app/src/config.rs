@@ -5,6 +5,20 @@
 use directories::ProjectDirs;
 use std::fs;
 use std::path::PathBuf;
+use thiserror::Error;
+
+/// Configuration-related errors
+#[derive(Error, Debug)]
+pub enum ConfigError {
+    #[error("Failed to read config file: {0}")]
+    IoError(#[from] std::io::Error),
+    #[error("Failed to parse config: {0}")]
+    ParseError(#[from] toml::de::Error),
+    #[error("Failed to serialize config: {0}")]
+    SerializeError(#[from] toml::ser::Error),
+    #[error("Config directory not available")]
+    ConfigDirUnavailable,
+}
 
 /// Application configuration
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -21,6 +35,22 @@ pub struct AppConfig {
     pub window_width: f32,
     /// Window height in pixels (default: 800.0)
     pub window_height: f32,
+    /// Map tile source provider (default: "OpenStreetMap")
+    /// Valid values: "OpenStreetMap", "Stadia", "MapTiler"
+    pub map_tile_source: String,
+    /// Playback speed multiplier (default: 1.0)
+    /// Valid values: 1.0, 2.0, 5.0, 10.0
+    pub playback_speed: f32,
+    /// Radar overlay opacity (default: 0.5)
+    /// Range: 0.0 to 1.0
+    pub radar_overlay_opacity: f32,
+    /// Velocity units for display (default: "kts")
+    /// Valid values: "kts", "mps" (meters per second)
+    pub velocity_units: String,
+    /// Window X position (default: None)
+    pub window_x: Option<f32>,
+    /// Window Y position (default: None)
+    pub window_y: Option<f32>,
 }
 
 impl Default for AppConfig {
@@ -32,6 +62,12 @@ impl Default for AppConfig {
             polling_interval_seconds: 60,
             window_width: 1200.0,
             window_height: 800.0,
+            map_tile_source: "OpenStreetMap".to_string(),
+            playback_speed: 1.0,
+            radar_overlay_opacity: 0.5,
+            velocity_units: "kts".to_string(),
+            window_x: None,
+            window_y: None,
         }
     }
 }
@@ -48,20 +84,28 @@ impl AppConfig {
     }
 
     /// Load configuration from ~/.tempest/config.toml
-    /// If the file doesn't exist, creates a default configuration
-    pub fn load() -> Self {
-        if let Some(config_path) = Self::config_path() {
-            if config_path.exists() {
-                if let Ok(contents) = fs::read_to_string(&config_path) {
-                    if let Ok(config) = toml::from_str(&contents) {
-                        return config;
-                    }
-                }
-            }
+    /// Returns an error if the config directory is unavailable, the file cannot be read,
+    /// or the TOML cannot be parsed.
+    pub fn load() -> Result<Self, ConfigError> {
+        let config_dir = Self::config_dir().ok_or(ConfigError::ConfigDirUnavailable)?;
+
+        // Create config directory if it doesn't exist
+        if !config_dir.exists() {
+            fs::create_dir_all(&config_dir)?;
         }
 
-        // Return default config if loading fails
-        Self::default()
+        let config_path = Self::config_path().ok_or(ConfigError::ConfigDirUnavailable)?;
+
+        let contents = fs::read_to_string(&config_path)?;
+        let config = toml::from_str(&contents)?;
+
+        Ok(config)
+    }
+
+    /// Load configuration from ~/.tempest/config.toml
+    /// If loading fails (missing file, parse error, etc.), returns default configuration
+    pub fn load_or_default() -> Self {
+        Self::load().unwrap_or_default()
     }
 
     /// Save configuration to ~/.tempest/config.toml

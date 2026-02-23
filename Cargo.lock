@@ -3838,6 +3838,7 @@ dependencies = [
  "tempest-decode",
  "tempest-fetch",
  "tempest-render-core",
+ "thiserror 1.0.69",
  "tokio",
  "toml",
  "tracing",

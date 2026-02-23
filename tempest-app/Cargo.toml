@@ -11,6 +11,7 @@ chrono = { version = "0.4", features = ["serde"] }
 tokio = { version = "1", features = ["rt-multi-thread", "sync"] }
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
+thiserror = "1.0"
 tempest-decode = { path = "../tempest-decode" }
 tempest-fetch = { path = "../tempest-fetch" }
 tempest-render-core = { path = "../tempest-render-core" }

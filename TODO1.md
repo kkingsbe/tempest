@@ -1,12 +1,20 @@
-# TODO1 - Agent 1
+# Sprint 12 - Agent 1 Tasks
 
-> Sprint: 11
-> Focus Area: Config file handling
-> Last Updated: 2026-02-23
+## Task: Complete application polish - config file handling
+- 📚 SKILLS: ./skills/frontend-design/SKILL.md
+- Scope: Implement persistent config file storage
+- Status: PENDING
 
-## Tasks
+### Implementation Notes:
+- Design config file format (JSON or TOML)
+- Store in appropriate platform-specific location (~/.config/tempest/)
+- Handle config loading, validation, and saving
+- Support runtime config changes
+- Add migration handling for config version upgrades
 
-- [ ] Complete application polish - config file handling
-  - 📚 SKILLS: `./skills/rust-best-practices/SKILL.md`, `./skills/coding-guidelines/SKILL.md`
-  - Scope: Implement persistent config file storage for the Tempest application.
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+### Acceptance Criteria:
+- Config persists across application restarts
+- Invalid config gracefully handled with defaults
+- All UI components can read from config
+
+AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
