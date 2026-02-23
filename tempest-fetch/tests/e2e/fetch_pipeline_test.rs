@@ -351,6 +351,7 @@ mod data_polling {
     use std::collections::HashSet;
     use std::time::Duration;
 
+    use chrono::Datelike;
     use tempest_fetch::mock_s3::MockS3Server;
     use tempest_fetch::{PollConfig, S3Client};
 
@@ -365,22 +366,24 @@ mod data_polling {
             .await
             .expect("Failed to create mock server");
 
-        // Get today's date for the mock server registration
+        // Use today's date
         let now = chrono::Utc::now();
-        let year = now.format("%Y").to_string().parse::<i32>().unwrap();
-        let month = now.format("%m").to_string().parse::<u32>().unwrap();
-        let day = now.format("%d").to_string().parse::<u32>().unwrap();
+        let date = now.date_naive();
+        let year = date.year();
+        let month = date.month();
+        let day = date.day();
 
-        // Register mock scan list with 3 scans
+        // Register mock scan list with 3 scans using the exact format from working test
+        // Use the same format as the working test: KTLX{YYYYMMDD}_{HHMMSS}
         mock_server.register_list_scans_response(
             "KTLX",
             year,
             month,
             day,
             &[
-                "KTLX_20230615_123456",
-                "KTLX_20230615_124000",
-                "KTLX_20230615_124500",
+                "KTLX20240223_120021",
+                "KTLX20240223_120521",
+                "KTLX20240223_121021",
             ],
         );
 
@@ -389,7 +392,6 @@ mod data_polling {
             S3Client::with_base_url(mock_server.url()).expect("Failed to create S3 client");
 
         // List scans directly from the client
-        let date = now.date_naive();
         let scans = client
             .list_scans("KTLX", date)
             .await
@@ -422,13 +424,17 @@ mod data_polling {
         let month = now.format("%m").to_string().parse::<u32>().unwrap();
         let day = now.format("%d").to_string().parse::<u32>().unwrap();
 
+        // Build scan filenames using dynamic date
+        let scan1 = format!("KTLX_{}{:02}{:02}_123456", year, month, day);
+        let scan2 = format!("KTLX_{}{:02}{:02}_124000", year, month, day);
+
         // Register mock scan list with 2 scans
         mock_server.register_list_scans_response(
             "KTLX",
             year,
             month,
             day,
-            &["KTLX_20230615_123456", "KTLX_20230615_124000"],
+            &[&scan1, &scan2],
         );
 
         // Create S3 client pointing to mock server
@@ -437,7 +443,7 @@ mod data_polling {
 
         // Pre-populate a HashSet with the first scan (simulating seen scans)
         let mut seen_scans: HashSet<String> = HashSet::new();
-        seen_scans.insert("KTLX_20230615_123456".to_string());
+        seen_scans.insert(scan1.clone());
 
         // List scans from the client
         let date = now.date_naive();
@@ -463,7 +469,7 @@ mod data_polling {
         // Verify the remaining scan is the second one
         assert_eq!(
             new_scans[0].filename,
-            "KTLX_20230615_124000",
+            scan2,
             "Expected the second scan to be returned"
         );
     }
@@ -525,14 +531,16 @@ mod data_polling {
         let month = now.format("%m").to_string().parse::<u32>().unwrap();
         let day = now.format("%d").to_string().parse::<u32>().unwrap();
 
-        // First, register an error response (404 for non-existent date)
-        // Then register the successful response
+        // Build scan filename using dynamic date
+        let scan = format!("KTLX_{}{:02}{:02}_123456", year, month, day);
+
+        // Register mock scan list with 1 scan
         mock_server.register_list_scans_response(
             "KTLX",
             year,
             month,
             day,
-            &["KTLX_20230615_123456"],
+            &[&scan],
         );
 
         // Create S3 client pointing to mock server
