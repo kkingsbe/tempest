@@ -1,11 +1,14 @@
 //! Configuration management for Tempest application.
 //!
-//! Handles loading and saving configuration from/to ~/.tempest/config.toml
+//! Handles loading and saving configuration from/to ~/.config/tempest/config.toml
 
 use directories::ProjectDirs;
 use std::fs;
 use std::path::PathBuf;
 use thiserror::Error;
+
+/// Current configuration version for migration support
+const CONFIG_VERSION: u32 = 1;
 
 /// Configuration-related errors
 #[derive(Error, Debug)]
@@ -51,6 +54,8 @@ pub struct AppConfig {
     pub window_x: Option<f32>,
     /// Window Y position (default: None)
     pub window_y: Option<f32>,
+    /// Configuration version for migration support
+    pub version: u32,
 }
 
 impl Default for AppConfig {
@@ -68,22 +73,33 @@ impl Default for AppConfig {
             velocity_units: "kts".to_string(),
             window_x: None,
             window_y: None,
+            version: CONFIG_VERSION,
         }
     }
 }
 
 impl AppConfig {
-    /// Get the configuration directory path (~/.tempest)
+    /// Get the configuration directory path (~/.config/tempest)
     fn config_dir() -> Option<PathBuf> {
-        ProjectDirs::from("com", "tempest", "Tempest").map(|dirs| dirs.config_dir().to_path_buf())
+        ProjectDirs::from("com", "tempest", "tempest").map(|dirs| dirs.config_dir().to_path_buf())
     }
 
-    /// Get the configuration file path (~/.tempest/config.toml)
+    /// Get the configuration file path (~/.config/tempest/config.toml)
     fn config_path() -> Option<PathBuf> {
         Self::config_dir().map(|dir| dir.join("config.toml"))
     }
 
-    /// Load configuration from ~/.tempest/config.toml
+    /// Migrate configuration to the current version
+    /// This is a no-op for version 1, but provides infrastructure for future migrations
+    fn migrate(&mut self) {
+        if self.version < CONFIG_VERSION {
+            // TODO: Add migration logic here as needed for future versions
+            // For now, just update the version to the current config version
+            self.version = CONFIG_VERSION;
+        }
+    }
+
+    /// Load configuration from ~/.config/tempest/config.toml
     /// Returns an error if the config directory is unavailable, the file cannot be read,
     /// or the TOML cannot be parsed.
     pub fn load() -> Result<Self, ConfigError> {
@@ -97,18 +113,21 @@ impl AppConfig {
         let config_path = Self::config_path().ok_or(ConfigError::ConfigDirUnavailable)?;
 
         let contents = fs::read_to_string(&config_path)?;
-        let config = toml::from_str(&contents)?;
+        let mut config: AppConfig = toml::from_str(&contents)?;
+
+        // Apply any necessary migrations
+        config.migrate();
 
         Ok(config)
     }
 
-    /// Load configuration from ~/.tempest/config.toml
+    /// Load configuration from ~/.config/tempest/config.toml
     /// If loading fails (missing file, parse error, etc.), returns default configuration
     pub fn load_or_default() -> Self {
         Self::load().unwrap_or_default()
     }
 
-    /// Save configuration to ~/.tempest/config.toml
+    /// Save configuration to ~/.config/tempest/config.toml
     pub fn save(&self) -> Result<(), String> {
         let config_dir =
             Self::config_dir().ok_or_else(|| "Could not determine config directory".to_string())?;

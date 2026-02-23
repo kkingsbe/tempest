@@ -1,20 +1,15 @@
-# Sprint 12 - Agent 1 Tasks
+# TODO1 - Agent 1
 
-## Task: Complete application polish - config file handling
-- 📚 SKILLS: ./skills/frontend-design/SKILL.md
-- Scope: Implement persistent config file storage
-- Status: PENDING
+> Sprint: 13
+> Focus Area: Golden-value tests and Coverage
+> Last Updated: 2026-02-23
 
-### Implementation Notes:
-- Design config file format (JSON or TOML)
-- Store in appropriate platform-specific location (~/.config/tempest/)
-- Handle config loading, validation, and saving
-- Support runtime config changes
-- Add migration handling for config version upgrades
+## Tasks
 
-### Acceptance Criteria:
-- Config persists across application restarts
-- Invalid config gracefully handled with defaults
-- All UI components can read from config
-
-AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] Implement golden-value tests for Tempest decoder
+  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
+  - Scope: Verify decoded values at specific positions match expected values. Use synthetic fixtures.
+- [ ] Set up cargo-tarpaulin for coverage tracking
+  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`
+  - Scope: Configure ≥95% decoder, ≥90% render-core, ≥85% overall targets in .cargo/config
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.

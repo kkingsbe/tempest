@@ -198,3 +198,20 @@
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Cross-platform binaries, size optimization
   - **IN SPRINT 11** (TODO3)
+
+### Sprint 13+ Items
+
+- [ ] Test coverage tracking
+  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
+  - Scope: Implement coverage enforcement with targets: ≥90% decoder coverage, ≥85% overall coverage. Use cargo-tarpaulin or similar tool.
+  - **IN SPRINT 13+**
+
+- [ ] Visual regression test setup
+  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/frontend-design/SKILL.md
+  - Scope: Set up visual regression testing with golden images. PRD specifies 3% threshold for visual differences.
+  - **IN SPRINT 13+**
+
+- [ ] CI pipeline setup
+  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/coding-guidelines/SKILL.md
+  - Scope: Configure CI with Tier 1 (unit tests), Tier 2 (integration tests), Tier 3 (full test suite) as specified in PRD.
+  - **IN SPRINT 13+**

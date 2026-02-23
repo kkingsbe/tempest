@@ -46,3 +46,19 @@ The following requirements in PRD.md need clarification before implementation:
 - **Lines ~478-500**: Phase 5 defines Interactive Base Map
 - **Issue**: No explicit final Phase 6 for complete app integration
 - **Question**: Should there be a final integration phase combining Base Map + Radar + Timeline + S3 Fetch?
+
+## Question: Ambiguous PRD Requirements
+
+The following PRD requirements need clarification before they can be added to the BACKLOG:
+
+### 1. E2E Test Harness (Related to PRD Phase 3-4)
+The PRD mentions "headless test harness with programmatic input" but doesn't specify the approach. 
+- Should we use an existing library (e.g., `specta`, `insta`) or build a custom solution?
+- What specific user interactions need to be testable?
+
+### 2. Memory Profiling Target
+The PRD non-functional requirements mention "<500MB memory" for the overall application, but there's no specific target for memory profiling during development.
+- What's the acceptable memory ceiling for the application during normal operation?
+- Should we track memory usage per component (decode, render, fetch)?
+
+Please advise so we can add these items to the BACKLOG with appropriate scope.

@@ -339,3 +339,71 @@ Key Patterns:
 
 Status: All 314 tests pass, build succeeds, sprint complete (.sprint_complete created)
 
+---
+
+[Agent 3] Sprint 12 Session - 2026-02-23
+
+### Task: Implement Release Build
+- Release build infrastructure was already in place (Cargo.toml with LTO, build.sh with cross-platform support)
+- No new code needed - verified existing implementation
+- Binary size: 11.4 MB (well under 50MB target)
+- All 316 tests pass in release mode
+- Created .agent_done_3 marker file
+
+### Key Finding
+The release build configuration already met all acceptance criteria:
+- LTO enabled (fat)
+- opt-level = 3
+- codegen-units = 1
+- strip = true
+- panic = "abort"
+- build.sh supports Linux, macOS (x86_64 and ARM), Windows
+
+### Sprint Status
+- Agent 3: COMPLETE
+- Other agents: Still working (no .agent_done files yet)
+
+
+---
+
+[Agent 1] Sprint 12 - 2026-02-23 - Config File Handling
+========================================================
+
+## Completed Tasks (3/3)
+
+1. ✅ Fixed config directory to use XDG spec
+   - Changed `ProjectDirs::from("com", "tempest", "Tempest")` to lowercase
+   - Config now stored at `~/.config/tempest/` (XDG compliant)
+
+2. ✅ Added version field for migrations
+   - Added `CONFIG_VERSION: u32 = 1` constant
+   - Added `version: u32` field to `AppConfig` struct
+   - Default implementation includes version field
+
+3. ✅ Added migration handling logic
+   - Added private `migrate(&mut self)` method
+   - Modified `load()` to call `migrate()` after parsing
+   - Infrastructure ready for future migrations
+
+## Test Results
+- Full workspace build: SUCCESS
+- All 320 tests: PASSED
+- Config-specific tests: 3/3 PASSED
+
+## Cross-Agent Status
+- Agent 1 (ME): ✅ COMPLETE (.agent_done_1 created)
+- Agent 2: Pending (TODO2.md incomplete)
+- Agent 3: ✅ COMPLETE (.agent_done_3 exists)
+- Agent 4: Pending (TODO4.md incomplete)
+
+## Sprint Status
+- NOT the last agent - waiting for Agents 2 and 4
+- .sprint_complete NOT created (other agents still working)
+
+## Key Patterns
+- Breaking down config improvements into 3 atomic subtasks works well
+- Each subtask independently verifiable
+- Migration infrastructure now in place for future config version changes
+
+## Gotchas
+- The frontend-design skill was referenced in TODO1.md but was not relevant for this Rust backend config task
