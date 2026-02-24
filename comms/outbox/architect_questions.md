@@ -61,15 +61,25 @@ The PRD non-functional requirements mention "<500MB memory" for the overall appl
 - What's the acceptable memory ceiling for the application during normal operation?
 - Should we track memory usage per component (decode, render, fetch)?
 
-### 3. PRD vs BACKLOG Discrepancies - Target Values
+### 3. Visual Regression Threshold - PRD Internal Conflict
+During Gap Analysis, I found conflicting visual regression thresholds **within PRD.md itself**:
+
+| Location | Threshold Value |
+|----------|----------------|
+| PRD.md Line 260 | ≤ 1.5% |
+| PRD.md Line 211 | 3% |
+
+- **Question**: Which threshold is correct? Should visual regression tests pass at ≤1.5% or ≤3% pixel difference?
+- **Impact**: This affects test implementation in tempest-render/tests/visual_regression.rs
+
+### 4. Decoder Coverage Target - PRD vs BACKLOG
 During gap analysis, I identified conflicting target values between PRD.md and BACKLOG.md:
 
 | Metric | PRD.md | BACKLOG.md |
 |--------|--------|------------|
-| Visual regression threshold | ≤ 1.5% (line 260) | 3% (line 211) |
 | Decoder coverage target | ≥ 95% (line 330) | ≥ 90% (line 206) |
 
-- **Question**: Which values should we use? The stricter PRD targets (1.5%, 95%) or the more relaxed BACKLOG targets (3%, 90%)?
+- **Question**: Which values should we use? The stricter PRD targets (95%) or the more relaxed BACKLOG targets (90%)?
 - **Context**: The BACKLOG items for Sprint 13+ reference these targets. We need alignment before proceeding with test coverage implementation.
 
 Please advise so we can add these items to the BACKLOG with appropriate scope.

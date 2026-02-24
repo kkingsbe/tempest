@@ -412,7 +412,7 @@ impl TimelineState {
         let scan_count = self.scan_times.len();
 
         // Build tick marks and labels
-        let mut ticks_content = row![].spacing(0).align_y(iced::Alignment::End);
+        let mut ticks_content = row![].spacing(spacing::XXS).align_y(iced::Alignment::End);
 
         // Determine label frequency based on number of scans
         let label_interval = if scan_count <= 6 {
@@ -472,7 +472,7 @@ impl TimelineState {
 
             let tick_button = button(tick_with_label)
                 .on_press(TimelineMessage::TimelineClicked(tick_position))
-                .padding(0);
+                .padding(spacing::XS);
 
             ticks_content = ticks_content.push(tick_button);
         }
