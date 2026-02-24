@@ -9,6 +9,10 @@ rust-version.workspace = true
 name = "gen_fixtures"
 path = "examples/gen_fixtures.rs"
 
+[[bench]]
+name = "decode_benchmark"
+harness = false
+
 [dependencies]
 bytes = "1.5"
 anyhow = "1.0"
@@ -18,3 +22,4 @@ chrono = { version = "0.4", features = ["serde"] }
 [dev-dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+criterion = "0.5"

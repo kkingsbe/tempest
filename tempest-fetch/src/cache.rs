@@ -98,7 +98,9 @@ impl Cache {
             .map_err(|e| FetchError::cache(format!("Failed to create cache directory: {}", e)))?;
 
         // Create the LRU cache with a large capacity for the in-memory index
-        let lru = LruCache::new(NonZeroUsize::new(10000).expect("Capacity must be non-zero"));
+        let capacity = NonZeroUsize::new(10000)
+            .ok_or_else(|| FetchError::cache("Capacity must be non-zero"))?;
+        let lru = LruCache::new(capacity);
 
         Ok(Self {
             config,
@@ -158,8 +160,9 @@ impl Cache {
 
         // Update LRU index
         let mut lru = self.lru.write().await;
-        let entry = CacheEntry::new(key.to_string(), size);
-        lru.put(key.to_string(), entry);
+        let key_owned = key.to_string();
+        let entry = CacheEntry::new(key_owned.clone(), size);
+        lru.put(key_owned, entry);
 
         // Update current size
         *current_size += size;

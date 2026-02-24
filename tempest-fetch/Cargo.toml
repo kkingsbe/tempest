@@ -23,7 +23,12 @@ mockito = "1.4"
 [dev-dependencies]
 tokio-test = "0.4"
 tempfile = "3.8"
+criterion = "0.5"
 
 [[test]]
 name = "e2e"
 path = "tests/e2e/mod.rs"
+
+[[bench]]
+name = "pipeline_benchmark"
+harness = false

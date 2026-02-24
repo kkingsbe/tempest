@@ -2,6 +2,23 @@
 
 ---
 
+---
+
+[Agent 3] Sprint 22 - 2026-02-24
+- Status: COMPLETED
+- Completed DD-035: Fixed expect() in Production Code (tempest-fetch/src/cache.rs:101)
+  - Replaced .expect("Capacity must be non-zero") with ok_or_else() pattern
+  - Returns proper FetchError instead of panicking
+- Completed DD-034: Fixed Cloning in Loop (tempest-fetch/src/cache.rs:161-162)
+  - Created key_owned string once: let key_owned = key.to_string();
+  - Reused for both CacheEntry::new and lru.put calls
+- Full build: PASSED (cargo build --all)
+- Full test suite: ALL PASSED (342+ tests across all crates)
+- Created .agent_done_3 marker file
+- Other agents still working - sprint not yet complete
+
+---
+
 [Agent 2] Sprint 20 - 2026-02-24
 - Status: COMPLETED
 - Completed DD-022: Fixed Timeline TICK_HEIGHT constant (20px → 16px - 8-point compliant)

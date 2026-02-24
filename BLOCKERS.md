@@ -1,20 +1,14 @@
 # Blockers - Agent 4
 
-Date: 2026-02-22
+Date: 2026-02-24
 Status: IN PROGRESS
 
-## Blocker Status
+## CURRENT BLOCKERS
 
-### RESOLVED
-- **Bootstrap phase**: Completed by Agent 1 - ✅ RESOLVED
-- **Message Type 1 dependency**: Agent 3 blocked on Agent 2's Message Type 1 - ✅ RESOLVED (Message Type 1 is fully implemented in msg1.rs - Agent 3 can proceed)
-
-### CURRENT BLOCKERS
-
-#### Pre-existing Build Failures (tempest-app)
+### Pre-existing Build Failures (tempest-app)
 
 **Date Identified**: 2026-02-24
-**Status**: UNRESOLVED - Pre-existing issue
+**Status**: UNRESOLVED - Technical blocker
 
 **Description**: The tempest-app project has 62 compilation errors related to iced 0.13.x API compatibility. These are pre-existing build blockers that exist independently of the DD-006 and DD-007 design debt items being worked on by Agent 3.
 
@@ -27,32 +21,24 @@ Status: IN PROGRESS
 
 **Impact**: Prevents building tempest-app entirely. These errors must be resolved before any UI work can proceed.
 
-**Not Related To**: Agent 3's TODO3.md work (DD-006, DD-007) - these are separate, pre-existing issues.
-
-(NONE - all blockers resolved)
+**Resolution**: See ARCHITECTURE.md for migration strategy to upgrade to iced 0.13.x API patterns.
 
 ---
 
-## Current Tasks
+## Previously Resolved Blockers
 
-### Task 1: Write unit tests for decoder
-- Status: IN PROGRESS
-- Subtask delegated: Define decoder types and set up test infrastructure
-- Tests created: 19 unit tests passing
-- Remaining: Tests for radial data extraction depend on Agent 2's implementation
-
-### Task 2: Initial CI setup
-- Status: PENDING
-- Depends on: Decoder types being stable
-
-## Agent 4 TODO
-
-- [-] Write unit tests for decoder (in progress)
-- [ ] Initial CI setup
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_4' with the current date.
+| Blocker | Resolution Date | Notes |
+|---------|----------------|-------|
+| Bootstrap phase | 2026-02-22 | Completed by Agent 1 |
+| Message Type 1 dependency | 2026-02-22 | msg1.rs fully implemented |
 
 ---
 
-## Agent Status Entry
+## Agent Status
 
-- **[Agent 1]** - Date: 2026-02-22 - Status: COMPLETE - Reason: Other agents still working - Agent 3 has incomplete TODO3.md tasks - Next action: None - waiting for other agents
+- Agent 1: TODO1.md - Coverage Ratchet, Performance Benchmarks
+- Agent 2: TODO2.md - CI Pipeline, Visual Regression Tests  
+- Agent 3: TODO3.md - DD-035 (expect()), DD-034 (cloning)
+- Agent 4: TODO4.md - QA verification
+
+**Sprint Status**: NOT STARTED - All agent_done files deleted, waiting for new sprint

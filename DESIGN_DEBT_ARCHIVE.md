@@ -1,10 +1,13 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T15:03:00Z
-> Total Archived: 34
+> Last Updated: 2026-02-24T16:00:08Z
+> Total Archived: 37
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-036 | offline_detection.rs | Medium | SCHEDULED | expect() in production - scheduled Sprint 22 | 2026-02-24 |
+| DD-031 | timeline.rs | High | RESOLVED | Non-8-point TIMELINE_HEIGHT (56→48) - fixed | 2026-02-24 |
+| DD-024 | timeline.rs | High | RESOLVED | Non-8-point TOTAL_HEIGHT calculation - fixed | 2026-02-24 |
 | DD-030 | elevation_tilt_selector.rs | Medium | RESOLVED | Non-8-point button dimensions (60x40 → 48x48) - fixed | 2026-02-24 |
 | DD-025 | timeline.rs | High | RESOLVED | Non-8-point tick container height (10→8) - fixed | 2026-02-24 |
 | DD-022 | timeline.rs | Medium | RESOLVED | TICK_HEIGHT fixed 20→16 | 2026-02-24 |

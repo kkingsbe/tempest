@@ -14,6 +14,11 @@
   - 📚 SKILLS: ./skills/coding-guidelines/SKILL.md
   - Scope: Rename method from `as_str_lossy()` to `to_string_lossy()` in tempest-decode/src/types.rs lines 58-60. Follow Rust naming conventions (as_ for cheap refs, to_ for expensive/owned).
 
+- [ ] [DD-036] Fix expect() in Production Code - PeriodicConnectivityChecker
+  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
+  - Scope: Replace `expect()` with proper error handling in offline_detection.rs line 48. Use `ok()` on the parse result and handle the Option, or use `map_err` to convert to a more specific error type.
+  - Fix estimate: S
+
 - [ ] PRD Verification - Phase 6-8 E2E Test Coverage
   - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/iced-rs/SKILL.md
   - Scope: Verify E2E tests exist for: station selection, moment switching, elevation switching, timeline scrubbing, animated playback, historical date selection, error resilience, empty station handling

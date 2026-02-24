@@ -1,29 +1,66 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T15:09:00Z
+> Last Updated: 2026-02-24T16:00:08Z
 > Total Open: 7
 
 ---
 
-### DD-036: PeriodicConnectivityChecker - Use of `expect()` in Production Code (Medium Priority)
+### DD-039: MomentSwitcher - Non-8-point Button Dimensions (Medium Priority)
 
-- **Component:** `tempest-app/src/offline_detection.rs`
-- **Usage count:** Low (backend utility)
-- **Priority:** Medium (error handling violation)
-- **Skill violated:** `./skills/rust-best-practices/SKILL.md` — "Error Handling: Never `unwrap()`/`expect()` outside tests"
+- **Component:** `tempest-app/src/moment_switcher.rs`
+- **Usage count:** Medium (used in main app)
+- **Priority:** Medium (design system violation)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: Button dimensions should follow 8-point scale"
 - **Evidence:**
 ```rust
-TcpStream::connect_timeout(
-    &address.parse().expect("Invalid IP address"),
-    Duration::from_secs(TIMEOUT_SECS),
-)
-.is_ok()
+.width(Length::Fixed(110.0))
+.height(Length::Fixed(50.0))
 ```
-- **Line(s):** 48
-- **Expected:** Should use proper error handling instead of expect() in production code
-- **Suggested fix:** Use `ok()` on the parse result and handle the Option, or use `map_err` to convert to a more specific error type
+- **Line(s):** 196-197, 205-206
+- **Expected:** Button dimensions should use 8-point values (e.g., 48x48, 56x48, 112x48)
+- **Suggested fix:** Change button dimensions to 48x48 or 112x48 to be 8-point compliant
 - **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T15:09:00Z
+- **Queued:** 2026-02-24T16:00:08Z
+- **Status:** OPEN
+
+---
+
+### DD-038: StationSelector - Typography Scale Violation (Medium Priority)
+
+- **Component:** `tempest-app/src/station_selector.rs`
+- **Usage count:** Medium (used in main app)
+- **Priority:** Medium (design system violation)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Typography Scale: Micro is 10-11px"
+- **Evidence:**
+```rust
+text("").size(5),
+```
+- **Line(s):** 197
+- **Expected:** Typography sizes should follow the scale: Micro(10-11), Caption(12-13), Body(14-16), H3(18-20), etc.
+- **Suggested fix:** Use a valid size from the typography scale (e.g., 10 for spacing with XXS, or remove the spacer text and use proper spacing)
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T16:00:08Z
+- **Status:** OPEN
+
+---
+
+### DD-037: StationSelector - Button Padding Below Minimum (Medium Priority)
+
+- **Component:** `tempest-app/src/station_selector.rs`
+- **Usage count:** Medium (used in main app)
+- **Priority:** Medium (design system violation)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Button padding: At least 12px vertical, 24px horizontal"
+- **Evidence:**
+```rust
+.on_press(StationSelectorMessage::StationSelected(station.clone()))
+.width(Length::Fill)
+.padding(8);
+```
+- **Line(s):** 140
+- **Expected:** Button padding should be at least 12px vertical, 24px horizontal
+- **Suggested fix:** Change `.padding(8)` to `.padding([12, 24])` or use a larger padding value
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T16:00:08Z
 - **Status:** OPEN
 
 ---
@@ -105,45 +142,3 @@ pub fn as_str_lossy(&self) -> String {
 - **Queued:** 2026-02-24T14:22:00Z
 - **Status:** OPEN
 
----
-
-### DD-031: TimelineState - Non-8-point TIMELINE_HEIGHT constant (High Priority)
-
-- **Component:** `tempest-app/src/timeline.rs`
-- **Priority:** High
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: MUST use XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32), XXL(48), XXXL(64)"
-- **Evidence:**
-```rust
-const TIMELINE_HEIGHT: f32 = 56.0;
-```
-- **Line(s):** 397
-- **Expected:** Use 48 or 64 (8-point values)
-- **Suggested fix:** Change TIMELINE_HEIGHT from 56.0 to 48.0 or 64.0 to maintain 8-point grid
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T12:16:00Z
-- **Status:** RESOLVED
-
----
-
-### DD-024: TimelineState - Non-8-point TOTAL_HEIGHT calculation (High Priority)
-
-- **Component:** `tempest-app/src/timeline.rs`
-- **Priority:** High
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: MUST use XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32), XXL(48), XXXL(64)"
-- **Evidence:**
-```rust
-const TIMELINE_HEIGHT: f32 = 56.0;
-const TICK_HEIGHT: f32 = 16.0;
-const LABEL_HEIGHT: f32 = 16.0;
-const TOTAL_HEIGHT: f32 = TIMELINE_HEIGHT + TICK_HEIGHT + LABEL_HEIGHT;
-// Results in 88px (which is 8-point compliant: 88/8=11)
-// But TIMELINE_HEIGHT=56 is NOT in the 8-point scale
-```
-- **Line(s):** 400
-- **Expected:** Use 8-point values for all constants
-- **Suggested fix:** Change TIMELINE_HEIGHT from 56 to 48 or 64 to be 8-point compliant
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T12:16:00Z
-- **Status:** RESOLVED
-
----
