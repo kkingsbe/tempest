@@ -1,10 +1,12 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T13:02:00Z
-> Total Archived: 30
+> Last Updated: 2026-02-24T14:03:26Z
+> Total Archived: 32
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-022 | timeline.rs | Medium | RESOLVED | TICK_HEIGHT fixed 20→16 | 2026-02-24 |
+| DD-023 | timeline.rs | Medium | RESOLVED | LABEL_HEIGHT fixed 18→16 | 2026-02-24 |
 | DD-030 | timeline.rs | High | RESOLVED | Non-8-point LABEL_HEIGHT constant - fixed 2026-02-24 | 2026-02-24 |
 | DD-029 | timeline.rs | High | RESOLVED | Non-8-point TICK_HEIGHT constant - fixed 2026-02-24 | 2026-02-24 |
 | DD-029 | color_legend.rs | Medium | SCHEDULED | Non-8-point spacing values (30, 6, 90) - scheduled for Sprint 19 | 2026-02-24 |

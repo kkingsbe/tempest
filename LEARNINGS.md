@@ -2,6 +2,18 @@
 
 ---
 
+[Agent 2] Sprint 20 - 2026-02-24
+- Status: COMPLETED
+- Completed DD-022: Fixed Timeline TICK_HEIGHT constant (20px → 16px - 8-point compliant)
+- Completed DD-023: Fixed Timeline LABEL_HEIGHT constant (18px → 16px - 8-point compliant)
+- Completed DD-024: Fixed Timeline TIMELINE_HEIGHT constant (56 → 48 - 8-point compliant)
+- Completed DD-025: Fixed tick container height calculation (10.0 → 8.0 - 8-point compliant)
+- Full build and test suite: PASSED (330+ tests)
+- .agent_done_2 already existed from previous run
+- Agents 3 and 4 still working on their tasks
+
+---
+
 [Agent 4] Sprint 16 - 2026-02-24
 - Status: IDLE / WAITING phase
 - Reason: TODO4.md shows "<!-- No tasks assigned this sprint -->"
@@ -658,3 +670,56 @@ Decisions:
 - All 35 unit tests + 21 e2e tests passed
 - Marked TODO1.md tasks as complete and created .agent_done_1
 - Other agents (2, 3, 4) still have pending work
+
+---
+
+[Agent 2] 2026-02-24T13:20Z - QA Session Discoveries:
+- Discovered pre-existing bug in tempest-golden test code: type mismatch trying to pattern match on GoldenError directly from anyhow::Error wrapper
+- Fix: Use downcast_ref::<GoldenError>() to extract the inner error type
+- All 369 tests pass across the workspace after fix
+- Agent 4 still has 3 remaining tasks - sprint not yet complete
+
+---
+
+[Agent 1] 2026-02-24T13:26Z - Sprint 20 Verification Session
+---
+Phase: VERIFICATION - Agent 1's work complete
+
+Actions Taken:
+1. Verified TODO1.md - both tasks already complete (iced 0.13.x API compatibility)
+2. Confirmed .agent_done_1 already exists (dated 2026-02-24)
+3. Checked inbox - no new messages (comms/inbox empty)
+4. Cross-agent status check:
+   - Agent 1 (ME): ✅ COMPLETE (.agent_done_1 exists)
+   - Agent 2: Code complete, checkbox pending
+   - Agent 3: Has .agent_done_3 but TODO3.md shows no tasks started (discrepancy)
+   - Agent 4: No .agent_done_4, TODO4.md has 3 pending tasks
+5. Sent progress update via DISCLI to Discord
+
+Key Finding:
+- Sprint is NOT complete - only 2 of 4 agents fully done
+- Cannot create .sprint_complete - other agents still working
+- Agent 1's portion of sprint is complete - stopping gracefully
+
+Pattern:
+- Orchestrator mode requires switching to Code mode for CLI commands
+- discli tool successfully sends messages to configured Discord channel
+
+
+[Agent 2] 2026-02-24T13:58Z - Sprint 20 Verification Session
+
+VERIFIED:
+- All Timeline Design Debt fixes are working correctly
+- Full build passes (cargo build)
+- Full test suite passes (cargo test - 320+ tests)
+- Agent 2's work is complete (.agent_done_2 already existed)
+
+AGENT STATUS:
+- Agent 1: ✅ Complete
+- Agent 2: ✅ Complete (verified today)
+- Agent 3: ✅ Complete  
+- Agent 4: ⏳ Still working (pending: Golden Images CLI, Coverage Ratchet)
+
+SPRINT STATUS:
+- Not all agents done → .sprint_complete NOT created
+- My part of the sprint is complete

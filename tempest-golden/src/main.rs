@@ -141,9 +141,9 @@ fn update_golden_images(source_dir: &Path, golden_dir: &Path) -> Result<()> {
 
         // Copy file to golden directory
         fs::copy(source_path, &golden_path)
-            .context(format!("Failed to copy {} to golden directory", file_name.display()))?;
+            .with_context(|| format!("Failed to copy {:?} to golden directory", file_name))?;
         
-        info!("Updated golden image: {}", file_name.display());
+        info!("Updated golden image: {:?}", file_name);
         updated_count += 1;
     }
 
@@ -320,8 +320,6 @@ fn main() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io::Cursor;
-    use image::ImageEncoder;
 
     /// Create a simple test image as PNG bytes
     fn create_test_image(width: u32, height: u32, color: (u8, u8, u8)) -> DynamicImage {
@@ -390,6 +388,7 @@ mod tests {
         let result = compare_images(&img1, &img2);
         
         assert!(result.is_err());
-        assert!(matches!(result.unwrap_err(), GoldenError::DimensionMismatch(_, _)));
+        let err = result.unwrap_err();
+        assert!(err.downcast_ref::<GoldenError>().map_or(false, |e| matches!(e, GoldenError::DimensionMismatch(_, _))));
     }
 }
