@@ -4,7 +4,7 @@
 //! Target: pipeline < 500ms p95
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use std::num::NonZero;
+use std::num::NonZeroUsize;
 use std::time::Duration;
 
 /// Benchmark the full fetch pipeline (mock S3 + decode)
@@ -17,7 +17,7 @@ fn benchmark_full_pipeline(c: &mut Criterion) {
             b.iter(|| {
                 // This represents the full pipeline for a single scan
                 // In practice, this would be async code running in a tokio runtime
-                let _ = black_box(());
+                black_box(());
             });
         });
 }
@@ -31,7 +31,7 @@ fn benchmark_s3_client_creation(c: &mut Criterion) {
             b.iter(|| {
                 // Placeholder for client creation benchmark
                 // In real benchmark, this would create S3Client
-                let _ = black_box(());
+                black_box(());
             });
         });
 }
@@ -94,7 +94,7 @@ fn benchmark_cache_operations(c: &mut Criterion) {
         .sample_size(20)
         .measurement_time(Duration::from_secs(5))
         .bench_function("cache_get_hit", |b| {
-            let mut cache = LruCache::new(NonZero::new(100).unwrap());
+            let mut cache = LruCache::new(NonZeroUsize::new(100).unwrap());
             cache.put("key1", vec![1u8; 1000]);
             cache.put("key2", vec![2u8; 1000]);
 
@@ -106,7 +106,7 @@ fn benchmark_cache_operations(c: &mut Criterion) {
 
     c.benchmark_group("cache")
         .bench_function("cache_get_miss", |b| {
-            let mut cache = LruCache::new(NonZero::new(100).unwrap());
+            let mut cache = LruCache::new(NonZeroUsize::new(100).unwrap());
             cache.put("key1", vec![1u8; 1000]);
 
             b.iter(|| {

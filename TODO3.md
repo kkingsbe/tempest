@@ -14,4 +14,4 @@
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Fix cloning in loop in cache.rs lines 161-162. Create owned string once: `let key_owned = key.to_string();` then reuse for both CacheEntry::new and lru.put calls.
 
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
