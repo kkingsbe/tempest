@@ -102,7 +102,7 @@ impl ElevationTiltSelector {
 
     /// Returns the view for this component
     pub fn view(&self, theme: &Theme) -> Element<'_, ElevationTiltSelectorMessage> {
-        let p = theme.extended_palette();
+        let _p = theme.extended_palette();
 
         // Styling constants using semantic colors from theme
         // Note: Using direct colors - styling simplified for iced 0.13 compatibility

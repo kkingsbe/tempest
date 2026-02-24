@@ -12,15 +12,21 @@ mod colors {
     use iced::Color;
 
     // Accent / interactive
+    #[allow(dead_code)]
     pub const ACCENT: Color = Color::from_rgb(0.35, 0.55, 1.0);
+    #[allow(dead_code)]
     pub const ACCENT_HOVER: Color = Color::from_rgb(0.45, 0.65, 1.0);
 
     // Text colors
+    #[allow(dead_code)]
     pub const TEXT_PRIMARY: Color = Color::from_rgb(0.93, 0.93, 0.95);
+    #[allow(dead_code)]
     pub const TEXT_SECONDARY: Color = Color::from_rgb(0.6, 0.6, 0.65);
+    #[allow(dead_code)]
     pub const TEXT_MUTED: Color = Color::from_rgb(0.4, 0.4, 0.45);
 
     // For unselected state, use TEXT_MUTED or create TEXT_UNSELECTED based on skill
+    #[allow(dead_code)]
     pub const TEXT_UNSELECTED: Color = Color::from_rgb(0.4, 0.4, 0.45);
 }
 

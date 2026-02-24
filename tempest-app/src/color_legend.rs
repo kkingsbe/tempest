@@ -4,7 +4,6 @@
 //! Shows a vertical color bar with labels indicating the value range
 //! and units for the currently selected radar moment.
 
-use crate::colors;
 use crate::spacing;
 use iced::widget::{column, container, row, text};
 use iced::{Element, Length};
@@ -133,17 +132,21 @@ impl ColorLegend {
         for i in 0..num_stops {
             let value = max_val - (i as f32 * step);
             let color = ramp.get_color(value);
-            let _iced_color = iced::Color::from_rgb(
+            let iced_color = iced::Color::from_rgb(
                 color.r as f32 / 255.0,
                 color.g as f32 / 255.0,
                 color.b as f32 / 255.0,
             );
 
-            // Simple placeholder swatch
+            // Create color swatch with the actual radar color
             let swatch = container(iced::widget::Space::new(
                 Length::Fixed(30.0),
                 Length::Fixed(6.0),
-            ));
+            ))
+            .style(move |_theme| container::Style {
+                background: Some(iced::Background::Color(iced_color)),
+                ..Default::default()
+            });
 
             color_bar = color_bar.push(swatch);
         }
@@ -162,11 +165,11 @@ impl ColorLegend {
                     max_label,
                 ]
             ]
-            .spacing(4),
+            .spacing(spacing::XS),
             min_label,
         ]
-        .spacing(8)
-        .padding(12);
+        .spacing(spacing::SM)
+        .padding(spacing::MD);
 
         container(content).padding(spacing::SM).into()
     }

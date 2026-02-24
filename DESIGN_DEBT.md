@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T00:00:00Z
-> Total Open: 5
+> Last Updated: 2026-02-24T04:07:00Z
+> Total Open: 4
 
 ---
 
@@ -32,29 +32,6 @@
 
 ---
 
-### DD-013: Raw RGB colors in CacheManager
-
-- **Component:** `tempest-app/src/cache_manager.rs`
-- **Usage count:** 1 import
-- **Priority:** Medium (newly reviewed component, low usage but first review)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Color System: Semantic naming, use theme extended_palette(), never raw hex scattered"
-- **Evidence:**
-```rust
-iced::Color::from_rgb(0.2, 0.6, 1.0)   // Line 236 - blue accent
-iced::Color::from_rgb(0.7, 0.7, 0.7)   // Line 237 - gray
-iced::Color::from_rgb(0.9, 0.9, 0.9)   // Line 238 - light gray
-iced::Color::from_rgb(1.0, 0.4, 0.4)   // Line 239 - red warning
-iced::Color::from_rgb(0.4, 1.0, 0.4)   // Line 240 - green success
-```
-- **Line(s):** 236, 237, 238, 239, 240
-- **Expected:** Use theme extended_palette() with semantic color names
-- **Suggested fix:** Define semantic color constants using theme palette
-- **Fix estimate:** M (15–45 min)
-- **Queued:** 2026-02-23T22:00:00Z
-- **Status:** OPEN
-
----
-
 ### DD-014: Raw RGB colors in TimelineState
 
 - **Component:** `tempest-app/src/timeline.rs`
@@ -78,25 +55,6 @@ iced::Color::from_rgb(0.3, 0.3, 0.4)   // Line 435 - dark gray
 
 ---
 
-### DD-015: Missing padding on ColorLegend outermost container
-
-- **Component:** `tempest-app/src/color_legend.rs`
-- **Usage count:** 6 imports (highest usage)
-- **Priority:** Medium (violates Minimum Padding requirement from iced-rs skill)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Minimum Padding: Window≥32px, Section≥24px, Element≥8px, Button: 12px vertical, 24px horizontal"
-- **Evidence:**
-```rust
-container(content).into()
-```
-- **Line(s):** 170
-- **Expected:** The outermost container should have `.padding(MD)` or similar (≥8px for Element level)
-- **Suggested fix:** Add `.padding(8)` or use the spacing module constant to the container
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24
-- **Status:** OPEN
-
----
-
 ### DD-016: Missing outermost container/padding on ElevationTiltSelector
 
 - **Component:** `tempest-app/src/elevation_tilt_selector.rs`
@@ -112,6 +70,28 @@ content.into()
 - **Suggested fix:** Wrap content in `container(content).padding(MD)` or similar
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24
+- **Status:** OPEN
+
+---
+
+### DD-017: Non-8-point spacing in StationSelector
+
+- **Component:** `tempest-app/src/station_selector.rs`
+- **Usage count:** 1 import
+- **Priority:** Medium (component reviewed multiple times, spacing violations)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: MUST use XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32), XXL(48), XXXL(64)"
+- **Evidence:**
+```rust
+container(details_column).padding(15).into()  // Line 167
+...
+.spacing(5)    // Line 207
+.padding(20)   // Line 209
+```
+- **Line(s):** 167, 207, 209
+- **Expected:** Use only [2, 4, 8, 12, 16, 24, 32, 48, 64] for spacing/padding
+- **Suggested fix:** Replace 15→16(MD), 5→4(XS), 20→16(BASE) or 24(LG)
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T04:07:00Z
 - **Status:** OPEN
 
 ---

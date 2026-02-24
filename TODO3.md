@@ -1,21 +1,26 @@
 # TODO3 - Agent 3
 
-> Sprint: 15
-> Focus Area: Carry-over from Sprint 14 - ElevationTiltSelector
-> Last Updated: 2026-02-23
+> Sprint: 16
+> Focus Area: Cache UI Verification + ElevationTiltSelector Design Debt
+> Last Updated: 2026-02-24
 
 ## Tasks
 
-- [x] [DD-006] Fix raw RGB colors in ElevationTiltSelector component
+- [ ] Verify cache management UI
   - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
-  - Scope: Replace raw RGB color values with semantic color constants. See DESIGN_DEBT.md DD-006 for full context.
-  - Fix estimate: M
-  - Note: Carry-over from Sprint 14 (incomplete)
+  - Scope: Verify CacheManager functionality in tempest-app
+  - See BACKLOG.md for full context on this Sprint 11 carryover item.
+  - Fix estimate: S
 
-- [x] [DD-007] Fix spacing in ElevationTiltSelector component
+- [ ] [DD-016] Add missing outermost container/padding on ElevationTiltSelector
   - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
-  - Scope: Replace arbitrary spacing values with 8-point scale tokens. See DESIGN_DEBT.md DD-007 for full context.
-  - Fix estimate: M
-  - Note: Carry-over from Sprint 14 (incomplete)
+  - Component: `tempest-app/src/elevation_tilt_selector.rs`
+  - Scope: Wrap content in a container with padding (≥8px for Element level)
+  - Evidence:
+    ```rust
+    content.into()  // Line 178 - missing container wrapper
+    ```
+  - Suggested fix: `container(content).padding(MD)` or similar
+  - Fix estimate: S (< 15 min)
 
-- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.

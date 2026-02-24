@@ -7,7 +7,6 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::sync::Mutex;
 
-use chrono::Datelike;
 use chrono::TimeZone;
 use tempfile::TempDir;
 
@@ -26,7 +25,7 @@ use tempest_render_core::{
 /// Internal state for the test harness.
 ///
 /// Exposes internal state for assertions in tests.
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct TestHarnessState {
     /// Current loaded station ID
     pub current_station: Option<String>,
@@ -38,18 +37,6 @@ pub struct TestHarnessState {
     pub timeline_scan_count: usize,
     /// Volume scans from pipeline
     pub volume_scans: Vec<VolumeScan>,
-}
-
-impl Default for TestHarnessState {
-    fn default() -> Self {
-        Self {
-            current_station: None,
-            decoded_sweep_count: 0,
-            available_moments: Vec::new(),
-            timeline_scan_count: 0,
-            volume_scans: Vec::new(),
-        }
-    }
 }
 
 /// Test harness for the complete radar pipeline.
@@ -64,6 +51,7 @@ pub struct AppTestHarness {
     /// Cache for fetched data
     cache: Option<Cache>,
     /// Temporary cache directory
+    #[allow(dead_code)]
     cache_dir: Option<TempDir>,
     /// Internal state for assertions
     pub state: Mutex<TestHarnessState>,
@@ -233,9 +221,7 @@ fn create_synthetic_radar_data(station_id: &str, num_sweeps: usize) -> Vec<u8> {
     // Station ID (4 bytes, padded with spaces)
     let station_bytes = station_id.as_bytes();
     data.extend_from_slice(station_bytes);
-    for _ in 0..4 - station_bytes.len() {
-        data.push(b' ');
-    }
+    data.extend(vec![b' '; 4 - station_bytes.len()]);
 
     // Volume scan number (2 bytes)
     data.extend_from_slice(&1u16.to_be_bytes());
@@ -349,7 +335,7 @@ async fn test_full_pipeline_station_load() {
     harness.register_scan_data("KTLX", year, month, day, filename, scan_data);
 
     // Fetch and decode
-    let volume = harness
+    let _volume = harness
         .fetch_and_decode("KTLX", filename)
         .await
         .expect("Failed to fetch and decode");
@@ -831,7 +817,7 @@ async fn test_station_discovery_invalid_station_returns_none() {
 
     // Test case sensitivity - lowercase should work if station exists
     // but mixed case should fail
-    let mixed_case = get_station("KtLx");
+    let _mixed_case = get_station("KtLx");
     // This may or may not be found depending on implementation
     // Most station registries are case-insensitive
 
@@ -997,11 +983,11 @@ async fn test_data_polling_multiple_scans_sequential() {
         let volume = harness
             .fetch_and_decode("KTLX", filename)
             .await
-            .expect(&format!("Failed to fetch and decode {}", filename));
+            .unwrap_or_else(|_| panic!("Failed to fetch and decode {}", filename));
 
         // Verify volume has at least one sweep
         assert!(
-            volume.sweeps.len() >= 1,
+            !volume.sweeps.is_empty(),
             "Scan {} should have at least 1 sweep",
             filename
         );
@@ -1110,9 +1096,9 @@ async fn test_data_polling_timestamp_based_filtering() {
     }
 
     // Define a cutoff time (after 12:00)
-    let cutoff = chrono::Utc.with_ymd_and_hms(year, month as u32, day as u32, 12, 0, 0)
+    let _cutoff = chrono::Utc.with_ymd_and_hms(year, month, day, 12, 0, 0)
         .single()
-        .unwrap_or_else(|| chrono::Utc::now());
+        .unwrap_or_else(chrono::Utc::now);
 
     // Fetch scans and filter by timestamp
     let mut recent_scans = Vec::new();
@@ -1120,7 +1106,7 @@ async fn test_data_polling_timestamp_based_filtering() {
         let volume = harness
             .fetch_and_decode("KTLX", filename)
             .await
-            .expect(&format!("Failed to fetch {}", filename));
+            .unwrap_or_else(|_| panic!("Failed to fetch {}", filename));
 
         // Check the volume scan timestamp
         // (In real implementation, this would come from the scan metadata)
@@ -1180,7 +1166,7 @@ async fn test_timeline_maintains_correct_scan_order() {
         let volume = harness
             .fetch_and_decode("KTLX", filename)
             .await
-            .expect(&format!("Failed to fetch {}", filename));
+            .unwrap_or_else(|_| panic!("Failed to fetch {}", filename));
 
         harness.add_to_timeline(&volume);
         timeline_order.push((filename, time_str));
@@ -1190,7 +1176,7 @@ async fn test_timeline_maintains_correct_scan_order() {
     let state = harness.get_state();
 
     // Check that volume scans are in the same order as added
-    for (i, (filename, _)) in timeline_order.iter().enumerate() {
+    for (i, (_filename, _)) in timeline_order.iter().enumerate() {
         if let Some(volume) = state.volume_scans.get(i) {
             assert!(
                 volume.station_id == "KTLX",
@@ -1250,11 +1236,11 @@ async fn test_timeline_tracks_decoded_data_correctly() {
         let volume = harness
             .fetch_and_decode("KTLX", filename)
             .await
-            .expect(&format!("Failed to fetch {}", filename));
+            .unwrap_or_else(|_| panic!("Failed to fetch {}", filename));
 
         // Verify decoded volume has at least one sweep
         assert!(
-            volume.sweeps.len() >= 1,
+            !volume.sweeps.is_empty(),
             "Volume {} should have at least 1 sweep",
             filename
         );

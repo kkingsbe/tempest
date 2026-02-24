@@ -6,6 +6,7 @@ use chrono::{DateTime, Utc};
 use iced::widget::{button, container, row, text};
 use iced::Element;
 
+use crate::colors;
 use crate::spacing;
 
 /// Valid playback speeds
@@ -213,10 +214,10 @@ impl TimelineState {
     /// Renders a horizontal timeline bar with tick marks for each scan time,
     /// current position indicator, playback controls, and metadata display.
     pub fn view(&self) -> Element<'_, TimelineMessage> {
-        // Styling constants - dark theme with blue accent
-        let accent_color = iced::Color::from_rgb(0.2, 0.6, 1.0);
-        let dark_bg_light = iced::Color::from_rgb(0.12, 0.12, 0.18);
-        let text_gray = iced::Color::from_rgb(0.7, 0.7, 0.7);
+        // Styling constants - use semantic colors
+        let accent_color = colors::accent::PRIMARY;
+        let dark_bg_light = colors::surface::BG_PRIMARY;
+        let text_gray = colors::text::SECONDARY;
 
         // Calculate position (0.0 to 1.0) for current scan
         let position = if self.scan_times.is_empty() {
@@ -432,9 +433,9 @@ impl TimelineState {
             let _tick_color = if is_current {
                 accent_color
             } else if is_near_current {
-                iced::Color::from_rgb(0.4, 0.7, 1.0)
+                colors::accent::HOVER
             } else {
-                iced::Color::from_rgb(0.3, 0.3, 0.4)
+                colors::text::MUTED
             };
 
             // Build tick mark - use a simple text-based tick

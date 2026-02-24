@@ -232,13 +232,6 @@ impl CacheManager {
 
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, CacheManagerMessage> {
-        // Define text colors
-        let heading_color = iced::Color::from_rgb(0.2, 0.2, 0.2);
-        let label_color = iced::Color::from_rgb(0.5, 0.5, 0.5);
-        let value_color = iced::Color::from_rgb(0.2, 0.2, 0.2);
-        let warning_color = iced::Color::from_rgb(0.8, 0.5, 0.0);
-        let success_color = iced::Color::from_rgb(0.0, 0.6, 0.0);
-
         // Cache statistics
         let total_size = Self::format_size(self.stats.total_size);
         let entry_count = self.stats.entry_count;
@@ -485,10 +478,8 @@ mod tests {
 
     #[test]
     fn test_cache_cleared_message() {
-        let mut manager = CacheManager::default();
+        let mut manager = CacheManager { clearing: true, ..Default::default() };
         
-        // Simulate clearing in progress
-        manager.clearing = true;
         assert!(manager.is_clearing());
         
         // Handle cache cleared message
@@ -498,10 +489,8 @@ mod tests {
 
     #[test]
     fn test_cache_error_message() {
-        let mut manager = CacheManager::default();
+        let mut manager = CacheManager { clearing: true, ..Default::default() };
         
-        // Simulate clearing in progress
-        manager.clearing = true;
         assert!(manager.is_clearing());
         
         // Handle cache error message

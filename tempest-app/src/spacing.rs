@@ -16,8 +16,11 @@ pub const BASE: u16 = 16;
 /// Large: 24px
 pub const LG: u16 = 24;
 /// Extra large: 32px
+#[allow(dead_code)]
 pub const XL: u16 = 32;
 /// Extra extra large: 48px
+#[allow(dead_code)]
 pub const XXL: u16 = 48;
 /// Extra extra extra large: 64px
+#[allow(dead_code)]
 pub const XXXL: u16 = 64;

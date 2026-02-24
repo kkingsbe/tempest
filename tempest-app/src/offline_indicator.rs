@@ -62,7 +62,8 @@ impl OfflineIndicator {
     }
 
     /// Get the current online status
-    pub fn is_online(&self) -> bool {
+    #[allow(dead_code)]
+    pub fn _is_online(&self) -> bool {
         self.is_online
     }
 
@@ -70,7 +71,7 @@ impl OfflineIndicator {
     ///
     /// Shows a colored dot with "Online" or "Offline" text
     pub fn view(&self) -> Element<'_, OfflineIndicatorMessage> {
-        let (color, status_text) = if self.is_online {
+        let (_color, status_text) = if self.is_online {
             (ONLINE_COLOR, "Online")
         } else {
             (OFFLINE_COLOR, "Offline")
