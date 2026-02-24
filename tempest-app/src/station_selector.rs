@@ -6,6 +6,8 @@ use iced::widget::{button, column, container, scrollable, text, text_input, Colu
 use iced::{Alignment, Element, Length};
 use tempest_fetch::{list_all_stations, Station};
 
+use crate::spacing;
+
 /// Semantic color palette for the StationSelector component
 mod colors {
     use iced::Color;
@@ -164,7 +166,7 @@ impl StationSelector {
                 .spacing(4)
                 .align_x(Alignment::Start);
 
-                container(details_column).padding(15).into()
+                container(details_column).padding(spacing::BASE).into()
             } else {
                 // No station selected - show placeholder
                 text("Select a station to view details")
@@ -204,9 +206,9 @@ impl StationSelector {
             text("").size(15),
             details,
         ]
-        .spacing(5)
+        .spacing(spacing::XS)
         .align_x(Alignment::Start)
-        .padding(20)
+        .padding(spacing::BASE)
         .width(Length::FillPortion(1));
 
         container(scrollable(content))

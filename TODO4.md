@@ -6,7 +6,7 @@
 
 ## Tasks
 
-- [ ] [DD-017] Replace non-8-point values in StationSelector
+- [x] [DD-017] Replace non-8-point values in StationSelector
   - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
   - Component: `tempest-app/src/station_selector.rs`
   - Scope: Replace all non-8-point spacing values (lines 167, 207, 209) with 8-point scale tokens

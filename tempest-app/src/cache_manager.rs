@@ -287,7 +287,7 @@ impl CacheManager {
                     max_size_input,
                     apply_button,
                 ]
-                .spacing(10)
+                .spacing(8)
                 .align_y(Alignment::Center),
                 text(format!("Current limit: {} MB", self.current_max_size_mb))
                     .size(12),
@@ -313,19 +313,19 @@ impl CacheManager {
                 text("Total Size:"),
                 text(total_size.clone()),
             ]
-            .spacing(10)
+            .spacing(8)
             .align_y(Alignment::Center),
             row![
                 text("Entries:"),
                 text(entry_count.to_string()),
             ]
-            .spacing(10)
+            .spacing(8)
             .align_y(Alignment::Center),
             row![
                 text("Usage:"),
                 text(format!("{:.1}%", usage_percent)),
             ]
-            .spacing(10)
+            .spacing(8)
             .align_y(Alignment::Center),
             text("").size(15),
             // Clear cache section
@@ -337,7 +337,7 @@ impl CacheManager {
             settings_toggle,
             settings_panel,
         ]
-        .spacing(5)
+        .spacing(8)
         .align_x(Alignment::Start)
         .padding(20)
         .width(Length::FillPortion(1));
