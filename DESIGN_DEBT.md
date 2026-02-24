@@ -1,73 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-23T23:05:00Z
-> Total Open: 6
-
----
-
-### DD-001: Deprecated Sandbox API
-
-- **Component:** `tempest-app/src/main.rs`
-- **Usage count:** Application entry point - 1 use
-- **Priority:** High
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "The older trait-based `Sandbox`/`Application` API (≤0.12) is deprecated — do NOT use it." (line 7)
-- **Evidence:**
-```rust
-impl Sandbox for App {
-    type Message = Message;
-```
-- **Line(s):** 153
-- **Expected:** Use the modern function-based API (iced 0.13+) with `fn run()` and separate `update`/`view` functions
-- **Suggested fix:** Migrate from `Sandbox` trait to the function-based `run()` API with explicit `update` and `view` functions
-- **Fix estimate:** L (45+ min)
-- **Queued:** 2026-02-23
-- **Status:** SCHEDULED for Sprint 15
-
----
-
-### DD-002: Arbitrary Spacing Values
-
-- **Component:** `tempest-app/src/timeline.rs`
-- **Usage count:** 1 import in main.rs
-- **Priority:** High
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "ALL spacing values in your application MUST come from this scale" (8-point scale, lines 21-31)
-- **Evidence:**
-```rust
-        .spacing(12)
-        .align_items(iced::Alignment::Start),
-]
-.spacing(8)
-.align_items(iced::Alignment::Center);
-```
-- **Line(s):** 262, 271, 276, 282
-- **Expected:** Use spacing tokens: XS=4, SM=8, MD=12, BASE=16, LG=24. Values like 12 are borderline, but inconsistent mixing of values like 4, 5, 8, 12, 15, 20 violates the principle
-- **Suggested fix:** Define a `mod spacing` with tokens and use throughout: `.spacing(spacing::SM)` instead of `.spacing(8)`
-- **Fix estimate:** M (15–45 min)
-- **Queued:** 2026-02-23
-- **Status:** SCHEDULED for Sprint 15
-
----
-
-### DD-004: Raw RGB Color Values in ColorLegend
-
-- **Component:** `tempest-app/src/color_legend.rs`
-- **Usage count:** 6 (from grep analysis)
-- **Priority:** High
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — Color system: "Semantic naming (accent, danger, success) — never raw hex values"
-- **Evidence:**
-```rust
-let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
-let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
-let dark_bg = iced::Background::Color(iced::Color::from_rgb(0.1, 0.1, 0.15));
-// ...
-color: iced::Color::from_rgb(0.15, 0.15, 0.2),
-```
-- **Line(s):** 113, 114, 115, 186
-- **Expected:** Use semantic color constants like `colors::ACCENT`, `colors::TEXT_SECONDARY`, `colors::BG_PRIMARY`
-- **Suggested fix:** Create a colors module with semantic color constants and replace all raw RGB values
-- **Fix estimate:** M (15–45 min)
-- **Queued:** 2026-02-23T19:56:00Z
-- **Status:** SCHEDULED for Sprint 15
+> Last Updated: 2026-02-24T00:00:00Z
+> Total Open: 5
 
 ---
 
@@ -140,6 +74,44 @@ iced::Color::from_rgb(0.3, 0.3, 0.4)   // Line 435 - dark gray
 - **Suggested fix:** Define semantic color constants using theme palette
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23T22:00:00Z
+- **Status:** OPEN
+
+---
+
+### DD-015: Missing padding on ColorLegend outermost container
+
+- **Component:** `tempest-app/src/color_legend.rs`
+- **Usage count:** 6 imports (highest usage)
+- **Priority:** Medium (violates Minimum Padding requirement from iced-rs skill)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Minimum Padding: Window≥32px, Section≥24px, Element≥8px, Button: 12px vertical, 24px horizontal"
+- **Evidence:**
+```rust
+container(content).into()
+```
+- **Line(s):** 170
+- **Expected:** The outermost container should have `.padding(MD)` or similar (≥8px for Element level)
+- **Suggested fix:** Add `.padding(8)` or use the spacing module constant to the container
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24
+- **Status:** OPEN
+
+---
+
+### DD-016: Missing outermost container/padding on ElevationTiltSelector
+
+- **Component:** `tempest-app/src/elevation_tilt_selector.rs`
+- **Usage count:** 5 imports (second highest)
+- **Priority:** Medium (violates Minimum Padding requirement from iced-rs skill)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Minimum Padding: Window≥32px, Section≥24px, Element≥8px"
+- **Evidence:**
+```rust
+content.into()
+```
+- **Line(s):** 178
+- **Expected:** Content should be wrapped in a container with padding (≥8px for Element level)
+- **Suggested fix:** Wrap content in `container(content).padding(MD)` or similar
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24
 - **Status:** OPEN
 
 ---
