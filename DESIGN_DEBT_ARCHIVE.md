@@ -1,11 +1,16 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T16:00:08Z
-> Total Archived: 37
+> Last Updated: 2026-02-24T18:00:06Z
+> Total Archived: 41
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
-| DD-036 | offline_detection.rs | Medium | SCHEDULED | expect() in production - scheduled Sprint 22 | 2026-02-24 |
+| DD-040 | cache_manager.rs | Low | RESOLVED | Non-8-point padding (10) - fixed | 2026-02-24 |
+| DD-035 | cache.rs | Medium | RESOLVED | expect() in production - fixed (now uses ok_or_else) | 2026-02-24 |
+| DD-034 | cache.rs | Medium | RESOLVED | Cloning in loop - fixed (only calls to_string once) | 2026-02-24 |
+| DD-033 | types.rs | Medium | RESOLVED | String vs &str - fixed (now accepts &str) | 2026-02-24 |
+| DD-032 | types.rs | Medium | RESOLVED | as_str_lossy naming - fixed (now named to_string_lossy) | 2026-02-24 |
+| DD-036 | offline_detection.rs | Medium | RESOLVED | expect() in production - fixed (replaced with proper error handling) | 2026-02-24 |
 | DD-031 | timeline.rs | High | RESOLVED | Non-8-point TIMELINE_HEIGHT (56→48) - fixed | 2026-02-24 |
 | DD-024 | timeline.rs | High | RESOLVED | Non-8-point TOTAL_HEIGHT calculation - fixed | 2026-02-24 |
 | DD-030 | elevation_tilt_selector.rs | Medium | RESOLVED | Non-8-point button dimensions (60x40 → 48x48) - fixed | 2026-02-24 |

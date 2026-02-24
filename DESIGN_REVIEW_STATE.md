@@ -1,7 +1,7 @@
 # Design Review State
 
-> Last Updated: 2026-02-24T17:00:52Z
-> Total runs completed: 21
+> Last Updated: 2026-02-24T18:00:06Z
+> Total runs completed: 22
 
 ## Component Registry
 
@@ -9,30 +9,26 @@
 | --------- | ---- | ----------- | -------------- | ------------- | --------------- |
 | App (main.rs) | tempest-app/src/main.rs | 1 | 3 | 2026-02-24 | none |
 | TimelineState | tempest-app/src/timeline.rs | 1 | 7 | 2026-02-24 | none |
-| StationSelector | tempest-app/src/station_selector.rs | 1 | 7 | 2026-02-24 | DD-037, DD-038 |
-| ColorLegend | tempest-app/src/color_legend.rs | 6 | 5 | 2026-02-24 | DD-029 |
+| StationSelector | tempest-app/src/station_selector.rs | 1 | 8 | 2026-02-24 | DD-037, DD-038 |
+| ColorLegend | tempest-app/src/color_legend.rs | 6 | 5 | 2026-02-24 | none |
 | ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5 | 6 | 2026-02-24 | none |
-| MomentSwitcher | tempest-app/src/moment_switcher.rs | 1 | 6 | 2026-02-24 | DD-039 |
+| MomentSwitcher | tempest-app/src/moment_switcher.rs | 1 | 7 | 2026-02-24 | DD-039 |
 | OfflineIndicator | tempest-app/src/offline_indicator.rs | 1 | 5 | 2026-02-24 | none |
-| CacheManager | tempest-app/src/cache_manager.rs | 1 | 7 | 2026-02-24 | DD-020 |
+| CacheManager | tempest-app/src/cache_manager.rs | 1 | 8 | 2026-02-24 | DD-040 |
 | Config | tempest-app/src/config.rs | 0 | 1 | 2026-02-24 | none |
-| DecodeTypes | tempest-decode/src/types.rs | High | 1 | 2026-02-24 | DD-032, DD-033 |
-| FetchCache | tempest-fetch/src/cache.rs | High | 1 | 2026-02-24 | DD-034, DD-035 |
+| DecodeTypes | tempest-decode/src/types.rs | High | 1 | 2026-02-24 | none |
+| FetchCache | tempest-fetch/src/cache.rs | High | 1 | 2026-02-24 | none |
 | OfflineDetection | tempest-app/src/offline_detection.rs | 1 | 1 | 2026-02-24 | none |
 
 ## Recent Runs (last 20 only)
 
 | Run | Date | Components Reviewed | New Debt Items | False Positives |
 | --- | ---- | ------------------- | -------------- | ---------------- |
+| 22 | 2026-02-24 | CacheManager, ColorLegend | DD-040 | 0 |
 | 21 | 2026-02-24 | ElevationTiltSelector, OfflineIndicator, StationSelector, MomentSwitcher | 0 | 0 |
 | 20 | 2026-02-24 | StationSelector, MomentSwitcher | DD-037, DD-038, DD-039 | 0 |
 | 19 | 2026-02-24 | CacheManager, ColorLegend, OfflineDetection | DD-036 | 0 |
 | 18 | 2026-02-24 | DecodeTypes, FetchCache | DD-032, DD-033, DD-034, DD-035 | 2 |
-| 17 | 2026-02-24 | CacheManager, OfflineIndicator | 0 | 0 |
-| 16 | 2026-02-24 | StationSelector, TimelineState | DD-024, DD-025, DD-031 | 0 |
-| 15 | 2026-02-24 | ColorLegend, ElevationTiltSelector | DD-029, DD-030 | 0 |
-| 14 | 2026-02-24 | MomentSwitcher, CacheManager | DD-026, DD-027, DD-028 | 2 |
-| 13 | 2026-02-24 | TimelineState, Config | DD-022, DD-023, DD-024, DD-025 | 0 |
 
 ## Violation Counts (for worst-violations selection)
 
@@ -40,7 +36,8 @@
 | --------- | ---------------- | ---------- |
 | StationSelector | 5 | 2 |
 | MomentSwitcher | 3 | 1 |
-| CacheManager | 4 | 1 |
-| ColorLegend | 4 | 1 |
-| DecodeTypes | 2 | 2 |
-| FetchCache | 2 | 2 |
+| CacheManager | 5 | 1 |
+| ColorLegend | 4 | 0 |
+| DecodeTypes | 2 | 0 |
+| FetchCache | 2 | 0 |
+

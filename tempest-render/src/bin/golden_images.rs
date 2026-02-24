@@ -150,6 +150,7 @@ fn compare_images(
 
 /// Generate a simple test pattern for verifying the rendering pipeline.
 /// This creates a simple radial gradient pattern.
+#[allow(dead_code)]
 fn generate_test_pattern(width: u32, height: u32) -> Vec<u8> {
     let center_x = width as f32 / 2.0;
     let center_y = height as f32 / 2.0;
