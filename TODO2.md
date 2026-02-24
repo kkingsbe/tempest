@@ -6,20 +6,23 @@
 
 ## Tasks
 
-- [ ] Verify cache management UI
+- [x] Verify cache management UI
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Verify cache_manager.rs UI renders correctly - verify CacheManager functionality, size display, manual clear, configurable limit work as expected
   - **SPRINT 18**
+  - Status: VERIFIED - 16 tests pass, all functionality implemented
 
-- [ ] Visual regression test setup
+- [x] Visual regression test setup
   - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/frontend-design/SKILL.md
   - Scope: Set up visual regression testing with golden images. PRD specifies **1.5% threshold** (not 3%) for visual differences. Fix threshold to 1.5%.
   - **SPRINT 18**
+  - Status: ALREADY CORRECT - MAX_DIFF_THRESHOLD = 0.015 (1.5%)
 
-- [ ] [DD-019] Fix ColorLegend — spacing(0) violation
+- [x] [DD-019] Fix ColorLegend — spacing(0) violation
   - 📚 SKILLS: ./skills/iced-rs.md, ./skills/coding-guidelines.md
   - Scope: Replace spacing(0) with spacing(XXS=2) at line 129 in tempest-app/src/color_legend.rs.
   - Fix estimate: S
+  - Status: ALREADY FIXED - Uses spacing::XXS (2px)
 
 ## QA
 
