@@ -6,6 +6,8 @@ use chrono::{DateTime, Utc};
 use iced::widget::{button, container, row, text};
 use iced::Element;
 
+use crate::spacing;
+
 /// Valid playback speeds
 const VALID_SPEEDS: [u32; 4] = [1, 2, 5, 10];
 
@@ -255,33 +257,33 @@ impl TimelineState {
                 .size(14)
                 .font(iced::font::Font::MONOSPACE),
             text("•").size(14),
-            text(&current_time_str)
+            text(current_time_str)
                 .size(16)
                 .font(iced::font::Font::MONOSPACE),
         ]
-        .spacing(12)
-        .align_items(iced::Alignment::Center);
+        .spacing(spacing::MD)
+        .align_y(iced::Alignment::Center);
 
         // Build footer with scan count and VCP info
         let footer = row![
-            text(&scan_count_str).size(12),
+            text(scan_count_str).size(12),
             text("•").size(12),
             text(format!("Range: {}h", self.time_range_hours)).size(12),
         ]
-        .spacing(12)
-        .align_items(iced::Alignment::Center);
+        .spacing(spacing::MD)
+        .align_y(iced::Alignment::Center);
 
         // Assemble the full layout with controls row
         let controls_row = row![playback_controls, time_range_controls]
-            .spacing(20)
-            .align_items(iced::Alignment::Center);
+            .spacing(spacing::LG)
+            .align_y(iced::Alignment::Center);
 
         let content = container(
             iced::widget::column![header, timeline_bar, controls_row, footer]
-                .spacing(8)
-                .align_items(iced::Alignment::Start),
+                .spacing(spacing::SM)
+                .align_x(iced::Alignment::Start),
         )
-        .padding(16)
+        .padding(spacing::BASE)
         .width(iced::Length::Fill)
         .into();
 
@@ -306,28 +308,28 @@ impl TimelineState {
                 .font(iced::font::Font::MONOSPACE),
         )
         .on_press(TimelineMessage::PlayPauseToggled)
-        .padding(8);
+        .padding(spacing::SM);
 
         // Step backward button
         let step_back_btn = button(text("⏮").size(14))
             .on_press(TimelineMessage::StepBackward)
-            .padding(8);
+            .padding(spacing::SM);
 
         // Step forward button
         let step_forward_btn = button(text("⏭").size(14))
             .on_press(TimelineMessage::StepForward)
-            .padding(8);
+            .padding(spacing::SM);
 
         // Speed label
         let speed_label = text("Speed:").size(12).font(iced::font::Font::MONOSPACE);
 
         // Build speed buttons row
-        let mut speed_buttons_row = row![].spacing(2);
+        let mut speed_buttons_row = row![].spacing(spacing::XXS);
         for &speed in &VALID_SPEEDS {
             let _is_selected = self.playback_speed == speed;
             let btn = button(text(format!("{}x", speed)).size(11))
                 .on_press(TimelineMessage::SpeedChanged(speed))
-                .padding(4);
+                .padding(spacing::XS);
             speed_buttons_row = speed_buttons_row.push(btn);
         }
 
@@ -339,7 +341,7 @@ impl TimelineState {
         };
         let loop_btn = button(text(loop_text).size(12))
             .on_press(TimelineMessage::LoopToggled)
-            .padding(6);
+            .padding(spacing::XS);
 
         // Combine all controls
         row![
@@ -350,8 +352,8 @@ impl TimelineState {
             speed_buttons_row,
             loop_btn,
         ]
-        .spacing(8)
-        .align_items(iced::Alignment::Center)
+        .spacing(spacing::SM)
+        .align_y(iced::Alignment::Center)
         .into()
     }
 
@@ -364,7 +366,7 @@ impl TimelineState {
         let range_label = text("Range:").size(12).font(iced::font::Font::MONOSPACE);
 
         // Build range buttons row
-        let mut range_buttons_row = row![].spacing(2);
+        let mut range_buttons_row = row![].spacing(spacing::XXS);
         for &hours in &VALID_TIME_RANGES {
             let is_selected = self.time_range_hours == hours;
             let btn_text = if is_selected {
@@ -374,13 +376,13 @@ impl TimelineState {
             };
             let btn = button(text(btn_text).size(12))
                 .on_press(TimelineMessage::TimeRangeChanged(hours))
-                .padding(6);
+                .padding(spacing::XS);
             range_buttons_row = range_buttons_row.push(btn);
         }
 
         row![range_label, range_buttons_row]
-            .spacing(8)
-            .align_items(iced::Alignment::Center)
+            .spacing(spacing::SM)
+            .align_y(iced::Alignment::Center)
             .into()
     }
 
@@ -401,15 +403,15 @@ impl TimelineState {
             return container(text("No scan times available").size(14))
                 .width(iced::Length::Fill)
                 .height(iced::Length::Fixed(TOTAL_HEIGHT))
-                .center_x()
-                .center_y()
+                .center_x(iced::Length::Fill)
+                .center_y(iced::Length::Fill)
                 .into();
         }
 
         let scan_count = self.scan_times.len();
 
         // Build tick marks and labels
-        let mut ticks_content = row![].spacing(0).align_items(iced::Alignment::End);
+        let mut ticks_content = row![].spacing(0).align_y(iced::Alignment::End);
 
         // Determine label frequency based on number of scans
         let label_interval = if scan_count <= 6 {
@@ -448,12 +450,12 @@ impl TimelineState {
             // Add label below tick at intervals
             let tick_with_label = if i % label_interval == 0 || is_current {
                 let label_text = scan_time.format("%H:%M").to_string();
-                let label = text(&label_text).size(10).font(iced::font::Font::MONOSPACE);
+                let label = text(label_text).size(10).font(iced::font::Font::MONOSPACE);
 
                 container(
                     iced::widget::column![tick, label]
-                        .spacing(2)
-                        .align_items(iced::Alignment::Center),
+                        .spacing(spacing::XXS)
+                        .align_x(iced::Alignment::Center),
                 )
                 .height(iced::Length::Fixed(TICK_HEIGHT + LABEL_HEIGHT + 10.0))
             } else {
@@ -480,7 +482,7 @@ impl TimelineState {
                 // Tick marks
                 ticks_content,
             ]
-            .spacing(4),
+            .spacing(spacing::XS),
         )
         .width(iced::Length::Fill)
         .height(iced::Length::Fixed(TOTAL_HEIGHT))

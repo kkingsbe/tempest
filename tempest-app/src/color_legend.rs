@@ -4,6 +4,8 @@
 //! Shows a vertical color bar with labels indicating the value range
 //! and units for the currently selected radar moment.
 
+use crate::colors;
+use crate::spacing;
 use iced::widget::{column, container, row, text};
 use iced::{Element, Length};
 
@@ -109,20 +111,14 @@ impl ColorLegend {
 
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, ColorLegendMessage> {
-        // Styling constants
-        let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
-        let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
-        let dark_bg = iced::Background::Color(iced::Color::from_rgb(0.1, 0.1, 0.15));
-
         let (name, unit, min_val, max_val) = self.get_label();
         let ramp = self.get_color_ramp();
 
         // Build the title row
         let title = if unit.is_empty() {
-            text(&name).style(heading_style).size(14)
+            text(name.clone()).size(14)
         } else {
             text(format!("{} ({})", name, unit))
-                .style(heading_style)
                 .size(14)
         };
 
@@ -137,29 +133,24 @@ impl ColorLegend {
         for i in 0..num_stops {
             let value = max_val - (i as f32 * step);
             let color = ramp.get_color(value);
-            let iced_color = iced::Color::from_rgb(
+            let _iced_color = iced::Color::from_rgb(
                 color.r as f32 / 255.0,
                 color.g as f32 / 255.0,
                 color.b as f32 / 255.0,
             );
 
+            // Simple placeholder swatch
             let swatch = container(iced::widget::Space::new(
                 Length::Fixed(30.0),
                 Length::Fixed(6.0),
-            ))
-            .style(move |_theme: &iced::Theme| -> container::Appearance {
-                container::Appearance {
-                    background: Some(iced::Background::Color(iced_color)),
-                    ..Default::default()
-                }
-            });
+            ));
 
             color_bar = color_bar.push(swatch);
         }
 
         // Build min/max labels
-        let min_label = text(format!("{:.0}", min_val)).style(label_style).size(11);
-        let max_label = text(format!("{:.0}", max_val)).style(label_style).size(11);
+        let min_label = text(format!("{:.0}", min_val)).size(11);
+        let max_label = text(format!("{:.0}", max_val)).size(11);
 
         // Create the legend content
         let content = column![
@@ -177,19 +168,6 @@ impl ColorLegend {
         .spacing(8)
         .padding(12);
 
-        // Wrap in a dark container
-        container(content)
-            .style(move |_theme: &iced::Theme| -> container::Appearance {
-                container::Appearance {
-                    background: Some(dark_bg),
-                    border: iced::Border {
-                        color: iced::Color::from_rgb(0.15, 0.15, 0.2),
-                        width: 1.0,
-                        radius: (8.0).into(),
-                    },
-                    ..Default::default()
-                }
-            })
-            .into()
+        container(content).padding(spacing::SM).into()
     }
 }

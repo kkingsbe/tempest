@@ -110,9 +110,9 @@ impl StationSelector {
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, StationSelectorMessage> {
         // Station label styling
-        let label_style = iced::theme::Text::Color(colors::TEXT_SECONDARY);
-        let value_style = iced::theme::Text::Color(colors::TEXT_PRIMARY);
-        let heading_style = iced::theme::Text::Color(colors::ACCENT);
+        let label_style = colors::TEXT_SECONDARY;
+        let value_style = colors::TEXT_PRIMARY;
+        let heading_style = colors::ACCENT;
 
         // Create the filter input
         let filter_input = text_input(
@@ -131,11 +131,11 @@ impl StationSelector {
                 .as_ref()
                 .is_some_and(|s| s.id == station.id);
 
-            let btn = button(text(format!("{} - {}", station.id, station.name)).style(
+            let btn = button(text(format!("{} - {}", station.id, station.name)).color(
                 if is_selected {
-                    iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0))
+                    iced::Color::from_rgb(0.2, 0.6, 1.0)
                 } else {
-                    iced::theme::Text::Color(iced::Color::from_rgb(0.8, 0.8, 0.8))
+                    iced::Color::from_rgb(0.8, 0.8, 0.8)
                 },
             ))
             .on_press(StationSelectorMessage::StationSelected(station.clone()))
@@ -151,24 +151,24 @@ impl StationSelector {
         let details: Element<'_, StationSelectorMessage> =
             if let Some(ref station) = self.selected_station {
                 let details_column = column![
-                    text("Station Details").style(heading_style).size(16),
-                    text("ID: ").style(label_style),
-                    text(&station.id).style(value_style),
-                    text("Name: ").style(label_style),
-                    text(&station.name).style(value_style),
-                    text("Location: ").style(label_style),
-                    text(format!("{:.4}°, {:.4}°", station.lat, station.lon)).style(value_style),
-                    text("Elevation: ").style(label_style),
-                    text(format!("{:.0} m", station.elevation_m)).style(value_style),
+                    text("Station Details").color(heading_style).size(16),
+                    text("ID: ").color(label_style),
+                    text(&station.id).color(value_style),
+                    text("Name: ").color(label_style),
+                    text(&station.name).color(value_style),
+                    text("Location: ").color(label_style),
+                    text(format!("{:.4}°, {:.4}°", station.lat, station.lon)).color(value_style),
+                    text("Elevation: ").color(label_style),
+                    text(format!("{:.0} m", station.elevation_m)).color(value_style),
                 ]
                 .spacing(4)
-                .align_items(Alignment::Start);
+                .align_x(Alignment::Start);
 
                 container(details_column).padding(15).into()
             } else {
                 // No station selected - show placeholder
                 text("Select a station to view details")
-                    .style(label_style)
+                    .color(label_style)
                     .into()
             };
 
@@ -189,15 +189,15 @@ impl StationSelector {
         // Build the main layout
         let content = column![
             text("NEXRAD Station Selection")
-                .style(heading_style)
+                .color(heading_style)
                 .size(20),
             text("").size(10),
-            text("Search").style(label_style).size(14),
+            text("Search").color(label_style).size(14),
             filter_input,
-            text(&count_text)
-                .style(iced::theme::Text::Color(iced::Color::from_rgb(
+            text(count_text.clone())
+                .color(iced::Color::from_rgb(
                     0.5, 0.5, 0.5
-                )))
+                ))
                 .size(12),
             text("").size(5),
             station_list,
@@ -205,7 +205,7 @@ impl StationSelector {
             details,
         ]
         .spacing(5)
-        .align_items(Alignment::Start)
+        .align_x(Alignment::Start)
         .padding(20)
         .width(Length::FillPortion(1));
 

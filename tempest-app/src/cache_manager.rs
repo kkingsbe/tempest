@@ -232,12 +232,12 @@ impl CacheManager {
 
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, CacheManagerMessage> {
-        // Styling constants (matching other components)
-        let heading_style = iced::theme::Text::Color(iced::Color::from_rgb(0.2, 0.6, 1.0));
-        let label_style = iced::theme::Text::Color(iced::Color::from_rgb(0.7, 0.7, 0.7));
-        let value_style = iced::theme::Text::Color(iced::Color::from_rgb(0.9, 0.9, 0.9));
-        let warning_style = iced::theme::Text::Color(iced::Color::from_rgb(1.0, 0.4, 0.4));
-        let success_style = iced::theme::Text::Color(iced::Color::from_rgb(0.4, 1.0, 0.4));
+        // Define text colors
+        let heading_color = iced::Color::from_rgb(0.2, 0.2, 0.2);
+        let label_color = iced::Color::from_rgb(0.5, 0.5, 0.5);
+        let value_color = iced::Color::from_rgb(0.2, 0.2, 0.2);
+        let warning_color = iced::Color::from_rgb(0.8, 0.5, 0.0);
+        let success_color = iced::Color::from_rgb(0.0, 0.6, 0.0);
 
         // Cache statistics
         let total_size = Self::format_size(self.stats.total_size);
@@ -253,12 +253,12 @@ impl CacheManager {
 
         // Clear cache button
         let clear_button = if self.clearing {
-            button(text("Clearing...").style(warning_style))
+            button(text("Clearing..."))
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
                 .padding(10)
         } else {
-            button(text("Clear Cache").style(value_style))
+            button(text("Clear Cache"))
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
                 .padding(10)
@@ -270,7 +270,7 @@ impl CacheManager {
         } else {
             "▼ Show Settings"
         };
-        let settings_toggle = button(text(settings_toggle_text).style(label_style))
+        let settings_toggle = button(text(settings_toggle_text))
             .on_press(CacheManagerMessage::ToggleSettings)
             .padding(5);
 
@@ -281,26 +281,24 @@ impl CacheManager {
                 .width(Length::Fixed(150.0))
                 .padding(8);
 
-            let apply_button = button(text("Apply").style(value_style))
+            let apply_button = button(text("Apply"))
                 .on_press(CacheManagerMessage::ApplyMaxSize)
                 .width(Length::Fixed(80.0))
                 .padding(8);
 
             let settings_content = column![
-                text("Cache Settings").style(heading_style).size(14),
+                text("Cache Settings").size(14),
                 text("").size(5),
                 row![
-                    text("Maximum Size (MB):").style(label_style),
+                    text("Maximum Size (MB):"),
                     max_size_input,
                     apply_button,
                 ]
                 .spacing(10)
-                .align_items(Alignment::Center),
+                .align_y(Alignment::Center),
                 text(format!("Current limit: {} MB", self.current_max_size_mb))
-                    .style(label_style)
                     .size(12),
                 text("Note: Cache limit requires app restart to take effect")
-                    .style(label_style)
                     .size(10),
             ]
             .spacing(8)
@@ -313,38 +311,32 @@ impl CacheManager {
 
         // Build main content
         let content = column![
-            text("Cache Management").style(heading_style).size(20),
+            text("Cache Management").size(20),
             text("").size(10),
             // Statistics section
-            text("Current Statistics").style(heading_style).size(16),
+            text("Current Statistics").size(16),
             text("").size(5),
             row![
-                text("Total Size:").style(label_style),
-                text(&total_size).style(value_style),
+                text("Total Size:"),
+                text(total_size.clone()),
             ]
             .spacing(10)
-            .align_items(Alignment::Center),
+            .align_y(Alignment::Center),
             row![
-                text("Entries:").style(label_style),
-                text(entry_count.to_string()).style(value_style),
+                text("Entries:"),
+                text(entry_count.to_string()),
             ]
             .spacing(10)
-            .align_items(Alignment::Center),
+            .align_y(Alignment::Center),
             row![
-                text("Usage:").style(label_style),
-                text(format!("{:.1}%", usage_percent)).style(if usage_percent > 90.0 {
-                    warning_style
-                } else if usage_percent > 70.0 {
-                    label_style
-                } else {
-                    success_style
-                }),
+                text("Usage:"),
+                text(format!("{:.1}%", usage_percent)),
             ]
             .spacing(10)
-            .align_items(Alignment::Center),
+            .align_y(Alignment::Center),
             text("").size(15),
             // Clear cache section
-            text("Actions").style(heading_style).size(16),
+            text("Actions").size(16),
             text("").size(5),
             clear_button,
             text("").size(15),
@@ -353,7 +345,7 @@ impl CacheManager {
             settings_panel,
         ]
         .spacing(5)
-        .align_items(Alignment::Start)
+        .align_x(Alignment::Start)
         .padding(20)
         .width(Length::FillPortion(1));
 

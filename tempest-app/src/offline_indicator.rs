@@ -79,16 +79,15 @@ impl OfflineIndicator {
         // Create the indicator row with a colored dot and text
         let indicator = row![
             // Colored dot indicator
-            container(text("●").size(16).style(iced::theme::Text::Color(color)))
+            container(text("●").size(16))
                 .width(Length::Shrink)
-                .padding([0, 8, 0, 0]),
+                .padding(8),
             // Status text
             text(status_text)
-                .size(14)
-                .style(iced::theme::Text::Color(color)),
+                .size(14),
         ]
         .spacing(4)
-        .align_items(iced::Alignment::Center);
+        .align_y(iced::Alignment::Center);
 
         // Wrap in a container positioned at top-right
         container(indicator)

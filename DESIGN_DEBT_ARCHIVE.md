@@ -1,10 +1,13 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-23T23:05:00.000Z
-> Total Archived: 8
+> Last Updated: 2026-02-24T00:00:00Z
+> Total Archived: 11
 
-| ID | Component | Priority | Status | Summary | Resolved |
-| -- | --------- | -------- | ------ | ------- | -------- |
+| ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
+| ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-001 | tempest-app/src/main.rs | High | SCHEDULED | Deprecated Sandbox API - scheduled for Sprint 15 | 2026-02-24 |
+| DD-002 | tempest-app/src/timeline.rs | High | SCHEDULED | Arbitrary Spacing Values - scheduled for Sprint 15 | 2026-02-24 |
+| DD-004 | tempest-app/src/color_legend.rs | High | SCHEDULED | Raw RGB Color Values in ColorLegend - scheduled | 2026-02-24 |
 | DD-003 | tempest-app/src/station_selector.rs | High | SCHEDULED | Raw RGB Color Values | 2026-02-23 |
 | DD-005 | tempest-app/src/color_legend.rs | High | SCHEDULED | Non-8-Point Spacing in ColorLegend | 2026-02-23 |
 | DD-006 | tempest-app/src/elevation_tilt_selector.rs | High | SCHEDULED | Raw RGB Color Values in ElevationTiltSelector | 2026-02-23 |

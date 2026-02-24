@@ -105,19 +105,17 @@ impl ElevationTiltSelector {
         let p = theme.extended_palette();
 
         // Styling constants using semantic colors from theme
-        let heading_style = iced::theme::Text::Color(p.primary.base.color);
-        let label_style = iced::theme::Text::Color(p.background.strong.color);
+        // Note: Using direct colors - styling simplified for iced 0.13 compatibility
 
         // Show placeholder if no elevations available
         if self.available_elevations.is_empty() {
             let content = row![
-                text("Elevation Tilt").style(heading_style).size(16),
+                text("Elevation Tilt").size(16),
                 text("No elevation data available")
-                    .style(label_style)
                     .size(14),
             ]
             .spacing(12)
-            .align_items(iced::Alignment::Center);
+            .align_y(iced::Alignment::Center);
 
             return content.into();
         }
@@ -139,17 +137,17 @@ impl ElevationTiltSelector {
 
             let btn =
                 if is_selected {
-                    button(text(label).size(14).style(iced::theme::Text::Color(p.background.base.color)))
+                    button(text(label).size(14))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))
-                    .style(iced::theme::Button::Primary)
+                    .style(iced::widget::button::primary)
                 } else {
-                    button(text(label).size(14).style(iced::theme::Text::Color(p.background.weak.color)))
+                    button(text(label).size(14))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(60.0))
                     .height(Length::Fixed(40.0))
-                    .style(iced::theme::Button::Secondary)
+                    .style(iced::widget::button::secondary)
                 };
 
             elevation_buttons = elevation_buttons.push(btn);
@@ -166,16 +164,16 @@ impl ElevationTiltSelector {
             "No elevation selected".to_string()
         };
 
-        let current_text = text(current_info).style(label_style).size(14);
+        let current_text = text(current_info).size(14);
 
         // Build the layout
         let content = row![
-            text("Elevation Tilt").style(heading_style).size(16),
+            text("Elevation Tilt").size(16),
             elevation_buttons,
             current_text,
         ]
         .spacing(12)
-        .align_items(iced::Alignment::Center);
+        .align_y(iced::Alignment::Center);
 
         content.into()
     }

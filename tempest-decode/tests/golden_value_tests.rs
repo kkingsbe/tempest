@@ -9,11 +9,12 @@
 //! the core fields that ARE correctly decoded.
 
 use std::path::Path;
-use tempest_decode::{decode, VolumeScan};
+use tempest_decode::decode;
 
 /// Metadata structure matching the JSON fixture files.
 #[derive(Debug, Clone, serde::Deserialize)]
 struct FixtureMetadata {
+    #[allow(dead_code)]
     name: String,
     #[allow(dead_code)]
     description: String,

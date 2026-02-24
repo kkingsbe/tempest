@@ -10,7 +10,28 @@ Status: IN PROGRESS
 - **Message Type 1 dependency**: Agent 3 blocked on Agent 2's Message Type 1 - ✅ RESOLVED (Message Type 1 is fully implemented in msg1.rs - Agent 3 can proceed)
 
 ### CURRENT BLOCKERS
-(None - all blockers resolved)
+
+#### Pre-existing Build Failures (tempest-app)
+
+**Date Identified**: 2026-02-24
+**Status**: UNRESOLVED - Pre-existing issue
+
+**Description**: The tempest-app project has 62 compilation errors related to iced 0.13.x API compatibility. These are pre-existing build blockers that exist independently of the DD-006 and DD-007 design debt items being worked on by Agent 3.
+
+**Error Categories**:
+- Theme module references ( iced::theme module changes)
+- Style variables (deprecated/renamed style constants)
+- Text styling API changes
+- Padding format changes (tuple vs struct)
+- align_items deprecation (replaced with align_items_start/end)
+
+**Impact**: Prevents building tempest-app entirely. These errors must be resolved before any UI work can proceed.
+
+**Not Related To**: Agent 3's TODO3.md work (DD-006, DD-007) - these are separate, pre-existing issues.
+
+(NONE - all blockers resolved)
+
+---
 
 ## Current Tasks
 

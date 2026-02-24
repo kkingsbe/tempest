@@ -156,8 +156,7 @@ impl MomentSwitcher {
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, MomentSwitcherMessage> {
         // Styling constants using semantic colors
-        let heading_style = iced::theme::Text::Color(colors::ACCENT);
-        let label_style = iced::theme::Text::Color(colors::TEXT_SECONDARY);
+        // Note: styling simplified for iced 0.13 compatibility
 
         // Build row of moment buttons
         let mut moment_buttons = row!().spacing(8);
@@ -169,23 +168,21 @@ impl MomentSwitcher {
             let btn = if is_selected {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
-                        .size(12)
-                        .style(iced::theme::Text::Color(colors::TEXT_PRIMARY)),
+                        .size(12),
                 )
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
                 .height(Length::Fixed(50.0))
-                .style(iced::theme::Button::Primary)
+                .style(iced::widget::button::primary)
             } else {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
-                        .size(12)
-                        .style(iced::theme::Text::Color(colors::TEXT_UNSELECTED)),
+                        .size(12),
                 )
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
                 .height(Length::Fixed(50.0))
-                .style(iced::theme::Button::Secondary)
+                .style(iced::widget::button::secondary)
             };
 
             moment_buttons = moment_buttons.push(btn);
@@ -198,17 +195,16 @@ impl MomentSwitcher {
             self.selected_moment.code(),
             self.selected_moment.unit()
         ))
-        .style(label_style)
         .size(14);
 
         // Build the layout
         let content = row![
-            text("Radar Moment").style(heading_style).size(16),
+            text("Radar Moment").size(16),
             moment_buttons,
             current_info,
         ]
         .spacing(12)
-        .align_items(iced::Alignment::Center);
+        .align_y(iced::Alignment::Center);
 
         content.into()
     }
