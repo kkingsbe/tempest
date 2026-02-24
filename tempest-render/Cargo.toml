@@ -16,9 +16,15 @@ thiserror = "2"
 bytemuck = { version = "1", features = ["derive"] }
 tempest-decode = { path = "../tempest-decode" }
 tempest-render-core = { path = "../tempest-render-core" }
+image = "0.25"
+clap = { version = "4", features = ["derive"] }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
 image = "0.25"
 similar = "2"
 futures = "0.3"
+
+[[bin]]
+name = "golden-images"
+path = "src/bin/golden_images.rs"

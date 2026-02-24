@@ -1,25 +1,28 @@
 # Design Review State
 
-> Last Updated: 2026-02-24T07:08:00Z
-> Total runs completed: 12
+> Last Updated: 2026-02-24T10:00:00Z
+> Total runs completed: 14
 
 ## Component Registry
 
 | Component | Path | Usage Count | Times Reviewed | Last Reviewed | Open Debt Items |
 | --------- | ---- | ----------- | -------------- | ------------- | --------------- |
 | App (main.rs) | tempest-app/src/main.rs | 1 | 3 | 2026-02-24 | none |
-| TimelineState | tempest-app/src/timeline.rs | 1 | 5 | 2026-02-24 | DD-018 |
+| TimelineState | tempest-app/src/timeline.rs | 1 | 6 | 2026-02-24 | DD-022, DD-023, DD-024, DD-025 |
 | StationSelector | tempest-app/src/station_selector.rs | 1 | 4 | 2026-02-24 | DD-021 |
 | ColorLegend | tempest-app/src/color_legend.rs | 6 | 3 | 2026-02-24 | DD-019 |
 | ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5 | 4 | 2026-02-24 | none |
-| MomentSwitcher | tempest-app/src/moment_switcher.rs | 1 | 3 | 2026-02-24 | none |
+| MomentSwitcher | tempest-app/src/moment_switcher.rs | 1 | 4 | 2026-02-24 | DD-026 |
 | OfflineIndicator | tempest-app/src/offline_indicator.rs | 1 | 3 | 2026-02-24 | none |
-| CacheManager | tempest-app/src/cache_manager.rs | 1 | 4 | 2026-02-24 | DD-020 |
+| CacheManager | tempest-app/src/cache_manager.rs | 1 | 5 | 2026-02-24 | DD-020, DD-027, DD-028 |
+| Config | tempest-app/src/config.rs | 0 | 1 | 2026-02-24 | none |
 
 ## Recent Runs (last 20 only)
 
 | Run | Date | Components Reviewed | New Debt Items | False Positives |
 | --- | ---- | ------------------- | -------------- | ---------------- |
+| 14 | 2026-02-24 | MomentSwitcher, CacheManager | DD-026, DD-027, DD-028 | 2 |
+| 13 | 2026-02-24 | TimelineState, Config | DD-022, DD-023, DD-024, DD-025 | 0 |
 | 1 | 2026-02-23 | App, TimelineState, StationSelector | DD-001, DD-002, DD-003 | 0 |
 | 2 | 2026-02-23 | ColorLegend, ElevationTiltSelector | DD-004, DD-005, DD-006, DD-007 | 0 |
 | 3 | 2026-02-23 | MomentSwitcher, OfflineIndicator | DD-008, DD-009, DD-010, DD-011 | 0 |
@@ -37,11 +40,12 @@
 
 | Component | Total Violations | Unresolved |
 | --------- | ----------------- | ---------- |
-| App | 1 | 0 |
-| TimelineState | 4 | 1 |
-| CacheManager | 3 | 1 |
+| TimelineState | 5 | 2 |
+| CacheManager | 3 | 3 |
 | StationSelector | 3 | 1 |
 | ColorLegend | 3 | 1 |
+| MomentSwitcher | 2 | 1 |
+| App | 1 | 0 |
 | ElevationTiltSelector | 2 | 0 |
-| MomentSwitcher | 2 | 0 |
 | OfflineIndicator | 2 | 0 |
+| Config | 0 | 0 |

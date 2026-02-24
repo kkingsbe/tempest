@@ -7,14 +7,9 @@ use iced::{Alignment, Element, Length};
 use tempest_fetch::{list_all_stations, Station};
 
 use crate::spacing;
-
-/// Semantic color palette for the StationSelector component
-mod colors {
-    use iced::Color;
-    pub const TEXT_PRIMARY: Color = Color::from_rgb(0.9, 0.9, 0.9);
-    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.7, 0.7, 0.7);
-    pub const ACCENT: Color = Color::from_rgb(0.2, 0.6, 1.0);
-}
+use crate::colors::accent::PRIMARY as ACCENT;
+use crate::colors::text::PRIMARY as TEXT_PRIMARY;
+use crate::colors::text::SECONDARY as TEXT_SECONDARY;
 
 /// Maximum number of stations to show in the list
 const MAX_VISIBLE_STATIONS: usize = 15;
@@ -112,9 +107,9 @@ impl StationSelector {
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, StationSelectorMessage> {
         // Station label styling
-        let label_style = colors::TEXT_SECONDARY;
-        let value_style = colors::TEXT_PRIMARY;
-        let heading_style = colors::ACCENT;
+        let label_style = TEXT_SECONDARY;
+        let value_style = TEXT_PRIMARY;
+        let heading_style = ACCENT;
 
         // Create the filter input
         let filter_input = text_input(
@@ -135,9 +130,9 @@ impl StationSelector {
 
             let btn = button(text(format!("{} - {}", station.id, station.name)).color(
                 if is_selected {
-                    iced::Color::from_rgb(0.2, 0.6, 1.0)
+                    ACCENT
                 } else {
-                    iced::Color::from_rgb(0.8, 0.8, 0.8)
+                    TEXT_PRIMARY
                 },
             ))
             .on_press(StationSelectorMessage::StationSelected(station.clone()))
@@ -197,9 +192,7 @@ impl StationSelector {
             text("Search").color(label_style).size(14),
             filter_input,
             text(count_text.clone())
-                .color(iced::Color::from_rgb(
-                    0.5, 0.5, 0.5
-                ))
+                .color(TEXT_SECONDARY)
                 .size(12),
             text("").size(5),
             station_list,

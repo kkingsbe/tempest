@@ -1,10 +1,14 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T06:02:00Z
-> Total Archived: 17
+> Last Updated: 2026-02-24T09:20:00Z
+> Total Archived: 21
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-018 | timeline.rs | High | OUTDATED | Non-8-point spacing - code no longer exists at cited lines | 2026-02-24 |
+| DD-021 | station_selector.rs | Medium | SCHEDULED | Inline RGB colors instead of semantic constants - scheduled for sprint 18 | 2026-02-24 |
+| DD-020 | cache_manager.rs | High | SCHEDULED | Non-8-point padding values (10, 5, 20) - scheduled for sprint 18 | 2026-02-24 |
+| DD-019 | color_legend.rs | Medium | SCHEDULED | Non-8-point spacing (zero) - scheduled for sprint 18 | 2026-02-24 |
 | DD-017 | StationSelector | Medium | RESOLVED | Non-8-point spacing (15, 5, 20) - fixed in Sprint 16 | 2026-02-24 |
 | DD-012 | CacheManager | Medium | RESOLVED | Non-8-point spacing (10, 5, 20) - fixed in Sprint 16 | 2026-02-24 |
 | DD-014 | TimelineState | Medium | OUTDATED | Raw RGB colors resolved (now uses semantic colors), new spacing violations in DD-018 | 2026-02-24 |

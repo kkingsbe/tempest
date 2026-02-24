@@ -6,17 +6,17 @@
 
 ## Tasks
 
-- [ ] CI pipeline setup
+- [x] CI pipeline setup
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/coding-guidelines/SKILL.md
   - Scope: Configure CI with GitHub Actions. Tier 1 (unit tests), Tier 2 (integration tests), Tier 3 (full test suite) as specified in PRD. Use cargo-tarpaulin for coverage.
   - **SPRINT 18**
 
-- [ ] Test coverage tracking
+- [x] Test coverage tracking
   - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
   - Scope: Implement coverage enforcement with cargo-tarpaulin. Targets: ≥90% decoder coverage, ≥85% overall coverage. Set ratchet at 1.5% decrease threshold.
   - **SPRINT 18**
 
-- [ ] [DD-021] Fix StationSelector — inline RGB instead of semantic constants
+- [x] [DD-021] Fix StationSelector — inline RGB instead of semantic constants
   - 📚 SKILLS: ./skills/iced-rs.md, ./skills/coding-guidelines.md
   - Scope: Replace inline Color::from_rgb calls with semantic constants (colors::ACCENT, colors::TEXT_SECONDARY) at lines 138-141, 200-202 in tempest-app/src/station_selector.rs.
   - Fix estimate: S

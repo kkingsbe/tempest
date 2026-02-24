@@ -126,7 +126,7 @@ impl ColorLegend {
         let num_stops = 20; // Number of color swatches in the gradient
         let step = (max_val - min_val) / (num_stops as f32);
 
-        let mut color_bar = column!().spacing(0).width(Length::Fixed(30.0));
+        let mut color_bar = column!().spacing(spacing::XXS).width(Length::Fixed(30.0));
 
         // Add color swatches from top (max) to bottom (min)
         for i in 0..num_stops {

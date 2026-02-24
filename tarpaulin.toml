@@ -1,12 +1,15 @@
 # Tempest Coverage Configuration
 # Cargo-tarpaulin configuration for coverage tracking
 #
-# Coverage Targets:
-#   - tempest-decode: ≥95% line coverage
-#   - tempest-render-core: ≥90% line coverage
-#   - Overall workspace: ≥85% line coverage
+# Coverage Targets (from PRD):
+#   - Overall: ≥85% line coverage
+#   - tempest-decode (Decoder): ≥95% line coverage
+#   - tempest-render-core (Rendering): ≥80% line coverage
+#   - tempest-fetch (S3/network): ≥80% line coverage
 #
-# Note: tempest-render-core is currently not in the active workspace members
+# Coverage Ratchet Policy:
+#   - Coverage must not decrease on any PR
+#   - Threshold: 1.5% decrease allowed before CI fails
 
 [tarpaulin]
 # Output directory for coverage reports
@@ -65,14 +68,29 @@ exclude-packages = [
 
 # Set coverage thresholds
 [tarpaulin.thresholds]
-# Overall workspace coverage target
+# Overall workspace coverage target (from PRD)
 lines = 85
 functions = 85
 branches = 80
 
-# Package-specific coverage targets
-# These are informational - tarpaulin will warn but not fail
-# Individual crate targets need to be tracked separately
+# Package-specific coverage targets (from PRD)
+# Decoder module: ≥95% line coverage
+[tarpaulin.thresholds.tempest-decode]
+lines = 95
+functions = 95
+branches = 90
+
+# Rendering module: ≥80% line coverage
+[tarpaulin.thresholds.tempest-render-core]
+lines = 80
+functions = 80
+branches = 75
+
+# S3/network module: ≥80% line coverage
+[tarpaulin.thresholds.tempest-fetch]
+lines = 80
+functions = 80
+branches = 75
 
 [workspace]
 # Enable workspace-wide coverage tracking

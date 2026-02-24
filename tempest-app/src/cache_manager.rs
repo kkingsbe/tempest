@@ -249,12 +249,12 @@ impl CacheManager {
             button(text("Clearing..."))
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
-                .padding(10)
+                .padding(8)
         } else {
             button(text("Clear Cache"))
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
-                .padding(10)
+                .padding(8)
         };
 
         // Settings toggle button
@@ -265,7 +265,7 @@ impl CacheManager {
         };
         let settings_toggle = button(text(settings_toggle_text))
             .on_press(CacheManagerMessage::ToggleSettings)
-            .padding(5);
+            .padding(4);
 
         // Settings panel (conditional)
         let settings_panel: Element<'_, CacheManagerMessage> = if self.show_settings {
@@ -295,9 +295,9 @@ impl CacheManager {
                     .size(10),
             ]
             .spacing(8)
-            .padding(10);
+            .padding(8);
 
-            container(settings_content).padding(10).into()
+            container(settings_content).padding(12).into()
         } else {
             text("").into()
         };
@@ -339,7 +339,7 @@ impl CacheManager {
         ]
         .spacing(8)
         .align_x(Alignment::Start)
-        .padding(20)
+        .padding(16)
         .width(Length::FillPortion(1));
 
         container(content)
