@@ -1,85 +1,49 @@
 # Architect Questions - PRD Ambiguities
 
-> Generated: 2026-02-23
-> Context: Sprint 7 periodic architect review
+> Generated: 2026-02-24
+> Context: PRD Review - Items requiring product clarification
 
 ## Questions for Product Team
 
-The following requirements in PRD.md need clarification before implementation:
+The following ambiguous PRD items need clarification before implementation can proceed:
 
-### 1. F3: Radar Rendering - Range-folding corrections
-- **Line ~107**: "Apply beam height and range-folding corrections for accurate geographic placement"
-- **Issue**: No specification of how range-folding should be detected or corrected algorithmically
-- **Question**: What algorithm should be used for range-folding detection and correction?
+| ID | Item | Ambiguity | Question |
+|----|------|-----------|----------|
+| PRD-1 | Super-resolution data (F3 line 89) | Performance targets unclear | Should super-resolution have separate decode/render latency targets? |
+| PRD-2 | E2E test harness (line 277) | "Playwright or native harness" is ambiguous | Which harness should be used? |
+| PRD-3 | Prefetch budget (F4 line 578) | No default value specified | What should be the default max concurrent fetches? |
+| PRD-4 | Golden image coverage (lines 259-262) | Which fixtures/map views to cover? | Should all 10 fixtures be covered in visual regression? |
+| PRD-5 | Range-folding corrections (F3 line 107) | No implementation detail | Simple "no data" mask or actual correction algorithm? |
 
-### 2. F4: Timeline - Prefetching algorithm
-- **Line ~129**: "Intelligently prefetch adjacent scans"
-- **Issue**: No specific algorithm defined
-- **Question**: How many scans ahead should we prefetch? Should it adapt to bandwidth or playback direction?
+---
 
-### 3. F1: Base Map - Dark theme implementation
-- **Line ~70**: "Dark theme map style optimized for weather radar overlay visibility"
-- **Issue**: No specific color scheme or definition provided
-- **Question**: What specific colors or CSS filters should be used for the dark theme?
+## Detailed Context
 
-### 4. Testing - Git LFS setup
-- **Line ~166**: Mentions "test fixtures stored via Git LFS"
-- **Issue**: No `.gitattributes` file exists in the repository
-- **Question**: Should we set up Git LFS? What files should be tracked?
+### PRD-1: Super-resolution data (F3 line 89)
+- **Current**: Performance requirements mention general decode/render latency targets
+- **Issue**: Super-resolution data may require different performance characteristics
+- **Impact**: Affects pipeline.rs and renderer.rs implementation decisions
 
-### 5. Testing - Docker/MinIO
-- **Lines ~223, ~279, ~429**: Requires MinIO in Docker for integration tests
-- **Issue**: No Dockerfile or Docker Compose configuration exists
-- **Question**: Should we create Docker setup for integration tests, or use a different approach?
+### PRD-2: E2E test harness (line 277)
+- **Current**: "Playwright or native harness" - two options mentioned
+- **Issue**: No clear decision on which approach to use
+- **Impact**: Affects tempest-app/tests/e2e/ implementation
 
-### 6. Testing - Headless test harness
-- **Line ~277**: "Use a headless test harness that drives the application without a visible window"
-- **Issue**: No implementation specification
-- **Question**: Should we use an existing library (headless_whale) or build custom?
+### PRD-3: Prefetch budget (F4 line 578)
+- **Current**: Prefetch algorithm defined but no default budget
+- **Issue**: No max concurrent fetches value specified
+- **Impact**: Affects prefetch.rs configuration
 
-### 7. Testing - Golden images
-- **Lines ~257-269**: References golden reference images for visual regression
-- **Issue**: No golden images exist in repository
-- **Question**: Should we create golden images manually or generate them?
+### PRD-4: Golden image coverage (lines 259-262)
+- **Current**: Visual regression testing mentioned with golden images
+- **Issue**: Which fixtures and map views should be covered?
+- **Impact**: Affects tempest-render tests and fixture generation
 
-### 8. Phase Integration
-- **Lines ~478-500**: Phase 5 defines Interactive Base Map
-- **Issue**: No explicit final Phase 6 for complete app integration
-- **Question**: Should there be a final integration phase combining Base Map + Radar + Timeline + S3 Fetch?
+### PRD-5: Range-folding corrections (F3 line 107)
+- **Current**: "Apply beam height and range-folding corrections"
+- **Issue**: No implementation detail provided
+- **Impact**: Affects pipeline.rs algorithm implementation
 
-## Question: Ambiguous PRD Requirements
+---
 
-The following PRD requirements need clarification before they can be added to the BACKLOG:
-
-### 1. E2E Test Harness (Related to PRD Phase 3-4)
-The PRD mentions "headless test harness with programmatic input" but doesn't specify the approach. 
-- Should we use an existing library (e.g., `specta`, `insta`) or build a custom solution?
-- What specific user interactions need to be testable?
-
-### 2. Memory Profiling Target
-The PRD non-functional requirements mention "<500MB memory" for the overall application, but there's no specific target for memory profiling during development.
-- What's the acceptable memory ceiling for the application during normal operation?
-- Should we track memory usage per component (decode, render, fetch)?
-
-### 3. Visual Regression Threshold - PRD Internal Conflict
-During Gap Analysis, I found conflicting visual regression thresholds **within PRD.md itself**:
-
-| Location | Threshold Value |
-|----------|----------------|
-| PRD.md Line 260 | ≤ 1.5% |
-| PRD.md Line 211 | 3% |
-
-- **Question**: Which threshold is correct? Should visual regression tests pass at ≤1.5% or ≤3% pixel difference?
-- **Impact**: This affects test implementation in tempest-render/tests/visual_regression.rs
-
-### 4. Decoder Coverage Target - PRD vs BACKLOG
-During gap analysis, I identified conflicting target values between PRD.md and BACKLOG.md:
-
-| Metric | PRD.md | BACKLOG.md |
-|--------|--------|------------|
-| Decoder coverage target | ≥ 95% (line 330) | ≥ 90% (line 206) |
-
-- **Question**: Which values should we use? The stricter PRD targets (95%) or the more relaxed BACKLOG targets (90%)?
-- **Context**: The BACKLOG items for Sprint 13+ reference these targets. We need alignment before proceeding with test coverage implementation.
-
-Please advise so we can add these items to the BACKLOG with appropriate scope.
+Please advise on these items so implementation can proceed with clear requirements.
