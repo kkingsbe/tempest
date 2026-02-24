@@ -15,6 +15,9 @@
 # Output directory for coverage reports
 output-dir = "./coverage"
 
+# Disable ASLR randomization (for containerized environments)
+randomize = false
+
 # Generate HTML reports
 html = true
 
