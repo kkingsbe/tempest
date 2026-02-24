@@ -1,29 +1,26 @@
 # TODO2 - Agent 2
 
-> Sprint: 17
-> Focus Area: Cache Verification + Design Debt
-> Last Updated: 2026-02-24
+> Sprint: 18
+> Focus Area: Cache UI + Visual Testing
+> Last Updated: 2026-02-24T07:51:54Z
 
 ## Tasks
 
 - [ ] Verify cache management UI
-  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
-  - Scope: Verify CacheManager functionality in tempest-app
-  - See BACKLOG.md for full context on this Sprint 11 carryover item.
+  - 📚 SKILLS: ./skills/frontend-design/SKILL.md
+  - Scope: Verify cache_manager.rs UI renders correctly - verify CacheManager functionality, size display, manual clear, configurable limit work as expected
+  - **SPRINT 18**
+
+- [ ] Visual regression test setup
+  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/frontend-design/SKILL.md
+  - Scope: Set up visual regression testing with golden images. PRD specifies **1.5% threshold** (not 3%) for visual differences. Fix threshold to 1.5%.
+  - **SPRINT 18**
+
+- [ ] [DD-019] Fix ColorLegend — spacing(0) violation
+  - 📚 SKILLS: ./skills/iced-rs.md, ./skills/coding-guidelines.md
+  - Scope: Replace spacing(0) with spacing(XXS=2) at line 129 in tempest-app/src/color_legend.rs.
   - Fix estimate: S
 
-- [ ] [DD-018] Fix Timeline component — zero spacing values
-  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
-  - Component: `tempest-app/src/timeline.rs`
-  - Scope: Replace spacing(0) with spacing(XXS) or spacing(XS), replace padding(0) with padding(XS)
-  - Evidence:
-    ```rust
-    let mut ticks_content = row![].spacing(0).align_y(iced::Alignment::End);  // Line 415
-    let(tick_with_label tick_button = button)
-        .on_press(TimelineMessage::TimelineClicked(tick_position))
-        .padding(0);  // Line 475
-    ```
-  - See DESIGN_DEBT.md DD-018 for full context.
-  - Fix estimate: S
+## QA
 
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_2' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_2' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.

@@ -172,7 +172,7 @@
   - Scope: Preload next 3-5 scans during playback
   - **COMPLETED IN SPRINT 10**
 
-### Phase 8: Offline Mode & Release
+### Phase 8: Offline Mode & Release (IN PROGRESS)
 
 - [x] Implement cache management UI
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
@@ -184,34 +184,51 @@
   - Scope: Auto-detect network, browse cached data
   - **COMPLETED IN PREVIOUS SPRINTS**
 
-- [ ] Complete application polish - config file handling
+- [x] Complete application polish - config file handling
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Implement persistent config file storage
-  - **IN SPRINT 11** (TODO1)
+  - **COMPLETED IN SPRINT 18** (TODO1)
 
-- [ ] Verify cache management UI
+- [x] Verify cache management UI
   - 📚 SKILLS: ./skills/frontend-design/SKILL.md
   - Scope: Verify CacheManager functionality
-  - **IN SPRINT 11** (TODO2)
+  - **COMPLETED IN SPRINT 18** (TODO2)
 
-- [ ] Implement release build
+- [x] Implement release build
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
   - Scope: Cross-platform binaries, size optimization
-  - **IN SPRINT 11** (TODO3)
+  - **COMPLETED IN SPRINT 18** (TODO1)
 
-### Sprint 13+ Items
+### Sprint 13+ Items (COMPLETED IN SPRINT 18)
 
-- [ ] Test coverage tracking
+- [x] Test coverage tracking
   - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
-  - Scope: Implement coverage enforcement with targets: ≥90% decoder coverage, ≥85% overall coverage. Use cargo-tarpaulin or similar tool.
-  - **IN SPRINT 13+**
+  - Scope: Implement coverage enforcement with cargo-tarpaulin. Targets: ≥90% decoder coverage, ≥85% overall coverage.
+  - **COMPLETED IN SPRINT 18** (TODO3)
 
-- [ ] Visual regression test setup
+- [x] Visual regression test setup
   - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/frontend-design/SKILL.md
-  - Scope: Set up visual regression testing with golden images. PRD specifies 3% threshold for visual differences.
-  - **IN SPRINT 13+**
+  - Scope: Set up visual regression testing with golden images. PRD specifies 1.5% threshold for visual differences.
+  - **COMPLETED IN SPRINT 18** (TODO2)
 
-- [ ] CI pipeline setup
+- [x] CI pipeline setup
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/coding-guidelines/SKILL.md
-  - Scope: Configure CI with Tier 1 (unit tests), Tier 2 (integration tests), Tier 3 (full test suite) as specified in PRD.
-  - **IN SPRINT 13+**
+  - Scope: Configure CI with GitHub Actions. Tier 1 (unit tests), Tier 2 (integration tests), Tier 3 (full test suite).
+  - **COMPLETED IN SPRINT 18** (TODO3)
+
+### Sprint 18 - Missing PRD Items Added
+
+- [ ] E2E Test Harness
+  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
+  - Scope: Create end-to-end test harness for Tempest application. Provides infrastructure for testing full user workflows.
+  - **IN SPRINT 18** (TODO4)
+
+- [ ] Golden Reference Images CLI
+  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
+  - Scope: Create CLI tool to manage golden reference images for visual regression testing. Supports update/verify commands.
+  - **IN SPRINT 18** (TODO4)
+
+- [ ] Coverage Ratchet Policy
+  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
+  - Scope: Define and implement coverage ratchet policy - automated enforcement that prevents coverage from decreasing. Set threshold at 1.5% decrease allowed.
+  - **IN SPRINT 18** (TODO4)

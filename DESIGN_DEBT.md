@@ -44,7 +44,7 @@ let mut color_bar = column!().spacing(0).width(Length::Fixed(30.0));  // Line 12
 - **Suggested fix:** Replace spacing(0) with spacing(XXS=2) or use a small positive value
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T06:06:00Z
-- **Status:** OPEN
+- **Status:** IN SPRINT 18 (TODO2)
 
 ---
 
@@ -86,7 +86,7 @@ container(settings_content).padding(10).into()  // Line 300
 - **Suggested fix:** Replace padding values: 10→8(SM) or 12(MD), 5→4(XS), 20→16(BASE) or 24(LG)
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-24T06:06:00Z
-- **Status:** OPEN
+- **Status:** IN SPRINT 18 (TODO1)
 
 ---
 
@@ -118,6 +118,6 @@ text(count_text.clone())
 - **Suggested fix:** Replace inline Color::from_rgb calls with the semantic constants from the colors module
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T07:07:00Z
-- **Status:** OPEN
+- **Status:** IN SPRINT 18 (TODO3)
 
 ---
