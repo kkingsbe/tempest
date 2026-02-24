@@ -1,6 +1,6 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T05:06:00Z
+> Last Updated: 2026-02-24T05:55:00Z
 > Total Open: 2
 
 ---
@@ -28,7 +28,7 @@
 - **Suggested fix:** Replace all non-8-point values with nearest 8-point equivalent
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-23T22:00:00Z
-- **Status:** OPEN
+- **Status:** RESOLVED (Sprint 16)
 
 ---
 
@@ -50,7 +50,7 @@ container(details_column).padding(15).into()  // Line 167
 - **Suggested fix:** Replace 15→16(MD), 5→4(XS), 20→16(BASE) or 24(LG)
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T04:07:00Z
-- **Status:** OPEN
+- **Status:** RESOLVED (Sprint 16)
 
 ---
 
