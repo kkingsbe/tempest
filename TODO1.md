@@ -1,18 +1,17 @@
 # TODO1 - Agent 1
 
-> Sprint: 20
-> Focus Area: Critical Blocker Fix - Iced 0.13.x Compatibility
-> Last Updated: 2026-02-24T14:05 UTC
-> Status: COMPLETED
+> Sprint: 22
+> Focus Area: Coverage Enforcement & Performance Benchmarks
+> Last Updated: 2026-02-24T15:08Z
 
 ## Tasks
 
-- [x] Fix iced 0.13.x API compatibility in tempest-app
-  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`, `./skills/rust-engineer/SKILL.md`
-  - Scope: Resolve 62 compilation errors. Categories: Theme module changes, Style variables, Text Styling API, Padding format (tuple→struct), align_items deprecation.
-  - Fix estimate: L
+- [ ] Coverage Ratchet Policy
+  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
+  - Scope: Define and implement coverage ratchet policy - automated enforcement that prevents coverage from decreasing. Set threshold at 1.5% decrease allowed.
 
-- [x] Run full build ( AGENT QA:cargo build --package tempest-app). Fix ALL errors. If green, create '.agent_done_1' with the current date.
+- [ ] Performance Benchmark Baseline
+  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/test-driven-development/SKILL.md
+  - Scope: Establish performance baselines per PRD: decode time <100ms, render <50ms, pipeline <500ms p95, memory <500MB. Document in project.
 
----
-*Sprint complete - ready for Sprint 21*
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.

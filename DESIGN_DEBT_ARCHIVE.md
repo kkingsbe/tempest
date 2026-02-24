@@ -1,14 +1,15 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T14:03:26Z
-> Total Archived: 32
+> Last Updated: 2026-02-24T15:03:00Z
+> Total Archived: 34
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-030 | elevation_tilt_selector.rs | Medium | RESOLVED | Non-8-point button dimensions (60x40 → 48x48) - fixed | 2026-02-24 |
+| DD-025 | timeline.rs | High | RESOLVED | Non-8-point tick container height (10→8) - fixed | 2026-02-24 |
 | DD-022 | timeline.rs | Medium | RESOLVED | TICK_HEIGHT fixed 20→16 | 2026-02-24 |
 | DD-023 | timeline.rs | Medium | RESOLVED | LABEL_HEIGHT fixed 18→16 | 2026-02-24 |
-| DD-030 | timeline.rs | High | RESOLVED | Non-8-point LABEL_HEIGHT constant - fixed 2026-02-24 | 2026-02-24 |
-| DD-029 | timeline.rs | High | RESOLVED | Non-8-point TICK_HEIGHT constant - fixed 2026-02-24 | 2026-02-24 |
+| DD-029 | timeline.rs | High | RESOLVED | Non-8-point LABEL_HEIGHT constant - fixed 2026-02-24 | 2026-02-24 |
 | DD-029 | color_legend.rs | Medium | SCHEDULED | Non-8-point spacing values (30, 6, 90) - scheduled for Sprint 19 | 2026-02-24 |
 | DD-028 | cache_manager.rs | Medium | SCHEDULED | Typography scale violation (.size(5)) - scheduled for Sprint 19 | 2026-02-24 |
 | DD-027 | cache_manager.rs | High | SCHEDULED | Button padding below minimum (8, 4 instead of 12, 24) - scheduled for Sprint 19 | 2026-02-24 |
@@ -23,7 +24,7 @@
 | DD-017 | StationSelector | Medium | RESOLVED | Non-8-point spacing (15, 5, 20) - fixed in Sprint 16 | 2026-02-24 |
 | DD-012 | CacheManager | Medium | RESOLVED | Non-8-point spacing (10, 5, 20) - fixed in Sprint 16 | 2026-02-24 |
 | DD-014 | TimelineState | Medium | OUTDATED | Raw RGB colors resolved (now uses semantic colors), new spacing violations in DD-018 | 2026-02-24 |
-| DD-016 | ElevationTiltSelector | Medium | RESOLVED | Container padding added - now has .padding(12) | 2026-02-24 |
+| DD-016 | ColorLegend  | Medium | RESOLVED | Container padding added - now has .padding(12) | 2026-02-24 |
 | DD-013 | CacheManager | Low | OUTDATED | false positive - no Color::from_rgb found | 2026-02-24 |
 | DD-015 | ColorLegend  | Low | OUTDATED | false positive - has compliant padding   | 2026-02-24 |
 | DD-001 | tempest-app/src/main.rs | High | SCHEDULED | Deprecated Sandbox API - scheduled for Sprint 15 | 2026-01-24 |

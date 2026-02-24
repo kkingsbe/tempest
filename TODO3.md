@@ -1,23 +1,17 @@
 # TODO3 - Agent 3
 
-> Sprint: 20
-> Focus Area: ElevationTiltSelector Design Debt + E2E Test Infrastructure
-> Last Updated: 2026-02-24T14:05 UTC
-> Status: COMPLETED
+> Sprint: 22
+> Focus Area: Cache Module Design Debt
+> Last Updated: 2026-02-24T15:08Z
 
 ## Tasks
 
-- [x] [DD-030] Fix ElevationTiltSelector button dimensions - non-8-point spacing
-  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
-  - Scope: Change button dimensions from 60x40 to 8-point compliant values (e.g., 48x48 or 64x48). See DESIGN_DEBT.md DD-030.
-  - Fix estimate: S
+- [ ] [DD-035] Fix expect() in Production Code
+  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
+  - Scope: Replace `expect()` with proper error handling in cache.rs line 101. Use `ok_or_else()` or similar to handle the Result properly. Fix LruCache capacity initialization.
 
-- [x] E2E Test Harness
-  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
-  - Scope: Create end-to-end test harness for Tempest application. Provides infrastructure for testing full user workflows.
-  - See BACKLOG.md for details.
+- [ ] [DD-034] Fix Cloning in Loop
+  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md
+  - Scope: Fix cloning in loop in cache.rs lines 161-162. Create owned string once: `let key_owned = key.to_string();` then reuse for both CacheEntry::new and lru.put calls.
 
-- [x] Run full build and test suite (AGENT QA). Fix ALL errors. If green, create '.agent_done_3' with the current date.
-
----
-*Sprint complete - ready for Sprint 21*
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
