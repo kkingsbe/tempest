@@ -1,26 +1,19 @@
 # TODO3 - Agent 3
 
-> Sprint: 18
-> Focus Area: CI Pipeline & Test Coverage
-> Last Updated: 2026-02-24T07:51:54Z
+> Sprint: 20
+> Focus Area: ElevationTiltSelector Design Debt + E2E Test Infrastructure
+> Last Updated: 2026-02-24T12:08Z
 
 ## Tasks
 
-- [x] CI pipeline setup
-  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/coding-guidelines/SKILL.md
-  - Scope: Configure CI with GitHub Actions. Tier 1 (unit tests), Tier 2 (integration tests), Tier 3 (full test suite) as specified in PRD. Use cargo-tarpaulin for coverage.
-  - **SPRINT 18**
-
-- [x] Test coverage tracking
-  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
-  - Scope: Implement coverage enforcement with cargo-tarpaulin. Targets: ≥90% decoder coverage, ≥85% overall coverage. Set ratchet at 1.5% decrease threshold.
-  - **SPRINT 18**
-
-- [x] [DD-021] Fix StationSelector — inline RGB instead of semantic constants
-  - 📚 SKILLS: ./skills/iced-rs.md, ./skills/coding-guidelines.md
-  - Scope: Replace inline Color::from_rgb calls with semantic constants (colors::ACCENT, colors::TEXT_SECONDARY) at lines 138-141, 200-202 in tempest-app/src/station_selector.rs.
+- [ ] [DD-030] Fix ElevationTiltSelector button dimensions - non-8-point spacing
+  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
+  - Scope: Change button dimensions from 60x40 to 8-point compliant values (e.g., 48x48 or 64x48). See DESIGN_DEBT.md DD-030.
   - Fix estimate: S
 
-## QA
+- [ ] E2E Test Harness
+  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
+  - Scope: Create end-to-end test harness for Tempest application. Provides infrastructure for testing full user workflows.
+  - See BACKLOG.md for details.
 
-- AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_3' with the current date.

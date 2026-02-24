@@ -5,29 +5,15 @@
 #![allow(clippy::upper_case_acronyms)]
 
 use iced::widget::{button, row, text};
-use iced::{Element, Length};
+use iced::{Border, Element, Length};
 
-/// Semantic color constants for this module
 mod colors {
-    use iced::Color;
-
-    // Accent / interactive
-    #[allow(dead_code)]
-    pub const ACCENT: Color = Color::from_rgb(0.35, 0.55, 1.0);
-    #[allow(dead_code)]
-    pub const ACCENT_HOVER: Color = Color::from_rgb(0.45, 0.65, 1.0);
-
-    // Text colors
-    #[allow(dead_code)]
-    pub const TEXT_PRIMARY: Color = Color::from_rgb(0.93, 0.93, 0.95);
-    #[allow(dead_code)]
-    pub const TEXT_SECONDARY: Color = Color::from_rgb(0.6, 0.6, 0.65);
-    #[allow(dead_code)]
-    pub const TEXT_MUTED: Color = Color::from_rgb(0.4, 0.4, 0.45);
-
-    // For unselected state, use TEXT_MUTED or create TEXT_UNSELECTED based on skill
-    #[allow(dead_code)]
-    pub const TEXT_UNSELECTED: Color = Color::from_rgb(0.4, 0.4, 0.45);
+    pub use crate::colors::{
+        accent,
+        surface,
+        text,
+        border,
+    };
 }
 
 /// Supported radar moments/data types
@@ -161,8 +147,38 @@ impl MomentSwitcher {
 
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, MomentSwitcherMessage> {
-        // Styling constants using semantic colors
-        // Note: styling simplified for iced 0.13 compatibility
+        // Custom button style for primary/selected state (filled accent)
+        let primary_button_style = |_theme: &iced::Theme, status: button::Status| {
+            let is_selected = status == button::Status::Pressed || status == button::Status::Hovered;
+            button::Style {
+                background: Some(if is_selected {
+                    colors::accent::HOVER.into()
+                } else {
+                    colors::accent::PRIMARY.into()
+                }),
+                text_color: colors::text::PRIMARY,
+                border: Border::default().rounded(8),
+                ..button::Style::default()
+            }
+        };
+
+        // Custom button style for secondary/unselected state (outlined/muted)
+        let secondary_button_style = |_theme: &iced::Theme, status: button::Status| {
+            let is_hovered = status == button::Status::Hovered;
+            button::Style {
+                background: Some(if is_hovered {
+                    colors::surface::BG_ELEVATED.into()
+                } else {
+                    colors::surface::BG_PRIMARY.into()
+                }),
+                text_color: colors::text::PRIMARY,
+                border: Border::default()
+                    .rounded(8)
+                    .width(1)
+                    .color(colors::border::DEFAULT),
+                ..button::Style::default()
+            }
+        };
 
         // Build row of moment buttons
         let mut moment_buttons = row!().spacing(8);
@@ -170,7 +186,7 @@ impl MomentSwitcher {
         for moment in Moment::all() {
             let is_selected = self.selected_moment == moment;
 
-            // Style for selected vs unselected buttons using different button styles
+            // Style for selected vs unselected buttons using custom semantic styles
             let btn = if is_selected {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
@@ -179,7 +195,7 @@ impl MomentSwitcher {
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
                 .height(Length::Fixed(50.0))
-                .style(iced::widget::button::primary)
+                .style(primary_button_style)
             } else {
                 button(
                     text(format!("{}\n{}", moment.code(), moment.name()))
@@ -188,7 +204,7 @@ impl MomentSwitcher {
                 .on_press(MomentSwitcherMessage::MomentSelected(moment))
                 .width(Length::Fixed(110.0))
                 .height(Length::Fixed(50.0))
-                .style(iced::widget::button::secondary)
+                .style(secondary_button_style)
             };
 
             moment_buttons = moment_buttons.push(btn);

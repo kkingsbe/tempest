@@ -615,3 +615,38 @@ Notes:
 - Release profile has opt-level=3, lto=fat, codegen-units=1, strip, panic=abort
 - Waiting for Agent 4 to complete before .sprint_complete can be created
 
+---
+
+[Agent 2] 2026-02-24 - Sprint 18 Completion
+- Phase: VERIFICATION - All agents complete
+- All TODO2.md tasks were already implemented:
+  1. Cache management UI verified (16 tests pass)
+  2. Visual regression threshold at 1.5% (per PRD)
+  3. ColorLegend spacing already uses spacing::XXS (2px)
+- Final verification:
+  - Full build: PASS
+  - Test suite: ALL PASS (385+ tests)
+  - Created .sprint_complete (all 4 agent_done files existed)
+- Sent progress update to Discord via discli
+- Sprint 18 fully complete
+
+---
+
+[Agent 2] 2026-02-24 - Timeline Spacing Fixes
+
+Findings:
+- Timeline component had several spacing constants that violated 8-point grid
+- TICK_HEIGHT was 20px → changed to 16px
+- LABEL_HEIGHT was 18px → changed to 16px  
+- TIMELINE_HEIGHT was 48px → changed to 56px (making TOTAL_HEIGHT = 88, 8-point compliant)
+- Size calculations properly use TICK_HEIGHT constant now
+
+Patterns:
+- Used 8-point grid spacing from skills/iced-rs/SKILL.md
+- All changes in single file: tempest-app/src/timeline.rs
+- cargo check used for verification after each change
+
+Decisions:
+- Changed TICK_HEIGHT to 16px (base 8-point value) rather than 24px for better fit
+- Total height now 56 + 16 + 16 = 88px (divisible by 8)
+

@@ -1,10 +1,17 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T09:20:00Z
-> Total Archived: 21
+> Last Updated: 2026-02-24T12:01:10Z
+> Total Archived: 28
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-029 | color_legend.rs | Medium | SCHEDULED | Non-8-point spacing values (30, 6, 90) - scheduled for Sprint 19 | 2026-02-24 |
+| DD-028 | cache_manager.rs | Medium | SCHEDULED | Typography scale violation (.size(5)) - scheduled for Sprint 19 | 2026-02-24 |
+| DD-027 | cache_manager.rs | High | SCHEDULED | Button padding below minimum (8, 4 instead of 12, 24) - scheduled for Sprint 19 | 2026-02-24 |
+| DD-026 | moment_switcher.rs | Medium | SCHEDULED | Unused semantic colors - scheduled for Sprint 19 | 2026-02-24 |
+| DD-025 | timeline.rs | Medium | SCHEDULED | Non-8-point TICK_HEIGHT calculation - scheduled for Sprint 19 | 2026-02-24 |
+| DD-024 | timeline.rs | High | SCHEDULED | Non-8-point TOTAL_HEIGHT calculation - scheduled for Sprint 19 | 2026-02-24 |
+| DD-023 | timeline.rs | High | SCHEDULED | Non-8-point LABEL_HEIGHT constant (18→16) - scheduled for Sprint 19 | 2026-02-24 |
 | DD-018 | timeline.rs | High | OUTDATED | Non-8-point spacing - code no longer exists at cited lines | 2026-02-24 |
 | DD-021 | station_selector.rs | Medium | SCHEDULED | Inline RGB colors instead of semantic constants - scheduled for sprint 18 | 2026-02-24 |
 | DD-020 | cache_manager.rs | High | SCHEDULED | Non-8-point padding values (10, 5, 20) - scheduled for sprint 18 | 2026-02-24 |

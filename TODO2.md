@@ -1,29 +1,29 @@
 # TODO2 - Agent 2
 
-> Sprint: 18
-> Focus Area: Cache UI + Visual Testing
-> Last Updated: 2026-02-24T07:51:54Z
+> Sprint: 20
+> Focus Area: Timeline Component Design Debt Fixes
+> Last Updated: 2026-02-24T12:08Z
 
 ## Tasks
 
-- [x] Verify cache management UI
-  - 📚 SKILLS: ./skills/frontend-design/SKILL.md
-  - Scope: Verify cache_manager.rs UI renders correctly - verify CacheManager functionality, size display, manual clear, configurable limit work as expected
-  - **SPRINT 18**
-  - Status: VERIFIED - 16 tests pass, all functionality implemented
-
-- [x] Visual regression test setup
-  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/frontend-design/SKILL.md
-  - Scope: Set up visual regression testing with golden images. PRD specifies **1.5% threshold** (not 3%) for visual differences. Fix threshold to 1.5%.
-  - **SPRINT 18**
-  - Status: ALREADY CORRECT - MAX_DIFF_THRESHOLD = 0.015 (1.5%)
-
-- [x] [DD-019] Fix ColorLegend — spacing(0) violation
-  - 📚 SKILLS: ./skills/iced-rs.md, ./skills/coding-guidelines.md
-  - Scope: Replace spacing(0) with spacing(XXS=2) at line 129 in tempest-app/src/color_legend.rs.
+- [ ] [DD-022] Fix Timeline TICK_HEIGHT constant - non-8-point spacing
+  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
+  - Scope: Change from 20px to 16px or 24px. See DESIGN_DEBT.md DD-022.
   - Fix estimate: S
-  - Status: ALREADY FIXED - Uses spacing::XXS (2px)
 
-## QA
+- [ ] [DD-023] Fix Timeline LABEL_HEIGHT constant - non-8-point spacing
+  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
+  - Scope: Change from 18px to 16px. See DESIGN_DEBT.md DD-023.
+  - Fix estimate: S
 
-- AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_2' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+- [ ] [DD-024] Fix Timeline TOTAL_HEIGHT calculation - non-8-point spacing
+  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
+  - Scope: Change from 86 to 88 (8-point compliant). See DESIGN_DEBT.md DD-024.
+  - Fix estimate: S
+
+- [ ] [DD-025] Fix Timeline size calculation using TICK_HEIGHT
+  - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
+  - Scope: Ensure 8-point compliant calculation. See DESIGN_DEBT.md DD-025.
+  - Fix estimate: S
+
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_2' with the current date.
