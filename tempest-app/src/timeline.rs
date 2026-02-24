@@ -394,7 +394,7 @@ impl TimelineState {
         accent_color: iced::Color,
         _track_color: iced::Color,
     ) -> Element<'_, TimelineMessage> {
-        const TIMELINE_HEIGHT: f32 = 56.0;
+        const TIMELINE_HEIGHT: f32 = 48.0;
         const TICK_HEIGHT: f32 = 16.0;
         const LABEL_HEIGHT: f32 = 16.0;
         const TOTAL_HEIGHT: f32 = TIMELINE_HEIGHT + TICK_HEIGHT + LABEL_HEIGHT;
@@ -458,7 +458,7 @@ impl TimelineState {
                         .spacing(spacing::XXS)
                         .align_x(iced::Alignment::Center),
                 )
-                .height(iced::Length::Fixed(TICK_HEIGHT + LABEL_HEIGHT + 10.0))
+                .height(iced::Length::Fixed(TICK_HEIGHT + LABEL_HEIGHT + 8.0))
             } else {
                 container(tick).height(iced::Length::Fixed(TICK_HEIGHT))
             };

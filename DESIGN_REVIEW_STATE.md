@@ -1,26 +1,28 @@
 # Design Review State
 
-> Last Updated: 2026-02-24T11:06:00Z
-> Total runs completed: 15
+> Last Updated: 2026-02-24T13:08:00Z
+> Total runs completed: 17
 
 ## Component Registry
 
 | Component | Path | Usage Count | Times Reviewed | Last Reviewed | Open Debt Items |
 | --------- | ---- | ----------- | -------------- | ------------- | --------------- |
 | App (main.rs) | tempest-app/src/main.rs | 1 | 3 | 2026-02-24 | none |
-| TimelineState | tempest-app/src/timeline.rs | 1 | 6 | 2026-02-24 | DD-022, DD-023, DD-024, DD-025 |
-| StationSelector | tempest-app/src/station_selector.rs | 1 | 4 | 2026-02-24 | DD-021 |
+| TimelineState | tempest-app/src/timeline.rs | 1 | 7 | 2026-02-24 | DD-024, DD-025, DD-031 |
+| StationSelector | tempest-app/src/station_selector.rs | 1 | 5 | 2026-02-24 | none |
 | ColorLegend | tempest-app/src/color_legend.rs | 6 | 4 | 2026-02-24 | DD-019, DD-029 |
 | ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5 | 5 | 2026-02-24 | DD-030 |
 | MomentSwitcher | tempest-app/src/moment_switcher.rs | 1 | 4 | 2026-02-24 | DD-026 |
-| OfflineIndicator | tempest-app/src/offline_indicator.rs | 1 | 3 | 2026-02-24 | none |
-| CacheManager | tempest-app/src/cache_manager.rs | 1 | 5 | 2026-02-24 | DD-020, DD-027, DD-028 |
+| OfflineIndicator | tempest-app/src/offline_indicator.rs | 1 | 4 | 2026-02-24 | none |
+| CacheManager | tempest-app/src/cache_manager.rs | 1 | 6 | 2026-02-24 | DD-020, DD-027, DD-028 |
 | Config | tempest-app/src/config.rs | 0 | 1 | 2026-02-24 | none |
 
 ## Recent Runs (last 20 only)
 
 | Run | Date | Components Reviewed | New Debt Items | False Positives |
 | --- | ---- | ------------------- | -------------- | ---------------- |
+| 17 | 2026-02-24 | CacheManager, OfflineIndicator | 0 | 0 |
+| 16 | 2026-02-24 | StationSelector, TimelineState | DD-024, DD-025, DD-031 | 0 |
 | 15 | 2026-02-24 | ColorLegend, ElevationTiltSelector | DD-029, DD-030 | 0 |
 | 14 | 2026-02-24 | MomentSwitcher, CacheManager | DD-026, DD-027, DD-028 | 2 |
 | 13 | 2026-02-24 | TimelineState, Config | DD-022, DD-023, DD-024, DD-025 | 0 |
@@ -41,12 +43,9 @@
 
 | Component | Total Violations | Unresolved |
 | --------- | ----------------- | ---------- |
-| TimelineState | 5 | 2 |
+| TimelineState | 5 | 3 |
 | CacheManager | 3 | 3 |
-| StationSelector | 3 | 1 |
+| StationSelector | 3 | 0 |
 | ColorLegend | 4 | 2 |
 | MomentSwitcher | 2 | 1 |
-| App | 1 | 0 |
 | ElevationTiltSelector | 3 | 1 |
-| OfflineIndicator | 2 | 0 |
-| Config | 0 | 0 |

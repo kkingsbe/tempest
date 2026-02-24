@@ -6,22 +6,22 @@
 
 ## Tasks
 
-- [ ] [DD-022] Fix Timeline TICK_HEIGHT constant - non-8-point spacing
+- [x] [DD-022] Fix Timeline TICK_HEIGHT constant - non-8-point spacing
   - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
   - Scope: Change from 20px to 16px or 24px. See DESIGN_DEBT.md DD-022.
   - Fix estimate: S
 
-- [ ] [DD-023] Fix Timeline LABEL_HEIGHT constant - non-8-point spacing
+- [x] [DD-023] Fix Timeline LABEL_HEIGHT constant - non-8-point spacing
   - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
   - Scope: Change from 18px to 16px. See DESIGN_DEBT.md DD-023.
   - Fix estimate: S
 
-- [ ] [DD-024] Fix Timeline TOTAL_HEIGHT calculation - non-8-point spacing
+- [x] [DD-024] Fix Timeline TOTAL_HEIGHT calculation - non-8-point spacing
   - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
   - Scope: Change from 86 to 88 (8-point compliant). See DESIGN_DEBT.md DD-024.
   - Fix estimate: S
 
-- [ ] [DD-025] Fix Timeline size calculation using TICK_HEIGHT
+- [x] [DD-025] Fix Timeline size calculation using TICK_HEIGHT
   - 📚 SKILLS: `./skills/iced-rs/SKILL.md`
   - Scope: Ensure 8-point compliant calculation. See DESIGN_DEBT.md DD-025.
   - Fix estimate: S

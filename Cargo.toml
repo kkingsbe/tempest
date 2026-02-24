@@ -5,7 +5,8 @@ members = [
     "tempest-fetch",
     "tempest-app",
     "tempest-render-core",
-    # "tempest-render",
+    "tempest-render",
+    "tempest-golden",
     # "tempest-map",
 ]
 

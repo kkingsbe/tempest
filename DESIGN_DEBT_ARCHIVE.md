@@ -1,10 +1,12 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T12:01:10Z
-> Total Archived: 28
+> Last Updated: 2026-02-24T13:02:00Z
+> Total Archived: 30
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-030 | timeline.rs | High | RESOLVED | Non-8-point LABEL_HEIGHT constant - fixed 2026-02-24 | 2026-02-24 |
+| DD-029 | timeline.rs | High | RESOLVED | Non-8-point TICK_HEIGHT constant - fixed 2026-02-24 | 2026-02-24 |
 | DD-029 | color_legend.rs | Medium | SCHEDULED | Non-8-point spacing values (30, 6, 90) - scheduled for Sprint 19 | 2026-02-24 |
 | DD-028 | cache_manager.rs | Medium | SCHEDULED | Typography scale violation (.size(5)) - scheduled for Sprint 19 | 2026-02-24 |
 | DD-027 | cache_manager.rs | High | SCHEDULED | Button padding below minimum (8, 4 instead of 12, 24) - scheduled for Sprint 19 | 2026-02-24 |

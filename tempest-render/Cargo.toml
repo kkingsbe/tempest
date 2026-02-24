@@ -5,8 +5,6 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.70"
 
-[workspace]
-
 [dependencies]
 wgpu = "23"
 wgpu-types = "23"

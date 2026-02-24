@@ -135,20 +135,20 @@ impl ElevationTiltSelector {
                 format!("{:.1}°", elevation)
             };
 
-            let btn =
-                if is_selected {
-                    button(text(label).size(14))
-                    .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
-                    .width(Length::Fixed(60.0))
-                    .height(Length::Fixed(40.0))
-                    .style(iced::widget::button::primary)
-                } else {
-                    button(text(label).size(14))
-                    .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
-                    .width(Length::Fixed(60.0))
-                    .height(Length::Fixed(40.0))
-                    .style(iced::widget::button::secondary)
-                };
+                let btn =
+                    if is_selected {
+                        button(text(label).size(14))
+                        .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
+                        .width(Length::Fixed(48.0))
+                        .height(Length::Fixed(48.0))
+                        .style(iced::widget::button::primary)
+                    } else {
+                        button(text(label).size(14))
+                        .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
+                        .width(Length::Fixed(48.0))
+                        .height(Length::Fixed(48.0))
+                        .style(iced::widget::button::secondary)
+                    };
 
             elevation_buttons = elevation_buttons.push(btn);
         }

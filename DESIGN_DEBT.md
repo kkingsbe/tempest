@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T12:16:24Z
-> Total Open: 5
+> Last Updated: 2026-02-24T13:02:00Z
+> Total Open: 4
 
 ---
 

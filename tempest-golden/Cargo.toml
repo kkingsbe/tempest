@@ -1,0 +1,16 @@
+[package]
+name = "tempest-golden"
+description = "Golden reference image management CLI for visual regression testing"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+image = "0.25"
+anyhow = "1.0"
+thiserror = "1.0"
+log = "0.4"
+env_logger = "0.11"
+similar = "2.4"
+chrono = "0.4"
