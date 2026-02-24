@@ -3,7 +3,7 @@
 //! A widget for selecting elevation tilts from a NEXRAD volume scan.
 //! Displays available elevation angles as buttons for user selection.
 
-use iced::widget::{button, row, text};
+use iced::widget::{button, container, row, text};
 use iced::{Element, Length, Theme};
 
 
@@ -175,6 +175,6 @@ impl ElevationTiltSelector {
         .spacing(12)
         .align_y(iced::Alignment::Center);
 
-        content.into()
+        container(content).padding(12).into()
     }
 }

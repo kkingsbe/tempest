@@ -1,10 +1,12 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T03:18:00Z
-> Total Archived: 13
+> Last Updated: 2026-02-24T05:06:00Z
+> Total Archived: 15
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-014 | TimelineState | Medium | OUTDATED | Raw RGB colors resolved (now uses semantic colors), new spacing violations in DD-018 | 2026-02-24 |
+| DD-016 | ElevationTiltSelector | Medium | RESOLVED | Container padding added - now has .padding(12) | 2026-02-24 |
 | DD-013 | CacheManager | Low | OUTDATED | false positive - no Color::from_rgb found | 2026-02-24 |
 | DD-015 | ColorLegend  | Low | OUTDATED | false positive - has compliant padding   | 2026-02-24 |
 | DD-001 | tempest-app/src/main.rs | High | SCHEDULED | Deprecated Sandbox API - scheduled for Sprint 15 | 2026-02-24 |
