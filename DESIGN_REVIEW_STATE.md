@@ -24,6 +24,7 @@
 
 | Run | Date | Components Reviewed | New Debt Items | False Positives |
 | --- | ---- | ------------------- | -------------- | ---------------- |
+| 27 | 2026-02-24 | OfflineIndicator, CacheManager | DD-053, DD-054, DD-055 | 0 |
 | 26 | 2026-02-24 | ColorLegend, ElevationTiltSelector | DD-051, DD-052 | 0 |
 | 25 | 2026-02-24 | ElevationTiltSelector, Timeline | DD-044, DD-045, DD-046, DD-047, DD-048, DD-049, DD-050 | 0 |
 | 23 | 2026-02-24 | StationSelector, ColorLegend | DD-041, DD-042, DD-043 | 1 |
@@ -39,5 +40,6 @@
 | Timeline | 4 | 4 |
 | StationSelector | 5 | 4 |
 | MomentSwitcher | 3 | 1 |
-| CacheManager | 5 | 0 |
+| CacheManager | 6 | 1 |
 | ColorLegend | 4 | 3 |
+| OfflineIndicator | 3 | 3 |
