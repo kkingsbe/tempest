@@ -1,7 +1,7 @@
 # Design Review State
 
-> Last Updated: 2026-02-24T05:06:00Z
-> Total runs completed: 10
+> Last Updated: 2026-02-24T06:06:00Z
+> Total runs completed: 11
 
 ## Component Registry
 
@@ -9,12 +9,12 @@
 | --------- | ---- | ----------- | -------------- | ------------- | --------------- |
 | App (main.rs) | tempest-app/src/main.rs | 1 | 3 | 2026-02-24 | none |
 | TimelineState | tempest-app/src/timeline.rs | 1 | 5 | 2026-02-24 | DD-018 |
-| StationSelector | tempest-app/src/station_selector.rs | 1 | 3 | 2026-02-24 | DD-017 |
-| ColorLegend | tempest-app/src/color_legend.rs | 6 | 2 | 2026-02-24 | none |
+| StationSelector | tempest-app/src/station_selector.rs | 1 | 3 | 2026-02-24 | none |
+| ColorLegend | tempest-app/src/color_legend.rs | 6 | 3 | 2026-02-24 | DD-019 |
 | ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5 | 3 | 2026-02-24 | none |
 | MomentSwitcher | tempest-app/src/moment_switcher.rs | 1 | 3 | 2026-02-24 | none |
 | OfflineIndicator | tempest-app/src/offline_indicator.rs | 1 | 3 | 2026-02-24 | none |
-| CacheManager | tempest-app/src/cache_manager.rs | 1 | 3 | 2026-02-24 | DD-012 |
+| CacheManager | tempest-app/src/cache_manager.rs | 1 | 4 | 2026-02-24 | DD-020 |
 
 ## Recent Runs (last 20 only)
 
@@ -30,16 +30,17 @@
 | 8 | 2026-02-24 | TimelineState, CacheManager | 0 | 2 |
 | 9 | 2026-02-24 | ColorLegend, StationSelector | DD-017 | 0 |
 | 10 | 2026-02-24 | MomentSwitcher, OfflineIndicator, TimelineState, CacheManager | DD-018 | 0 |
+| 11 | 2026-02-24 | ColorLegend, CacheManager | DD-019, DD-020 | 0 |
 
 ## Violation Counts (for worst-violations selection)
 
 | Component | Total Violations | Unresolved |
 | --------- | ----------------- | ---------- |
 | App | 1 | 0 |
-| TimelineState | 3 | 1 |
-| CacheManager | 2 | 1 |
-| StationSelector | 2 | 1 |
-| ColorLegend | 2 | 0 |
+| TimelineState | 4 | 1 |
+| CacheManager | 3 | 1 |
+| StationSelector | 2 | 0 |
+| ColorLegend | 3 | 1 |
 | ElevationTiltSelector | 2 | 0 |
 | MomentSwitcher | 2 | 0 |
 | OfflineIndicator | 2 | 0 |

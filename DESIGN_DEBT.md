@@ -1,56 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T05:55:00Z
-> Total Open: 2
-
----
-
-### DD-012: Non-8-point spacing in CacheManager
-
-- **Component:** `tempest-app/src/cache_manager.rs`
-- **Usage count:** 1 import
-- **Priority:** Medium (newly reviewed component, low usage but first review)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: MUST use XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32), XXL(48), XXXL(64)"
-- **Evidence:**
-```rust
-.padding(10)   // Line 259
-.padding(10)   // Line 264
-.padding(5)    // Line 275
-.spacing(10)   // Line 297
-.padding(10)   // Line 309
-.spacing(10)   // Lines 325, 331, 343
-.size(15)      // Lines 345, 350
-.spacing(5)    // Line 355
-.padding(20)   // Line 357
-```
-- **Line(s):** 259, 264, 275, 297, 309, 325, 331, 343, 345, 350, 355, 357
-- **Expected:** Use only [2, 4, 8, 12, 16, 24, 32, 48, 64] for spacing/padding
-- **Suggested fix:** Replace all non-8-point values with nearest 8-point equivalent
-- **Fix estimate:** M (15–45 min)
-- **Queued:** 2026-02-23T22:00:00Z
-- **Status:** RESOLVED (Sprint 16)
-
----
-
-### DD-017: Non-8-point spacing in StationSelector
-
-- **Component:** `tempest-app/src/station_selector.rs`
-- **Usage count:** 1 import
-- **Priority:** Medium (component reviewed multiple times, spacing violations)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: MUST use XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32), XXL(48), XXXL(64)"
-- **Evidence:**
-```rust
-container(details_column).padding(15).into()  // Line 167
-...
-.spacing(5)    // Line 207
-.padding(20)   // Line 209
-```
-- **Line(s):** 167, 207, 209
-- **Expected:** Use only [2, 4, 8, 12, 16, 24, 32, 48, 64] for spacing/padding
-- **Suggested fix:** Replace 15→16(MD), 5→4(XS), 20→16(BASE) or 24(LG)
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T04:07:00Z
-- **Status:** RESOLVED (Sprint 16)
+> Last Updated: 2026-02-24T06:06:00Z
+> Total Open: 3
 
 ---
 
@@ -74,6 +25,67 @@ let tick_button = button(tick_with_label)
 - **Suggested fix:** Replace spacing(0) with spacing(XXS) or spacing(XS), replace padding(0) with padding(XS) or remove padding
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T05:06:00Z
+- **Status:** OPEN
+
+---
+
+### DD-019: Non-8-point spacing (zero) in ColorLegend
+
+- **Component:** `tempest-app/src/color_legend.rs`
+- **Usage count:** 6 imports
+- **Priority:** Medium (high-usage component, spacing violation)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: MUST use XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32), XXL(48), XXXL(64)"
+- **Evidence:**
+```rust
+let mut color_bar = column!().spacing(0).width(Length::Fixed(30.0));  // Line 129
+```
+- **Line(s):** 129
+- **Expected:** Use only [2, 4, 8, 12, 16, 24, 32, 48, 64] for spacing (0 is not in the 8-point scale)
+- **Suggested fix:** Replace spacing(0) with spacing(XXS=2) or use a small positive value
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T06:06:00Z
+- **Status:** OPEN
+
+---
+
+### DD-020: Non-8-point padding values in CacheManager
+
+- **Component:** `tempest-app/src/cache_manager.rs`
+- **Usage count:** 1 import
+- **Priority:** High (multiple violations in component with history)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: MUST use XXS(2), XS(4), SM(8), MD(12), BASE(16), LG(24), XL(32), XXL(48), XXXL(64)"
+- **Evidence:**
+```rust
+button(text("Clear Cache"))
+    .on_press(CacheManagerMessage::ClearCache)
+    .width(Length::Fixed(150.0))
+    .padding(10)   // Line 252
+```
+```rust
+let settings_toggle = button(text(settings_toggle_text))
+    .on_press(CacheManagerMessage::ToggleSettings)
+    .padding(5);  // Line 268
+```
+```rust
+]
+.spacing(8)
+.padding(10);  // Line 298
+```
+```rust
+container(settings_content).padding(10).into()  // Line 300
+```
+```rust
+]
+.spacing(8)
+.align_x(Alignment::Start)
+.padding(20)  // Line 342
+.width(Length::FillPortion(1));
+```
+- **Line(s):** 252, 257, 268, 298, 300, 342
+- **Expected:** Use only [2, 4, 8, 12, 16, 24, 32, 48, 64] for padding
+- **Suggested fix:** Replace padding values: 10→8(SM) or 12(MD), 5→4(XS), 20→16(BASE) or 24(LG)
+- **Fix estimate:** M (15–45 min)
+- **Queued:** 2026-02-24T06:06:00Z
 - **Status:** OPEN
 
 ---
