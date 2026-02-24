@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T06:06:00Z
-> Total Open: 3
+> Last Updated: 2026-02-24T07:07:00Z
+> Total Open: 4
 
 ---
 
@@ -86,6 +86,38 @@ container(settings_content).padding(10).into()  // Line 300
 - **Suggested fix:** Replace padding values: 10→8(SM) or 12(MD), 5→4(XS), 20→16(BASE) or 24(LG)
 - **Fix estimate:** M (15–45 min)
 - **Queued:** 2026-02-24T06:06:00Z
+- **Status:** OPEN
+
+---
+
+### DD-021: Inline RGB colors instead of semantic constants in StationSelector
+
+- **Component:** `tempest-app/src/station_selector.rs`
+- **Usage count:** 1 import
+- **Priority:** Medium (component has semantic color constants defined but not used in view)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Never use raw hex/RGB values scattered throughout your view code. Define a semantic color palette and use it everywhere."
+- **Evidence:**
+```rust
+// Lines 138-141: Inline RGB colors instead of using colors::ACCENT and colors::TEXT_SECONDARY
+let btn = button(text(format!("{} - {}", station.id, station.name)).color(
+    if is_selected {
+        iced::Color::from_rgb(0.2, 0.6, 1.0)  // Should use colors::ACCENT
+    } else {
+        iced::Color::from_rgb(0.8, 0.8, 0.8)  // Should use colors::TEXT_SECONDARY
+    },
+))
+```
+```rust
+// Lines 200-202: Inline RGB color instead of using colors::TEXT_SECONDARY
+text(count_text.clone())
+    .color(iced::Color::from_rgb(0.5, 0.5, 0.5))  // Should use colors::TEXT_SECONDARY
+    .size(12),
+```
+- **Line(s):** 138-141, 200-202
+- **Expected:** Use the semantic color constants already defined in the file (colors::ACCENT, colors::TEXT_SECONDARY)
+- **Suggested fix:** Replace inline Color::from_rgb calls with the semantic constants from the colors module
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T07:07:00Z
 - **Status:** OPEN
 
 ---
