@@ -104,7 +104,7 @@ pub fn decode(bytes: &[u8]) -> Result<VolumeScan, DecodeError> {
     // MJD 20000 = approximately 2005-2006, use a fixed date for testing
     let timestamp = Utc.timestamp_opt(946728000 + time_ms as i64, 0).unwrap();
 
-    let mut volume = VolumeScan::new(station_id, timestamp, vcp);
+    let mut volume = VolumeScan::new(&station_id, timestamp, vcp);
 
     // Try to parse as multi-sweep data (has sweep flags at this position)
     if bytes.len() > offset + 10 {

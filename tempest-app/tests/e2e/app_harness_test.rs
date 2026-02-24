@@ -14,8 +14,7 @@ use tempest_decode::{decode, VolumeScan};
 use tempest_fetch::mock_s3::MockS3Server;
 use tempest_fetch::{decompress_bz2, Cache, CacheConfig, S3Client};
 use tempest_render_core::{
-    colorize, get_station, polar_to_latlng, RadarMoment,
-    RadarSentinel, Rgba,
+    colorize, get_station, polar_to_latlng, RadarMoment, RadarSentinel, Rgba,
 };
 
 // ============================================================================
@@ -81,7 +80,10 @@ impl AppTestHarness {
 
     /// Get the mock server URL.
     pub fn mock_url(&self) -> String {
-        self.mock_server.as_ref().expect("Mock server not initialized").url()
+        self.mock_server
+            .as_ref()
+            .expect("Mock server not initialized")
+            .url()
     }
 
     /// Register scan list for a station.
@@ -173,7 +175,11 @@ impl AppTestHarness {
                     if first_radial.gates.iter().any(|g| g.velocity.is_some()) {
                         moments.push("VEL".to_string());
                     }
-                    if first_radial.gates.iter().any(|g| g.spectrum_width.is_some()) {
+                    if first_radial
+                        .gates
+                        .iter()
+                        .any(|g| g.spectrum_width.is_some())
+                    {
                         moments.push("SW".to_string());
                     }
                 }
@@ -240,7 +246,8 @@ impl AppTestHarness {
     /// Select an elevation by index.
     pub fn select_elevation(&self, index: usize) -> Option<f32> {
         let state = self.state.lock().unwrap();
-        state.volume_scans
+        state
+            .volume_scans
             .last()
             .and_then(|v| v.sweeps.get(index))
             .map(|s| s.elevation)
@@ -314,16 +321,15 @@ fn create_synthetic_radar_data(station_id: &str, num_sweeps: usize) -> Vec<u8> {
 fn get_fixture_path(fixture_name: &str) -> PathBuf {
     // Try to find fixtures relative to the workspace
     let workspace_root = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
-    workspace_root.join("tempest-decode/tests/fixtures").join(fixture_name)
+    workspace_root
+        .join("tempest-decode/tests/fixtures")
+        .join(fixture_name)
 }
 
 /// Load fixture data if available, otherwise create synthetic data.
 fn load_or_create_test_data(station: &str, num_sweeps: usize) -> Vec<u8> {
     // Try to load real fixture data first
-    let test_fixtures = [
-        "Legacy_KTLX_20050509.ar2v",
-        "SuperRes_KTLX_20240427.ar2v",
-    ];
+    let test_fixtures = ["Legacy_KTLX_20050509.ar2v", "SuperRes_KTLX_20240427.ar2v"];
 
     for fixture in &test_fixtures {
         let path = get_fixture_path(fixture);
@@ -370,7 +376,9 @@ fn decode_gzip(data: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
 #[tokio::test]
 async fn test_full_pipeline_station_load() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register mock data for KTLX station
     let year = 2024;
@@ -425,7 +433,9 @@ async fn test_full_pipeline_station_load() {
 #[tokio::test]
 async fn test_decode_to_render_data() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register mock data
     let year = 2024;
@@ -454,7 +464,12 @@ async fn test_decode_to_render_data() {
         for radial in &sweep.radials {
             for gate in &radial.gates {
                 // Test polar to lat/lng conversion
-                let latlng = polar_to_latlng(site, radial.azimuth as f64, gate.range as f64, sweep.elevation as f64);
+                let latlng = polar_to_latlng(
+                    site,
+                    radial.azimuth as f64,
+                    gate.range as f64,
+                    sweep.elevation as f64,
+                );
 
                 // Verify coordinates are valid
                 assert!(
@@ -481,13 +496,14 @@ async fn test_decode_to_render_data() {
 
     // Test colorization (render data preparation)
     let test_reflectivity = 30.0_f32;
-    let color = colorize(RadarMoment::Reflectivity, test_reflectivity, RadarSentinel::Valid);
+    let color = colorize(
+        RadarMoment::Reflectivity,
+        test_reflectivity,
+        RadarSentinel::Valid,
+    );
 
     // Verify color is not transparent
-    assert!(
-        color.a > 0,
-        "Reflectivity color should not be transparent"
-    );
+    assert!(color.a > 0, "Reflectivity color should not be transparent");
 
     println!(
         "✓ Generated {} renderable coordinates, colorized reflectivity {} -> {:?}",
@@ -499,7 +515,9 @@ async fn test_decode_to_render_data() {
 #[tokio::test]
 async fn test_multiple_moments_extraction() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register mock data
     let year = 2024;
@@ -540,7 +558,9 @@ async fn test_multiple_moments_extraction() {
 #[tokio::test]
 async fn test_timeline_data_assembly() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register multiple scans for timeline
     let year = 2024;
@@ -604,7 +624,9 @@ async fn test_timeline_data_assembly() {
 #[tokio::test]
 async fn test_pipeline_with_compressed_data() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register mock data
     let year = 2024;
@@ -619,7 +641,9 @@ async fn test_pipeline_with_compressed_data() {
 
     // Compress with bzip2
     let mut encoder = bzip2::write::BzEncoder::new(Vec::new(), bzip2::Compression::default());
-    encoder.write_all(&original_data).expect("Failed to write to encoder");
+    encoder
+        .write_all(&original_data)
+        .expect("Failed to write to encoder");
     let compressed_data = encoder.finish().expect("Failed to finish compression");
 
     // Register compressed data
@@ -654,12 +678,12 @@ async fn test_pipeline_with_compressed_data() {
     let volume = decode(&decompressed).expect("Failed to decode");
 
     // Verify we got valid sweeps
-    assert!(
-        !volume.sweeps.is_empty(),
-        "Should have decoded sweeps"
-    );
+    assert!(!volume.sweeps.is_empty(), "Should have decoded sweeps");
 
-    println!("✓ Pipeline handled compressed data: {} sweeps", volume.sweeps.len());
+    println!(
+        "✓ Pipeline handled compressed data: {} sweeps",
+        volume.sweeps.len()
+    );
 }
 
 /// Test: Station registry lookup works correctly.
@@ -672,7 +696,10 @@ async fn test_station_registry_lookup() {
     let site = ktlx.unwrap();
     assert_eq!(site.id, "KTLX");
     assert!((site.lat - 35.4183).abs() < 0.1, "KTLX lat should be ~35.4");
-    assert!((site.lon - (-97.4514)).abs() < 0.1, "KTLX lon should be ~-97.5");
+    assert!(
+        (site.lon - (-97.4514)).abs() < 0.1,
+        "KTLX lon should be ~-97.5"
+    );
     assert!(site.elevation_m > 0.0, "KTLX elevation should be positive");
 
     // Test case insensitivity
@@ -697,8 +724,13 @@ async fn test_full_end_to_end_pipeline() {
 
     // Step 1: Create test harness
     println!("1. Creating test harness...");
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
-    println!("   ✓ Harness created with mock S3 at {}\n", harness.mock_url());
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
+    println!(
+        "   ✓ Harness created with mock S3 at {}\n",
+        harness.mock_url()
+    );
 
     // Step 2: Set up mock data
     println!("2. Setting up mock data...");
@@ -734,7 +766,8 @@ async fn test_full_end_to_end_pipeline() {
     let volume = decode(&fetched_data).expect("Failed to decode");
     println!(
         "   ✓ Decoded: station={}, sweeps={}\n",
-        volume.station_id, volume.sweeps.len()
+        volume.station_id,
+        volume.sweeps.len()
     );
 
     // Update harness state manually (since we bypassed fetch_and_decode)
@@ -762,7 +795,11 @@ async fn test_full_end_to_end_pipeline() {
 
                 // Colorize the data
                 let color = if let Some(reflectivity) = gate.reflectivity {
-                    colorize(RadarMoment::Reflectivity, reflectivity, RadarSentinel::Valid)
+                    colorize(
+                        RadarMoment::Reflectivity,
+                        reflectivity,
+                        RadarSentinel::Valid,
+                    )
                 } else {
                     Rgba::TRANSPARENT
                 };
@@ -782,14 +819,8 @@ async fn test_full_end_to_end_pipeline() {
         Some("KTLX".to_string()),
         "Station should be KTLX"
     );
-    assert!(
-        state.decoded_sweep_count > 0,
-        "Should have decoded sweeps"
-    );
-    assert!(
-        !render_points.is_empty(),
-        "Should have renderable points"
-    );
+    assert!(state.decoded_sweep_count > 0, "Should have decoded sweeps");
+    assert!(!render_points.is_empty(), "Should have renderable points");
 
     println!("   ✓ All verifications passed!\n");
 
@@ -814,16 +845,10 @@ async fn test_station_discovery_returns_expected_stations() {
 
     // Test that KTLX (Oklahoma City) is in the registry
     let ktlx = get_station("KTLX");
-    assert!(
-        ktlx.is_some(),
-        "KTLX should be found in station registry"
-    );
+    assert!(ktlx.is_some(), "KTLX should be found in station registry");
 
     let station = ktlx.unwrap();
-    assert_eq!(
-        station.id, "KTLX",
-        "Station ID should be KTLX"
-    );
+    assert_eq!(station.id, "KTLX", "Station ID should be KTLX");
 
     // Test that multiple known stations are available
     let stations = ["KICT", "KTYX", "KEWX", "KFWS"];
@@ -901,10 +926,7 @@ async fn test_station_metadata_location_and_name() {
     );
 
     // Verify station has a name
-    assert!(
-        !station.name.is_empty(),
-        "Station should have a name"
-    );
+    assert!(!station.name.is_empty(), "Station should have a name");
 
     // Verify elevation is positive (NEXRAD stations are land-based)
     assert!(
@@ -927,10 +949,7 @@ async fn test_station_metadata_location_and_name() {
 
     println!(
         "✓ Station metadata verified: {} ({}, {}) at {}m elevation",
-        station.name,
-        station.lat,
-        station.lon,
-        station.elevation_m
+        station.name, station.lat, station.lon, station.elevation_m
     );
 }
 
@@ -946,7 +965,9 @@ async fn test_data_polling_returns_available_scans() {
     use chrono::NaiveDate;
 
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register mock scan list
     let year = 2024;
@@ -962,8 +983,7 @@ async fn test_data_polling_returns_available_scans() {
 
     // Use the S3 client to list scans
     let client = harness.client.as_ref().expect("S3 client not initialized");
-    let date = NaiveDate::from_ymd_opt(year, month, day)
-        .expect("Invalid date");
+    let date = NaiveDate::from_ymd_opt(year, month, day).expect("Invalid date");
 
     let scan_list = client
         .list_scans("KTLX", date)
@@ -981,15 +1001,8 @@ async fn test_data_polling_returns_available_scans() {
 
     // Verify scan filenames
     for (i, scan) in scan_list.iter().enumerate() {
-        assert_eq!(
-            scan.filename, scans[i],
-            "Scan {} filename should match",
-            i
-        );
-        assert_eq!(
-            scan.station, "KTLX",
-            "Scan station should be KTLX"
-        );
+        assert_eq!(scan.filename, scans[i], "Scan {} filename should match", i);
+        assert_eq!(scan.station, "KTLX", "Scan station should be KTLX");
     }
 
     println!(
@@ -1004,7 +1017,9 @@ async fn test_data_polling_returns_available_scans() {
 #[tokio::test]
 async fn test_data_polling_multiple_scans_sequential() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register multiple scans
     let year = 2024;
@@ -1047,10 +1062,7 @@ async fn test_data_polling_multiple_scans_sequential() {
     }
 
     // Verify at least some sweeps were decoded
-    assert!(
-        total_sweeps > 0,
-        "Should have decoded at least some sweeps"
-    );
+    assert!(total_sweeps > 0, "Should have decoded at least some sweeps");
 
     println!(
         "✓ Successfully fetched {} scans with {} total sweeps",
@@ -1067,7 +1079,9 @@ async fn test_data_polling_filters_old_scans() {
     use chrono::NaiveDate;
 
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register scans with different timestamps
     let year = 2024;
@@ -1083,8 +1097,7 @@ async fn test_data_polling_filters_old_scans() {
 
     // List scans
     let client = harness.client.as_ref().expect("S3 client not initialized");
-    let date = NaiveDate::from_ymd_opt(year, month, day)
-        .expect("Invalid date");
+    let date = NaiveDate::from_ymd_opt(year, month, day).expect("Invalid date");
 
     let scan_list = client
         .list_scans("KTLX", date)
@@ -1102,10 +1115,7 @@ async fn test_data_polling_filters_old_scans() {
         // The timestamp should be parseable - use format instead of year()/month()
         let scan_year = scan.timestamp.format("%Y").to_string();
         let scan_month = scan.timestamp.format("%m").to_string();
-        assert!(
-            scan_year == format!("{}", year),
-            "Scan year should match"
-        );
+        assert!(scan_year == format!("{}", year), "Scan year should match");
         assert!(
             scan_month == format!("{:02}", month),
             "Scan month should match"
@@ -1124,7 +1134,9 @@ async fn test_data_polling_filters_old_scans() {
 #[tokio::test]
 async fn test_data_polling_timestamp_based_filtering() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register scans at different times
     let year = 2024;
@@ -1147,7 +1159,8 @@ async fn test_data_polling_timestamp_based_filtering() {
     }
 
     // Define a cutoff time (after 12:00)
-    let _cutoff = chrono::Utc.with_ymd_and_hms(year, month, day, 12, 0, 0)
+    let _cutoff = chrono::Utc
+        .with_ymd_and_hms(year, month, day, 12, 0, 0)
         .single()
         .unwrap_or_else(chrono::Utc::now);
 
@@ -1188,7 +1201,9 @@ async fn test_data_polling_timestamp_based_filtering() {
 #[tokio::test]
 async fn test_timeline_maintains_correct_scan_order() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register scans in chronological order
     let year = 2024;
@@ -1258,7 +1273,9 @@ async fn test_timeline_maintains_correct_scan_order() {
 #[tokio::test]
 async fn test_timeline_tracks_decoded_data_correctly() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Register multiple scans with different characteristics
     let year = 2024;
@@ -1334,8 +1351,7 @@ async fn test_timeline_tracks_decoded_data_correctly() {
 
     println!(
         "✓ Timeline correctly tracks {} decoded scans with {} total sweeps",
-        state.timeline_scan_count,
-        total_decoded_sweeps
+        state.timeline_scan_count, total_decoded_sweeps
     );
 }
 
@@ -1353,7 +1369,9 @@ async fn test_timeline_tracks_decoded_data_correctly() {
 #[tokio::test]
 async fn test_station_selection_and_switching_workflow() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Setup: Register data for two stations
     let year = 2024;
@@ -1445,7 +1463,9 @@ async fn test_station_selection_and_switching_workflow() {
 #[tokio::test]
 async fn test_timeline_navigation_workflow() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Setup: Register multiple scans at different times
     let year = 2024;
@@ -1476,7 +1496,11 @@ async fn test_timeline_navigation_workflow() {
         .await
         .expect("Failed to fetch first scan");
     harness.add_to_timeline(&volume1);
-    println!("✓ Added first scan: {} ({} sweeps)", scans[0], volume1.sweeps.len());
+    println!(
+        "✓ Added first scan: {} ({} sweeps)",
+        scans[0],
+        volume1.sweeps.len()
+    );
 
     // Step 2: Fetch and add second scan
     let volume2 = harness
@@ -1484,7 +1508,11 @@ async fn test_timeline_navigation_workflow() {
         .await
         .expect("Failed to fetch second scan");
     harness.add_to_timeline(&volume2);
-    println!("✓ Added second scan: {} ({} sweeps)", scans[1], volume2.sweeps.len());
+    println!(
+        "✓ Added second scan: {} ({} sweeps)",
+        scans[1],
+        volume2.sweeps.len()
+    );
 
     // Step 3: Fetch and add third scan
     let volume3 = harness
@@ -1492,18 +1520,16 @@ async fn test_timeline_navigation_workflow() {
         .await
         .expect("Failed to fetch third scan");
     harness.add_to_timeline(&volume3);
-    println!("✓ Added third scan: {} ({} sweeps)", scans[2], volume3.sweeps.len());
+    println!(
+        "✓ Added third scan: {} ({} sweeps)",
+        scans[2],
+        volume3.sweeps.len()
+    );
 
     // Verify timeline has 3 scans
     let state = harness.get_state();
-    assert_eq!(
-        state.timeline_scan_count, 3,
-        "Timeline should have 3 scans"
-    );
-    assert_eq!(
-        state.volume_scans.len(), 3,
-        "Should have 3 volume scans"
-    );
+    assert_eq!(state.timeline_scan_count, 3, "Timeline should have 3 scans");
+    assert_eq!(state.volume_scans.len(), 3, "Should have 3 volume scans");
 
     // Step 4: Add remaining scans to timeline
     for filename in &scans[3..] {
@@ -1512,7 +1538,11 @@ async fn test_timeline_navigation_workflow() {
             .await
             .expect(&format!("Failed to fetch {}", filename));
         harness.add_to_timeline(&volume);
-        println!("✓ Added scan: {} ({} sweeps)", filename, volume.sweeps.len());
+        println!(
+            "✓ Added scan: {} ({} sweeps)",
+            filename,
+            volume.sweeps.len()
+        );
     }
 
     // Step 5: Verify final timeline state
@@ -1559,7 +1589,9 @@ async fn test_timeline_navigation_workflow() {
 #[tokio::test]
 async fn test_moment_switching_workflow() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Setup: Register scan data
     let year = 2024;
@@ -1621,7 +1653,10 @@ async fn test_moment_switching_workflow() {
     // Verify that moment switching simulation works
     // (Even if moments aren't in synthetic data, the mechanism should work)
     let _test_moment = harness.select_moment("UNKNOWN");
-    assert!(!harness.select_moment("UNKNOWN"), "Unknown moment should not be available");
+    assert!(
+        !harness.select_moment("UNKNOWN"),
+        "Unknown moment should not be available"
+    );
 
     println!(
         "✓ Moment switching workflow complete: {} moments tracked, {} sweeps decoded",
@@ -1643,7 +1678,9 @@ async fn test_moment_switching_workflow() {
 #[tokio::test]
 async fn test_elevation_tilt_selection_workflow() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Setup: Register scan data with multiple sweeps (different elevations)
     let year = 2024;
@@ -1668,10 +1705,7 @@ async fn test_elevation_tilt_selection_workflow() {
     println!("✓ Available elevations: {:?}", elevations);
 
     // Verify we have multiple elevation angles
-    assert!(
-        !elevations.is_empty(),
-        "Should have at least one elevation"
-    );
+    assert!(!elevations.is_empty(), "Should have at least one elevation");
 
     // Step 2: Select first elevation (lowest tilt)
     let elevation0 = harness.select_elevation(0);
@@ -1752,7 +1786,9 @@ async fn test_elevation_tilt_selection_workflow() {
 #[tokio::test]
 async fn test_combined_user_workflow_session() {
     // Create test harness
-    let mut harness = AppTestHarness::new().await.expect("Failed to create harness");
+    let mut harness = AppTestHarness::new()
+        .await
+        .expect("Failed to create harness");
 
     // Setup: Data for two stations
     let year = 2024;
@@ -1821,7 +1857,8 @@ async fn test_combined_user_workflow_session() {
         "Timeline should have 3 scans total"
     );
     assert_eq!(
-        final_state.volume_scans.len(), 3,
+        final_state.volume_scans.len(),
+        3,
         "Should have 3 volume scans"
     );
 
@@ -1833,7 +1870,6 @@ async fn test_combined_user_workflow_session() {
 
     println!(
         "✓ Combined user workflow complete: {} stations, {} timeline scans",
-        2,
-        final_state.timeline_scan_count
+        2, final_state.timeline_scan_count
     );
 }

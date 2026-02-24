@@ -44,11 +44,12 @@ pub fn is_online() -> bool {
 pub fn check_connectivity(host: &str, port: u16) -> bool {
     let address = format!("{}:{}", host, port);
 
-    TcpStream::connect_timeout(
-        &address.parse().expect("Invalid IP address"),
-        Duration::from_secs(TIMEOUT_SECS),
-    )
-    .is_ok()
+    match address.parse().ok() {
+        Some(socket_addr) => {
+            TcpStream::connect_timeout(&socket_addr, Duration::from_secs(TIMEOUT_SECS)).is_ok()
+        }
+        None => false,
+    }
 }
 
 /// Periodic connectivity checker that runs checks at regular intervals.

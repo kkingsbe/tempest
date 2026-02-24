@@ -11,7 +11,7 @@ fn benchmark_decode_radial(c: &mut Criterion) {
     // Load test fixture data
     let fixture_path = "tests/fixtures/SuperRes_KTLX_20240427.ar2v";
     let data = fs::read(fixture_path).expect("Failed to read fixture file");
-    
+
     c.benchmark_group("decode")
         .sample_size(10)
         .measurement_time(std::time::Duration::from_secs(5))
@@ -28,10 +28,10 @@ fn benchmark_decode_radial(c: &mut Criterion) {
 fn benchmark_decode_minimal_radial(c: &mut Criterion) {
     // Create minimal radial data for faster benchmarking
     // This tests the core decoding path without file I/O
-    
+
     // Build a minimal NEXRAD Message 31 radial
     let mut minimal_data = Vec::new();
-    
+
     // Message size (4 bytes) - 24 bytes total
     minimal_data.extend_from_slice(&24u32.to_be_bytes());
     // Message type (2 bytes) - 31 for radial
@@ -52,7 +52,7 @@ fn benchmark_decode_minimal_radial(c: &mut Criterion) {
     minimal_data.extend_from_slice(&100u16.to_be_bytes());
     // Gate range (2 bytes) - 250m
     minimal_data.extend_from_slice(&250u16.to_be_bytes());
-    
+
     c.benchmark_group("decode_minimal")
         .sample_size(20)
         .measurement_time(std::time::Duration::from_secs(3))
@@ -68,7 +68,7 @@ fn benchmark_decode_minimal_radial(c: &mut Criterion) {
 fn benchmark_decode_memory(c: &mut Criterion) {
     let fixture_path = "tests/fixtures/SuperRes_KTLX_20240427.ar2v";
     let data = fs::read(fixture_path).expect("Failed to read fixture file");
-    
+
     c.benchmark_group("memory")
         .bench_function("decode_with_allocation", |b| {
             b.iter(|| {

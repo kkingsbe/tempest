@@ -52,17 +52,17 @@ impl StationId {
     /// # Example
     /// ```ignore
     /// let station = StationId::new(*b"KTLX");
-    /// assert_eq!(station.as_str_lossy(), "KTLX");
+    /// assert_eq!(station.to_string_lossy(), "KTLX");
     /// ```
     #[inline]
-    pub fn as_str_lossy(&self) -> String {
+    pub fn to_string_lossy(&self) -> String {
         String::from_utf8_lossy(&self.0).into_owned()
     }
 }
 
 impl std::fmt::Display for StationId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.as_str_lossy())
+        write!(f, "{}", self.to_string_lossy())
     }
 }
 
@@ -386,9 +386,9 @@ pub struct VolumeScan {
 
 impl VolumeScan {
     /// Create a new volume scan
-    pub fn new(station_id: String, timestamp: DateTime<Utc>, vcp: u16) -> Self {
+    pub fn new(station_id: &str, timestamp: DateTime<Utc>, vcp: u16) -> Self {
         Self {
-            station_id,
+            station_id: station_id.to_string(),
             timestamp,
             vcp,
             sweeps: Vec::new(),
@@ -462,7 +462,7 @@ mod tests {
 
     #[test]
     fn test_volume_scan_creation() {
-        let volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+        let volume = VolumeScan::new("KTLX", Utc::now(), 215);
         assert_eq!(volume.station_id, "KTLX");
         assert_eq!(volume.vcp, 215);
         assert!(volume.sweeps.is_empty());

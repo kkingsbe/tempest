@@ -102,7 +102,10 @@ impl MockS3Server {
 
         xml.push_str("</ListBucketResult>");
 
-        let path = format!("/{}/{}/{:02}/{}?list-type=2&delimiter=/", year, month, day, station);
+        let path = format!(
+            "/{}/{}/{:02}/{}?list-type=2&delimiter=/",
+            year, month, day, station
+        );
 
         // Use &str to avoid the &String issue
         self.server
@@ -193,13 +196,7 @@ impl MockS3Server {
         );
 
         // Register KICT (Wichita) scans
-        self.register_list_scans_response(
-            "KICT",
-            2024,
-            3,
-            15,
-            &["KICT20240315_110000"],
-        );
+        self.register_list_scans_response("KICT", 2024, 3, 15, &["KICT20240315_110000"]);
     }
 
     /// Create a ScanMeta object for testing.

@@ -6,10 +6,10 @@ use iced::widget::{button, column, container, scrollable, text, text_input, Colu
 use iced::{Alignment, Element, Length};
 use tempest_fetch::{list_all_stations, Station};
 
-use crate::spacing;
 use crate::colors::accent::PRIMARY as ACCENT;
 use crate::colors::text::PRIMARY as TEXT_PRIMARY;
 use crate::colors::text::SECONDARY as TEXT_SECONDARY;
+use crate::spacing;
 
 /// Maximum number of stations to show in the list
 const MAX_VISIBLE_STATIONS: usize = 15;
@@ -128,13 +128,13 @@ impl StationSelector {
                 .as_ref()
                 .is_some_and(|s| s.id == station.id);
 
-            let btn = button(text(format!("{} - {}", station.id, station.name)).color(
-                if is_selected {
+            let btn = button(
+                text(format!("{} - {}", station.id, station.name)).color(if is_selected {
                     ACCENT
                 } else {
                     TEXT_PRIMARY
-                },
-            ))
+                }),
+            )
             .on_press(StationSelectorMessage::StationSelected(station.clone()))
             .width(Length::Fill)
             .padding(8);
@@ -191,9 +191,7 @@ impl StationSelector {
             text("").size(10),
             text("Search").color(label_style).size(14),
             filter_input,
-            text(count_text.clone())
-                .color(TEXT_SECONDARY)
-                .size(12),
+            text(count_text.clone()).color(TEXT_SECONDARY).size(12),
             text("").size(5),
             station_list,
             text("").size(15),

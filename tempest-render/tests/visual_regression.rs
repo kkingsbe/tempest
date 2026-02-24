@@ -54,15 +54,15 @@ pub fn init_wgpu_software_backend() -> Result<(wgpu::Instance, wgpu::Adapter), S
         (wgpu::Backends::METAL, "Metal"),
         (wgpu::Backends::DX12, "DX12"),
     ];
-    
+
     let mut last_error = String::new();
-    
+
     for (backends, name) in backends_to_try {
         // Skip empty backends
         if backends.is_empty() {
             continue;
         }
-        
+
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             backends,
             dx12_shader_compiler: Default::default(),
@@ -71,13 +71,11 @@ pub fn init_wgpu_software_backend() -> Result<(wgpu::Instance, wgpu::Adapter), S
         });
 
         // Request adapter (device)
-        match futures::executor::block_on(instance.request_adapter(
-            &wgpu::RequestAdapterOptions {
-                power_preference: wgpu::PowerPreference::LowPower,
-                compatible_surface: None,
-                force_fallback_adapter: true, // Force software rendering
-            },
-        )) {
+        match futures::executor::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
+            power_preference: wgpu::PowerPreference::LowPower,
+            compatible_surface: None,
+            force_fallback_adapter: true, // Force software rendering
+        })) {
             Some(adapter) => {
                 println!("Successfully initialized wgpu with {} backend", name);
                 return Ok((instance, adapter));
@@ -88,8 +86,11 @@ pub fn init_wgpu_software_backend() -> Result<(wgpu::Instance, wgpu::Adapter), S
             }
         }
     }
-    
-    Err(format!("No suitable wgpu adapter found. Last error: {}", last_error))
+
+    Err(format!(
+        "No suitable wgpu adapter found. Last error: {}",
+        last_error
+    ))
 }
 
 /// Create a wgpu Device and Queue for rendering.
@@ -241,7 +242,8 @@ pub fn save_png(pixels: &[u8], width: u32, height: u32, path: &Path) -> Result<(
             .map_err(|e| format!("Failed to create directory: {}", e))?;
     }
 
-    img.save(path).map_err(|e| format!("Failed to save PNG: {}", e))
+    img.save(path)
+        .map_err(|e| format!("Failed to save PNG: {}", e))
 }
 
 /// Load a PNG file into RGBA pixel data.
@@ -463,7 +465,13 @@ pub fn generate_test_pattern(width: u32, height: u32) -> Vec<u8> {
 /// # Returns
 ///
 /// * `Vec<u8>` - Raw RGBA pixel data
-pub fn generate_radar_pattern(width: u32, height: u32, center_x: f64, center_y: f64, spread: f64) -> Vec<u8> {
+pub fn generate_radar_pattern(
+    width: u32,
+    height: u32,
+    center_x: f64,
+    center_y: f64,
+    spread: f64,
+) -> Vec<u8> {
     let cx = (width as f64 * center_x) as f32;
     let cy = (height as f64 * center_y) as f32;
     let max_radius = ((width as f32 / 2.0).powi(2) + (height as f32 / 2.0).powi(2)).sqrt();
@@ -477,7 +485,7 @@ pub fn generate_radar_pattern(width: u32, height: u32, center_x: f64, center_y: 
             let dy = y as f32 - cy;
             let distance = (dx * dx + dy * dy).sqrt();
             let normalized_dist = distance / max_radius;
-            
+
             // Create radar-like echo pattern
             let intensity = if normalized_dist < spread_f32 {
                 // Inside radar range - create echo pattern
@@ -486,9 +494,9 @@ pub fn generate_radar_pattern(width: u32, height: u32, center_x: f64, center_y: 
             } else {
                 0.0
             };
-            
+
             let t = intensity.clamp(0.0, 1.0);
-            
+
             // NEXRAD reflectivity color scale: green -> yellow -> red -> purple
             let (r, g, b) = if t < 0.25 {
                 // Light green to green
@@ -507,9 +515,9 @@ pub fn generate_radar_pattern(width: u32, height: u32, center_x: f64, center_y: 
                 let s = (t - 0.75) / 0.25;
                 (255, 0, (128.0 * s) as u8)
             };
-            
+
             let a = if t > 0.01 { 200 } else { 0 }; // Semi-transparent background
-            
+
             img.put_pixel(x, y, Rgba([r, g, b, a]));
         }
     }
@@ -564,7 +572,11 @@ pub fn generate_reflectivity_pattern(width: u32, height: u32) -> Vec<u8> {
 
             // Create some echo structure
             let echo_pattern = ((t * 20.0).sin() * 0.3 + 0.7).max(0.0);
-            let alpha = if t < 0.9 { (echo_pattern * 255.0) as u8 } else { 0 };
+            let alpha = if t < 0.9 {
+                (echo_pattern * 255.0) as u8
+            } else {
+                0
+            };
 
             img.put_pixel(x, y, Rgba([r, g, b, alpha]));
         }
@@ -596,7 +608,7 @@ pub fn generate_velocity_pattern(width: u32, height: u32) -> Vec<u8> {
         for x in 0..width {
             let dx = (x as f32 - cx) / cx;
             let dy = (y as f32 - cy) / cy;
-            
+
             // Create a velocity field pattern (approaching/receding)
             let velocity = dx.sin() * dy.cos();
             let t = (velocity + 1.0) / 2.0; // Normalize to 0-1
@@ -617,7 +629,11 @@ pub fn generate_velocity_pattern(width: u32, height: u32) -> Vec<u8> {
 
             // Fade out at edges
             let dist = (dx * dx + dy * dy).sqrt();
-            let alpha = if dist < 1.0 { ((1.0 - dist) * 255.0) as u8 } else { 0 };
+            let alpha = if dist < 1.0 {
+                ((1.0 - dist) * 255.0) as u8
+            } else {
+                0
+            };
 
             img.put_pixel(x, y, Rgba([r, g, b, alpha]));
         }
@@ -628,7 +644,7 @@ pub fn generate_velocity_pattern(width: u32, height: u32) -> Vec<u8> {
 
 /// Generate a spectrum width-style radar pattern with brown/tan colors.
 ///
-/// Spectrum Width shows the spread of velocities within a resolution volume - 
+/// Spectrum Width shows the spread of velocities within a resolution volume -
 /// a measure of turbulence and velocity dispersion. It is typically displayed
 /// in brown/tan colors following meteorological conventions.
 ///
@@ -650,12 +666,12 @@ pub fn generate_spectrum_width_pattern(width: u32, height: u32) -> Vec<u8> {
         for x in 0..width {
             let dx = (x as f32 - cx) / cx;
             let dy = (y as f32 - cy) / cy;
-            
+
             // Create a spectrum width pattern - shows turbulence/spread
             // Use radial patterns with varying widths to simulate spectrum width
             let dist = (dx * dx + dy * dy).sqrt();
             let angle = dy.atan2(dx);
-            
+
             // Create turbulence-like pattern
             let turbulence = (angle * 3.0).sin() * 0.3 + (dist * 10.0).sin() * 0.2;
             let t = ((turbulence + 0.5).clamp(0.0, 1.0) * (1.0 - dist * 0.5)).clamp(0.0, 1.0);
@@ -665,23 +681,43 @@ pub fn generate_spectrum_width_pattern(width: u32, height: u32) -> Vec<u8> {
             let (r, g, b) = if t < 0.25 {
                 // Very low spectrum width - light tan
                 let s = t / 0.25;
-                ((180.0 + 75.0 * s) as u8, (160.0 + 60.0 * s) as u8, (120.0 + 50.0 * s) as u8)
+                (
+                    (180.0 + 75.0 * s) as u8,
+                    (160.0 + 60.0 * s) as u8,
+                    (120.0 + 50.0 * s) as u8,
+                )
             } else if t < 0.5 {
                 // Low to medium - tan to light brown
                 let s = (t - 0.25) / 0.25;
-                ((150.0 + 30.0 * s) as u8, (130.0 + 30.0 * s) as u8, (100.0 + 20.0 * s) as u8)
+                (
+                    (150.0 + 30.0 * s) as u8,
+                    (130.0 + 30.0 * s) as u8,
+                    (100.0 + 20.0 * s) as u8,
+                )
             } else if t < 0.75 {
                 // Medium to high - light brown to brown
                 let s = (t - 0.5) / 0.25;
-                ((120.0 + 30.0 * s) as u8, (100.0 + 30.0 * s) as u8, (80.0 + 20.0 * s) as u8)
+                (
+                    (120.0 + 30.0 * s) as u8,
+                    (100.0 + 30.0 * s) as u8,
+                    (80.0 + 20.0 * s) as u8,
+                )
             } else {
                 // High spectrum width - dark brown
                 let s = (t - 0.75) / 0.25;
-                ((90.0 + 30.0 * s) as u8, (70.0 + 30.0 * s) as u8, (50.0 + 30.0 * s) as u8)
+                (
+                    (90.0 + 30.0 * s) as u8,
+                    (70.0 + 30.0 * s) as u8,
+                    (50.0 + 30.0 * s) as u8,
+                )
             };
 
             // Fade out at edges
-            let alpha = if dist < 1.0 { ((1.0 - dist) * 255.0) as u8 } else { 0 };
+            let alpha = if dist < 1.0 {
+                ((1.0 - dist) * 255.0) as u8
+            } else {
+                0
+            };
 
             img.put_pixel(x, y, Rgba([r, g, b, alpha]));
         }
@@ -751,15 +787,7 @@ mod tests {
     fn test_compare_identical_images() {
         let pixels = generate_test_pattern(100, 100);
 
-        let result = compare_images(
-            &pixels,
-            100,
-            100,
-            &pixels,
-            100,
-            100,
-        )
-        .unwrap();
+        let result = compare_images(&pixels, 100, 100, &pixels, 100, 100).unwrap();
 
         assert!(result.passes);
         assert_eq!(result.diff_pixels, 0);
@@ -778,15 +806,7 @@ mod tests {
         pixels2_modified[center_idx + 1] = 0; // Green to 0
         pixels2_modified[center_idx + 2] = 0; // Blue to 0
 
-        let result = compare_images(
-            &pixels1,
-            100,
-            100,
-            &pixels2_modified,
-            100,
-            100,
-        )
-        .unwrap();
+        let result = compare_images(&pixels1, 100, 100, &pixels2_modified, 100, 100).unwrap();
 
         // Only 1 pixel out of 10000 should differ
         assert!(result.diff_pixels >= 1);
@@ -798,14 +818,7 @@ mod tests {
         let pixels1 = generate_test_pattern(100, 100);
         let pixels2 = generate_test_pattern(200, 200);
 
-        let result = compare_images(
-            &pixels1,
-            100,
-            100,
-            &pixels2,
-            200,
-            200,
-        );
+        let result = compare_images(&pixels1, 100, 100, &pixels2, 200, 200);
 
         assert!(result.is_err());
         assert!(result.unwrap_err().contains("dimensions mismatch"));
@@ -851,10 +864,14 @@ mod tests {
     #[test]
     fn test_path_generation() {
         let golden = golden_path("test_sweep");
-        assert!(golden.to_string_lossy().ends_with("tests/golden/test_sweep.png"));
+        assert!(golden
+            .to_string_lossy()
+            .ends_with("tests/golden/test_sweep.png"));
 
         let output = output_path("test_sweep");
-        assert!(output.to_string_lossy().ends_with("tests/output/test_sweep.png"));
+        assert!(output
+            .to_string_lossy()
+            .ends_with("tests/output/test_sweep.png"));
     }
 
     // ============================================================================
@@ -868,19 +885,19 @@ mod tests {
     fn test_wgpu_software_backend_initialization() {
         // Initialize the wgpu software backend
         let result = init_wgpu_software_backend();
-        
+
         if result.is_err() {
             // Skip test if no wgpu backend is available (common in headless CI)
             println!("SKIPPED: No wgpu adapter available (expected in headless environments)");
             return;
         }
-        
+
         let (_instance, adapter) = result.unwrap();
-        
+
         // Verify the instance was created
         let info = adapter.get_info();
         println!("wgpu adapter info: {:?}", info);
-        
+
         // The adapter should be available
         assert!(!info.name.is_empty(), "Adapter should have a name");
     }
@@ -889,26 +906,32 @@ mod tests {
     fn test_wgpu_device_and_queue_creation() {
         // Initialize the wgpu software backend
         let result = init_wgpu_software_backend();
-        
+
         if result.is_err() {
             // Skip test if no wgpu backend is available (common in headless CI)
             println!("SKIPPED: No wgpu adapter available (expected in headless environments)");
             return;
         }
-        
+
         let (_instance, adapter) = result.expect("Failed to initialize wgpu software backend");
-        
+
         // Create device and queue
         let result = create_device_and_queue(&adapter);
-        assert!(result.is_ok(), "Failed to create device and queue: {:?}", result.err());
-        
+        assert!(
+            result.is_ok(),
+            "Failed to create device and queue: {:?}",
+            result.err()
+        );
+
         let (device, _queue) = result.unwrap();
-        
+
         // Print device limits for verification
         let limits = device.limits();
-        println!("wgpu device limits: max_texture_2d={}, max_buffer_size={}", 
-            limits.max_texture_dimension_2d, limits.max_buffer_size);
-        
+        println!(
+            "wgpu device limits: max_texture_2d={}, max_buffer_size={}",
+            limits.max_texture_dimension_2d, limits.max_buffer_size
+        );
+
         // Check that we can create basic resources
         let buffer = device.create_buffer(&wgpu::BufferDescriptor {
             label: Some("test buffer"),
@@ -916,9 +939,9 @@ mod tests {
             usage: wgpu::BufferUsages::COPY_SRC | wgpu::BufferUsages::COPY_DST,
             mapped_at_creation: true,
         });
-        
+
         assert!(buffer.size() >= 1024, "Buffer should have correct size");
-        
+
         println!("WGPU software backend initialized successfully");
     }
 
@@ -933,13 +956,14 @@ mod tests {
     fn baseline_continental_view() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate a radar-like pattern for continental view
         let pixels = generate_radar_pattern(width, height, 0.5, 0.5, 0.3);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("continental_view", &pixels, width, height, update_golden).unwrap();
-        
+        let result =
+            render_and_compare("continental_view", &pixels, width, height, update_golden).unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/continental_view.png");
         }
@@ -950,13 +974,14 @@ mod tests {
     fn baseline_regional_view() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate a more detailed radar pattern for regional view
         let pixels = generate_radar_pattern(width, height, 0.5, 0.5, 0.15);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("regional_view", &pixels, width, height, update_golden).unwrap();
-        
+        let result =
+            render_and_compare("regional_view", &pixels, width, height, update_golden).unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/regional_view.png");
         }
@@ -967,13 +992,14 @@ mod tests {
     fn baseline_local_view() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate high-detail radar pattern for local view
         let pixels = generate_radar_pattern(width, height, 0.5, 0.5, 0.05);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("local_view", &pixels, width, height, update_golden).unwrap();
-        
+        let result =
+            render_and_compare("local_view", &pixels, width, height, update_golden).unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/local_view.png");
         }
@@ -984,13 +1010,15 @@ mod tests {
     fn baseline_reflectivity_sweep() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate reflectivity-style radar pattern (red/yellow/green colors)
         let pixels = generate_reflectivity_pattern(width, height);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("reflectivity_sweep", &pixels, width, height, update_golden).unwrap();
-        
+        let result =
+            render_and_compare("reflectivity_sweep", &pixels, width, height, update_golden)
+                .unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/reflectivity_sweep.png");
         }
@@ -1001,13 +1029,14 @@ mod tests {
     fn baseline_velocity_sweep() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate velocity-style radar pattern (blue/red colors)
         let pixels = generate_velocity_pattern(width, height);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("velocity_sweep", &pixels, width, height, update_golden).unwrap();
-        
+        let result =
+            render_and_compare("velocity_sweep", &pixels, width, height, update_golden).unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/velocity_sweep.png");
         }
@@ -1018,13 +1047,20 @@ mod tests {
     fn baseline_spectrum_width_sweep() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate spectrum width-style radar pattern (brown/tan colors)
         let pixels = generate_spectrum_width_pattern(width, height);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("spectrum_width_sweep", &pixels, width, height, update_golden).unwrap();
-        
+        let result = render_and_compare(
+            "spectrum_width_sweep",
+            &pixels,
+            width,
+            height,
+            update_golden,
+        )
+        .unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/spectrum_width_sweep.png");
         }
@@ -1036,13 +1072,13 @@ mod tests {
     fn generate_0_percent_opacity_pattern(width: u32, height: u32) -> Vec<u8> {
         // First generate the reflectivity pattern
         let base_pixels = generate_reflectivity_pattern(width, height);
-        
+
         // Set all alpha values to 0 (completely transparent)
         let mut pixels = base_pixels;
         for i in (0..pixels.len()).step_by(4) {
             pixels[i + 3] = 0; // Set alpha to 0
         }
-        
+
         pixels
     }
 
@@ -1051,14 +1087,14 @@ mod tests {
     fn generate_50_percent_opacity_pattern(width: u32, height: u32) -> Vec<u8> {
         // First generate the reflectivity pattern
         let base_pixels = generate_reflectivity_pattern(width, height);
-        
+
         // Multiply all alpha values by 0.5 (50% opacity)
         let mut pixels = base_pixels;
         for i in (0..pixels.len()).step_by(4) {
             let original_alpha = pixels[i + 3];
             pixels[i + 3] = (original_alpha as f32 * 0.5) as u8;
         }
-        
+
         pixels
     }
 
@@ -1066,13 +1102,20 @@ mod tests {
     fn baseline_reflectivity_0_percent_opacity() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate reflectivity pattern with 0% opacity (completely transparent)
         let pixels = generate_0_percent_opacity_pattern(width, height);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("reflectivity_0_percent_opacity", &pixels, width, height, update_golden).unwrap();
-        
+        let result = render_and_compare(
+            "reflectivity_0_percent_opacity",
+            &pixels,
+            width,
+            height,
+            update_golden,
+        )
+        .unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/reflectivity_0_percent_opacity.png");
         }
@@ -1083,13 +1126,20 @@ mod tests {
     fn baseline_reflectivity_50_percent_opacity() {
         let width = TEST_WIDTH;
         let height = TEST_HEIGHT;
-        
+
         // Generate reflectivity pattern with 50% opacity
         let pixels = generate_50_percent_opacity_pattern(width, height);
-        
+
         let update_golden = std::env::var("RECORD_BASELINES").is_ok();
-        let result = render_and_compare("reflectivity_50_percent_opacity", &pixels, width, height, update_golden).unwrap();
-        
+        let result = render_and_compare(
+            "reflectivity_50_percent_opacity",
+            &pixels,
+            width,
+            height,
+            update_golden,
+        )
+        .unwrap();
+
         if update_golden {
             println!("Created baseline: tests/golden/reflectivity_50_percent_opacity.png");
         }

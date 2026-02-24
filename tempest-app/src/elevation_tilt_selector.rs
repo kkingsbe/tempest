@@ -6,7 +6,6 @@
 use iced::widget::{button, container, row, text};
 use iced::{Element, Length, Theme};
 
-
 /// Messages produced by the ElevationTiltSelector component
 #[derive(Debug, Clone, Copy)]
 pub enum ElevationTiltSelectorMessage {
@@ -111,8 +110,7 @@ impl ElevationTiltSelector {
         if self.available_elevations.is_empty() {
             let content = row![
                 text("Elevation Tilt").size(16),
-                text("No elevation data available")
-                    .size(14),
+                text("No elevation data available").size(14),
             ]
             .spacing(12)
             .align_y(iced::Alignment::Center);
@@ -135,20 +133,19 @@ impl ElevationTiltSelector {
                 format!("{:.1}°", elevation)
             };
 
-                let btn =
-                    if is_selected {
-                        button(text(label).size(14))
-                        .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
-                        .width(Length::Fixed(48.0))
-                        .height(Length::Fixed(48.0))
-                        .style(iced::widget::button::primary)
-                    } else {
-                        button(text(label).size(14))
-                        .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
-                        .width(Length::Fixed(48.0))
-                        .height(Length::Fixed(48.0))
-                        .style(iced::widget::button::secondary)
-                    };
+            let btn = if is_selected {
+                button(text(label).size(14))
+                    .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
+                    .width(Length::Fixed(48.0))
+                    .height(Length::Fixed(48.0))
+                    .style(iced::widget::button::primary)
+            } else {
+                button(text(label).size(14))
+                    .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
+                    .width(Length::Fixed(48.0))
+                    .height(Length::Fixed(48.0))
+                    .style(iced::widget::button::secondary)
+            };
 
             elevation_buttons = elevation_buttons.push(btn);
         }

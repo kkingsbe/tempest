@@ -282,17 +282,11 @@ impl CacheManager {
             let settings_content = column![
                 text("Cache Settings").size(18),
                 iced::widget::Space::with_height(iced::Length::Fixed(8.0)),
-                row![
-                    text("Maximum Size (MB):"),
-                    max_size_input,
-                    apply_button,
-                ]
-                .spacing(8)
-                .align_y(Alignment::Center),
-                text(format!("Current limit: {} MB", self.current_max_size_mb))
-                    .size(12),
-                text("Note: Cache limit requires app restart to take effect")
-                    .size(12),
+                row![text("Maximum Size (MB):"), max_size_input, apply_button,]
+                    .spacing(8)
+                    .align_y(Alignment::Center),
+                text(format!("Current limit: {} MB", self.current_max_size_mb)).size(12),
+                text("Note: Cache limit requires app restart to take effect").size(12),
             ]
             .spacing(8)
             .padding(12);
@@ -309,24 +303,15 @@ impl CacheManager {
             // Statistics section
             text("Current Statistics").size(18),
             iced::widget::Space::with_height(iced::Length::Fixed(8.0)),
-            row![
-                text("Total Size:"),
-                text(total_size.clone()),
-            ]
-            .spacing(8)
-            .align_y(Alignment::Center),
-            row![
-                text("Entries:"),
-                text(entry_count.to_string()),
-            ]
-            .spacing(8)
-            .align_y(Alignment::Center),
-            row![
-                text("Usage:"),
-                text(format!("{:.1}%", usage_percent)),
-            ]
-            .spacing(8)
-            .align_y(Alignment::Center),
+            row![text("Total Size:"), text(total_size.clone()),]
+                .spacing(8)
+                .align_y(Alignment::Center),
+            row![text("Entries:"), text(entry_count.to_string()),]
+                .spacing(8)
+                .align_y(Alignment::Center),
+            row![text("Usage:"), text(format!("{:.1}%", usage_percent)),]
+                .spacing(8)
+                .align_y(Alignment::Center),
             iced::widget::Space::with_height(iced::Length::Fixed(16.0)),
             // Clear cache section
             text("Actions").size(18),
@@ -375,7 +360,7 @@ mod tests {
     #[test]
     fn test_default_creation() {
         let manager = CacheManager::default();
-        
+
         assert!(manager.cache.is_none());
         assert_eq!(manager.stats.total_size, 0);
         assert_eq!(manager.stats.entry_count, 0);
@@ -406,14 +391,14 @@ mod tests {
     #[test]
     fn test_toggle_settings() {
         let mut manager = CacheManager::default();
-        
+
         // Initially false
         assert!(!manager.show_settings());
-        
+
         // Toggle on
         manager.update(CacheManagerMessage::ToggleSettings);
         assert!(manager.show_settings());
-        
+
         // Toggle off
         manager.update(CacheManagerMessage::ToggleSettings);
         assert!(!manager.show_settings());
@@ -422,18 +407,18 @@ mod tests {
     #[test]
     fn test_max_size_changed() {
         let mut manager = CacheManager::default();
-        
+
         // Initial value
         assert_eq!(manager.max_size_input, "1024");
-        
+
         // Update the input
         manager.update(CacheManagerMessage::MaxSizeChanged("2048".to_string()));
         assert_eq!(manager.max_size_input, "2048");
-        
+
         // Update with empty string
         manager.update(CacheManagerMessage::MaxSizeChanged("".to_string()));
         assert_eq!(manager.max_size_input, "");
-        
+
         // Update with invalid input
         manager.update(CacheManagerMessage::MaxSizeChanged("abc".to_string()));
         assert_eq!(manager.max_size_input, "abc");
@@ -442,11 +427,11 @@ mod tests {
     #[test]
     fn test_apply_max_size_valid() {
         let mut manager = CacheManager::default();
-        
+
         // Set the input
         manager.update(CacheManagerMessage::MaxSizeChanged("2048".to_string()));
         assert_eq!(manager.max_size_input, "2048");
-        
+
         // Apply the max size
         manager.update(CacheManagerMessage::ApplyMaxSize);
         assert_eq!(manager.current_max_size_mb, 2048);
@@ -455,10 +440,10 @@ mod tests {
     #[test]
     fn test_apply_max_size_invalid() {
         let mut manager = CacheManager::default();
-        
+
         // Set invalid input
         manager.update(CacheManagerMessage::MaxSizeChanged("abc".to_string()));
-        
+
         // Apply should not change current_max_size_mb
         manager.update(CacheManagerMessage::ApplyMaxSize);
         assert_eq!(manager.current_max_size_mb, 1024); // Should remain at default
@@ -467,10 +452,10 @@ mod tests {
     #[test]
     fn test_apply_max_size_empty() {
         let mut manager = CacheManager::default();
-        
+
         // Set empty input
         manager.update(CacheManagerMessage::MaxSizeChanged("".to_string()));
-        
+
         // Apply should not change current_max_size_mb
         manager.update(CacheManagerMessage::ApplyMaxSize);
         assert_eq!(manager.current_max_size_mb, 1024); // Should remain at default
@@ -478,10 +463,13 @@ mod tests {
 
     #[test]
     fn test_cache_cleared_message() {
-        let mut manager = CacheManager { clearing: true, ..Default::default() };
-        
+        let mut manager = CacheManager {
+            clearing: true,
+            ..Default::default()
+        };
+
         assert!(manager.is_clearing());
-        
+
         // Handle cache cleared message
         manager.update(CacheManagerMessage::CacheCleared);
         assert!(!manager.is_clearing());
@@ -489,10 +477,13 @@ mod tests {
 
     #[test]
     fn test_cache_error_message() {
-        let mut manager = CacheManager { clearing: true, ..Default::default() };
-        
+        let mut manager = CacheManager {
+            clearing: true,
+            ..Default::default()
+        };
+
         assert!(manager.is_clearing());
-        
+
         // Handle cache error message
         manager.update(CacheManagerMessage::CacheError("Test error".to_string()));
         assert!(!manager.is_clearing());
@@ -501,11 +492,11 @@ mod tests {
     #[test]
     fn test_set_stats() {
         let mut manager = CacheManager::default();
-        
+
         // Default stats
         assert_eq!(manager.stats.entry_count, 0);
         assert_eq!(manager.stats.total_size, 0);
-        
+
         // Set custom stats
         let custom_stats = CacheStats {
             entry_count: 100,
@@ -514,7 +505,7 @@ mod tests {
             newest: None,
         };
         manager.set_stats(custom_stats);
-        
+
         assert_eq!(manager.stats.entry_count, 100);
         assert_eq!(manager.stats.total_size, 1024 * 1024 * 100);
     }
@@ -524,7 +515,7 @@ mod tests {
         // Test bytes
         let result = CacheManager::format_size(512);
         assert_eq!(result, "512 B");
-        
+
         // Test exactly 1023 bytes
         let result = CacheManager::format_size(1023);
         assert_eq!(result, "1023 B");
@@ -535,7 +526,7 @@ mod tests {
         // Test KB
         let result = CacheManager::format_size(1024);
         assert_eq!(result, "1.00 KB");
-        
+
         // Test 1.5 KB
         let result = CacheManager::format_size(1536);
         assert_eq!(result, "1.50 KB");
@@ -546,7 +537,7 @@ mod tests {
         // Test MB
         let result = CacheManager::format_size(1024 * 1024);
         assert_eq!(result, "1.00 MB");
-        
+
         // Test 50 MB
         let result = CacheManager::format_size(50 * 1024 * 1024);
         assert_eq!(result, "50.00 MB");
@@ -557,7 +548,7 @@ mod tests {
         // Test GB
         let result = CacheManager::format_size(1024 * 1024 * 1024);
         assert_eq!(result, "1.00 GB");
-        
+
         // Test 2.5 GB
         let result = CacheManager::format_size((2.5 * 1024.0 * 1024.0 * 1024.0) as u64);
         assert_eq!(result, "2.50 GB");

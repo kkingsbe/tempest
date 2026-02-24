@@ -66,42 +66,30 @@ fn get_color_table_fn(moment_type: &str) -> impl Fn(f32) -> Rgba<u8> {
     use tempest_render_core::{colorize, RadarMoment, RadarSentinel};
 
     match moment_type {
-        "REF" => {
-            |value: f32| -> Rgba<u8> {
-                let c = colorize(RadarMoment::Reflectivity, value, RadarSentinel::Valid);
-                Rgba([c.r, c.g, c.b, c.a])
-            }
-        }
-        "VEL" => {
-            |value: f32| -> Rgba<u8> {
-                let c = colorize(RadarMoment::Velocity, value, RadarSentinel::Valid);
-                Rgba([c.r, c.g, c.b, c.a])
-            }
-        }
-        "SW" => {
-            |value: f32| -> Rgba<u8> {
-                let c = colorize(RadarMoment::SpectrumWidth, value, RadarSentinel::Valid);
-                Rgba([c.r, c.g, c.b, c.a])
-            }
-        }
-        "ZDR" => {
-            |value: f32| -> Rgba<u8> {
-                let c = colorize(RadarMoment::Zdr, value, RadarSentinel::Valid);
-                Rgba([c.r, c.g, c.b, c.a])
-            }
-        }
-        "CC" => {
-            |value: f32| -> Rgba<u8> {
-                let c = colorize(RadarMoment::Cc, value, RadarSentinel::Valid);
-                Rgba([c.r, c.g, c.b, c.a])
-            }
-        }
-        "KDP" => {
-            |value: f32| -> Rgba<u8> {
-                let c = colorize(RadarMoment::Kdp, value, RadarSentinel::Valid);
-                Rgba([c.r, c.g, c.b, c.a])
-            }
-        }
+        "REF" => |value: f32| -> Rgba<u8> {
+            let c = colorize(RadarMoment::Reflectivity, value, RadarSentinel::Valid);
+            Rgba([c.r, c.g, c.b, c.a])
+        },
+        "VEL" => |value: f32| -> Rgba<u8> {
+            let c = colorize(RadarMoment::Velocity, value, RadarSentinel::Valid);
+            Rgba([c.r, c.g, c.b, c.a])
+        },
+        "SW" => |value: f32| -> Rgba<u8> {
+            let c = colorize(RadarMoment::SpectrumWidth, value, RadarSentinel::Valid);
+            Rgba([c.r, c.g, c.b, c.a])
+        },
+        "ZDR" => |value: f32| -> Rgba<u8> {
+            let c = colorize(RadarMoment::Zdr, value, RadarSentinel::Valid);
+            Rgba([c.r, c.g, c.b, c.a])
+        },
+        "CC" => |value: f32| -> Rgba<u8> {
+            let c = colorize(RadarMoment::Cc, value, RadarSentinel::Valid);
+            Rgba([c.r, c.g, c.b, c.a])
+        },
+        "KDP" => |value: f32| -> Rgba<u8> {
+            let c = colorize(RadarMoment::Kdp, value, RadarSentinel::Valid);
+            Rgba([c.r, c.g, c.b, c.a])
+        },
         _ => panic!("Unknown radar moment type: {}", moment_type),
     }
 }

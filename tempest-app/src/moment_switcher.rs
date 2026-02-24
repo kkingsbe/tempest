@@ -8,12 +8,7 @@ use iced::widget::{button, row, text};
 use iced::{Border, Element, Length};
 
 mod colors {
-    pub use crate::colors::{
-        accent,
-        surface,
-        text,
-        border,
-    };
+    pub use crate::colors::{accent, border, surface, text};
 }
 
 /// Supported radar moments/data types
@@ -149,7 +144,8 @@ impl MomentSwitcher {
     pub fn view(&self) -> Element<'_, MomentSwitcherMessage> {
         // Custom button style for primary/selected state (filled accent)
         let primary_button_style = |_theme: &iced::Theme, status: button::Status| {
-            let is_selected = status == button::Status::Pressed || status == button::Status::Hovered;
+            let is_selected =
+                status == button::Status::Pressed || status == button::Status::Hovered;
             button::Style {
                 background: Some(if is_selected {
                     colors::accent::HOVER.into()
@@ -188,23 +184,17 @@ impl MomentSwitcher {
 
             // Style for selected vs unselected buttons using custom semantic styles
             let btn = if is_selected {
-                button(
-                    text(format!("{}\n{}", moment.code(), moment.name()))
-                        .size(12),
-                )
-                .on_press(MomentSwitcherMessage::MomentSelected(moment))
-                .width(Length::Fixed(110.0))
-                .height(Length::Fixed(50.0))
-                .style(primary_button_style)
+                button(text(format!("{}\n{}", moment.code(), moment.name())).size(12))
+                    .on_press(MomentSwitcherMessage::MomentSelected(moment))
+                    .width(Length::Fixed(110.0))
+                    .height(Length::Fixed(50.0))
+                    .style(primary_button_style)
             } else {
-                button(
-                    text(format!("{}\n{}", moment.code(), moment.name()))
-                        .size(12),
-                )
-                .on_press(MomentSwitcherMessage::MomentSelected(moment))
-                .width(Length::Fixed(110.0))
-                .height(Length::Fixed(50.0))
-                .style(secondary_button_style)
+                button(text(format!("{}\n{}", moment.code(), moment.name())).size(12))
+                    .on_press(MomentSwitcherMessage::MomentSelected(moment))
+                    .width(Length::Fixed(110.0))
+                    .height(Length::Fixed(50.0))
+                    .style(secondary_button_style)
             };
 
             moment_buttons = moment_buttons.push(btn);
@@ -220,13 +210,9 @@ impl MomentSwitcher {
         .size(14);
 
         // Build the layout
-        let content = row![
-            text("Radar Moment").size(16),
-            moment_buttons,
-            current_info,
-        ]
-        .spacing(12)
-        .align_y(iced::Alignment::Center);
+        let content = row![text("Radar Moment").size(16), moment_buttons, current_info,]
+            .spacing(12)
+            .align_y(iced::Alignment::Center);
 
         content.into()
     }

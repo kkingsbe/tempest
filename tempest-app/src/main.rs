@@ -177,7 +177,10 @@ fn view(state: &State) -> Element<'_, Message> {
         // Timeline at bottom
         state.timeline.view().map(Message::Timeline),
         // Offline indicator if needed
-        state.offline_indicator.view().map(Message::OfflineIndicator),
+        state
+            .offline_indicator
+            .view()
+            .map(Message::OfflineIndicator),
         // Cache manager
         state.cache_manager.view().map(Message::CacheManager),
         // Debug info
@@ -302,7 +305,10 @@ fn update(state: &mut State, message: Message) -> Task<Message> {
                 PanDirection::Right => (10, 0),
             };
             state.pan_offset = (state.pan_offset.0 + dx, state.pan_offset.1 + dy);
-            println!("Pan: offset ({}, {})", state.pan_offset.0, state.pan_offset.1);
+            println!(
+                "Pan: offset ({}, {})",
+                state.pan_offset.0, state.pan_offset.1
+            );
         }
         Message::Keyboard(key) => {
             // Handle keyboard shortcuts

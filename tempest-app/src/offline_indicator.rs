@@ -84,8 +84,7 @@ impl OfflineIndicator {
                 .width(Length::Shrink)
                 .padding(8),
             // Status text
-            text(status_text)
-                .size(14),
+            text(status_text).size(14),
         ]
         .spacing(4)
         .align_y(iced::Alignment::Center);

@@ -34,7 +34,7 @@ use crate::{polar_to_latlng, types::RadarSite, ProjectedPoint, ProjectedSweep, R
 /// use tempest_decode::{VolumeScan, Sweep, Radial, Gate};
 /// use chrono::Utc;
 ///
-/// let volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+/// let volume = VolumeScan::new("KTLX", Utc::now(), 215);
 /// let site = get_station("KTLX").unwrap();
 ///
 /// let projected = project_volume_scan(&volume, site, RadarMoment::Reflectivity);
@@ -121,7 +121,7 @@ mod tests {
     /// Test projecting an empty volume scan
     #[test]
     fn test_empty_volume() {
-        let volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+        let volume = VolumeScan::new("KTLX", Utc::now(), 215);
         let site = RadarSite::new("KTLX", 35.4183, -97.4514, 374.0);
 
         let projected = project_volume_scan(&volume, &site, RadarMoment::Reflectivity);
@@ -132,7 +132,7 @@ mod tests {
     /// Test projecting a volume with one sweep
     #[test]
     fn test_single_sweep_volume() {
-        let mut volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+        let mut volume = VolumeScan::new("KTLX", Utc::now(), 215);
 
         let mut sweep = Sweep::new(0.5);
         let mut radial = Radial::new(0.0);
@@ -157,7 +157,7 @@ mod tests {
     /// Test projecting multiple sweeps
     #[test]
     fn test_multiple_sweeps() {
-        let mut volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+        let mut volume = VolumeScan::new("KTLX", Utc::now(), 215);
 
         for elevation in [0.5, 1.5, 2.5] {
             let mut sweep = Sweep::new(elevation);
@@ -182,7 +182,7 @@ mod tests {
     /// Test projecting velocity moment
     #[test]
     fn test_velocity_moment() {
-        let mut volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+        let mut volume = VolumeScan::new("KTLX", Utc::now(), 215);
 
         let mut sweep = Sweep::new(0.5);
         let mut radial = Radial::new(90.0);
@@ -204,7 +204,7 @@ mod tests {
     /// Test that gates without the requested moment are skipped
     #[test]
     fn test_missing_moment_skipped() {
-        let mut volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+        let mut volume = VolumeScan::new("KTLX", Utc::now(), 215);
 
         let mut sweep = Sweep::new(0.5);
         let mut radial = Radial::new(0.0);
@@ -242,7 +242,7 @@ mod tests {
     /// Test that projected points are geographically displaced from radar site
     #[test]
     fn test_projected_points_displaced() {
-        let mut volume = VolumeScan::new("KTLX".to_string(), Utc::now(), 215);
+        let mut volume = VolumeScan::new("KTLX", Utc::now(), 215);
 
         let mut sweep = Sweep::new(0.5);
         let mut radial = Radial::new(90.0); // East

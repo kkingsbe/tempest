@@ -122,7 +122,7 @@ fn test_decode_superres_project() {
 #[test]
 fn test_projected_points_quadrants() {
     // Create a synthetic volume scan with known azimuths
-    let mut volume = tempest_decode::VolumeScan::new("KTLX".to_string(), chrono::Utc::now(), 215);
+    let mut volume = tempest_decode::VolumeScan::new("KTLX", chrono::Utc::now(), 215);
 
     let mut sweep = tempest_decode::Sweep::new(0.5);
 

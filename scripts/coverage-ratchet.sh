@@ -66,7 +66,7 @@ get_current_coverage() {
     
     # Run tarpaulin and capture JSON output
     local json_output
-    json_output=$(cargo tarpaulin --line --config tarpaulin.toml --out Json 2>&1)
+    json_output=$(cargo tarpaulin --workspace --skip-clean --line --config tarpaulin.toml --out Json 2>&1)
     
     # Check if tarpaulin ran successfully
     if [[ $? -ne 0 ]]; then
@@ -91,7 +91,7 @@ get_current_coverage() {
 # Function to get per-crate coverage from tarpaulin JSON output
 get_per_crate_coverage() {
     local json_output
-    json_output=$(cargo tarpaulin --line --config tarpaulin.toml --out Json 2>&1)
+    json_output=$(cargo tarpaulin --workspace --skip-clean --line --config tarpaulin.toml --out Json 2>&1)
     
     # Extract all package coverage data
     # The JSON format contains "files" array with "package_name" and "line_percent"

@@ -117,8 +117,7 @@ impl ColorLegend {
         let title = if unit.is_empty() {
             text(name.clone()).size(14)
         } else {
-            text(format!("{} ({})", name, unit))
-                .size(14)
+            text(format!("{} ({})", name, unit)).size(14)
         };
 
         // Create the color bar using colored rectangles

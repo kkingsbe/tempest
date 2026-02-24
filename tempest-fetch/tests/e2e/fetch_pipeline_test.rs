@@ -16,7 +16,9 @@ use tempest_fetch::{decompress_bz2, Cache, CacheConfig, S3Client};
 #[tokio::test]
 async fn s3_client_connects_to_mock_server_and_lists_scans() {
     // Create mock S3 server
-    let mut mock_server = MockS3Server::new().await.expect("Failed to create mock server");
+    let mut mock_server = MockS3Server::new()
+        .await
+        .expect("Failed to create mock server");
 
     // Register mock scan list
     mock_server.register_list_scans_response(
@@ -32,7 +34,10 @@ async fn s3_client_connects_to_mock_server_and_lists_scans() {
 
     // List scans
     let date = chrono::NaiveDate::from_ymd_opt(2024, 3, 15).unwrap();
-    let scans = client.list_scans("KTLX", date).await.expect("Failed to list scans");
+    let scans = client
+        .list_scans("KTLX", date)
+        .await
+        .expect("Failed to list scans");
 
     // Verify we got the expected scans
     assert_eq!(scans.len(), 2);
@@ -44,7 +49,9 @@ async fn s3_client_connects_to_mock_server_and_lists_scans() {
 #[tokio::test]
 async fn s3_client_fetches_scan_data_from_mock_server() {
     // Create mock S3 server
-    let mut mock_server = MockS3Server::new().await.expect("Failed to create mock server");
+    let mut mock_server = MockS3Server::new()
+        .await
+        .expect("Failed to create mock server");
 
     // Register mock scan data
     let test_data = b"NEXRAD Level II Test Data - Mock Scan Content";
@@ -75,7 +82,9 @@ async fn s3_client_fetches_scan_data_from_mock_server() {
 #[tokio::test]
 async fn s3_client_fetches_and_decompresses_bzip2_data() {
     // Create mock S3 server
-    let mut mock_server = MockS3Server::new().await.expect("Failed to create mock server");
+    let mut mock_server = MockS3Server::new()
+        .await
+        .expect("Failed to create mock server");
 
     // Create some test data and compress it with bzip2
     let original_data = b"NEXRAD Level II Compressed Test Data - This is bzip2 content";
@@ -114,10 +123,14 @@ async fn complete_fetch_pipeline_with_caching() {
     // Create temporary cache directory
     let cache_dir = TempDir::new().expect("Failed to create temp cache dir");
     let cache_config = CacheConfig::new(1024 * 1024, cache_dir.path().to_path_buf()); // 1MB
-    let mut cache = Cache::new(cache_config).await.expect("Failed to create cache");
+    let mut cache = Cache::new(cache_config)
+        .await
+        .expect("Failed to create cache");
 
     // Create mock S3 server
-    let mut mock_server = MockS3Server::new().await.expect("Failed to create mock server");
+    let mut mock_server = MockS3Server::new()
+        .await
+        .expect("Failed to create mock server");
 
     // Register mock scan list
     mock_server.register_list_scans_response("KTLX", 2024, 3, 15, &["KTLX20240315_120021"]);
@@ -161,16 +174,12 @@ async fn complete_fetch_pipeline_with_caching() {
 #[tokio::test]
 async fn mock_server_handles_multiple_stations() {
     // Create mock S3 server
-    let mut mock_server = MockS3Server::new().await.expect("Failed to create mock server");
+    let mut mock_server = MockS3Server::new()
+        .await
+        .expect("Failed to create mock server");
 
     // Register multiple stations
-    mock_server.register_list_scans_response(
-        "KTLX",
-        2024,
-        3,
-        15,
-        &["KTLX20240315_120021"],
-    );
+    mock_server.register_list_scans_response("KTLX", 2024, 3, 15, &["KTLX20240315_120021"]);
     mock_server.register_list_scans_response(
         "KICT",
         2024,
@@ -203,7 +212,9 @@ async fn mock_server_handles_multiple_stations() {
 #[tokio::test]
 async fn s3_client_handles_server_error() {
     // Create mock S3 server
-    let mock_server = MockS3Server::new().await.expect("Failed to create mock server");
+    let mock_server = MockS3Server::new()
+        .await
+        .expect("Failed to create mock server");
 
     // Create S3 client pointing to mock server
     let client = S3Client::with_base_url(mock_server.url()).expect("Failed to create S3 client");
@@ -222,8 +233,12 @@ fn compress_with_bzip2(data: &[u8]) -> Vec<u8> {
     use bzip2::Compression;
 
     let mut encoder = BzEncoder::new(Vec::new(), Compression::default());
-    encoder.write_all(data).expect("Failed to write to bzip2 encoder");
-    encoder.finish().expect("Failed to finish bzip2 compression")
+    encoder
+        .write_all(data)
+        .expect("Failed to write to bzip2 encoder");
+    encoder
+        .finish()
+        .expect("Failed to finish bzip2 compression")
 }
 
 mod station_discovery {
@@ -246,13 +261,22 @@ mod station_discovery {
 
         // Assert known stations exist
         let ktlx = reg.get("KTLX");
-        assert!(ktlx.is_some(), "Expected KTLX (Oklahoma City) to exist in registry");
+        assert!(
+            ktlx.is_some(),
+            "Expected KTLX (Oklahoma City) to exist in registry"
+        );
 
         let kict = reg.get("KICT");
-        assert!(kict.is_some(), "Expected KICT (Wichita) to exist in registry");
+        assert!(
+            kict.is_some(),
+            "Expected KICT (Wichita) to exist in registry"
+        );
 
         let khgx = reg.get("KHGX");
-        assert!(khgx.is_some(), "Expected KHGX (Houston) to exist in registry");
+        assert!(
+            khgx.is_some(),
+            "Expected KHGX (Houston) to exist in registry"
+        );
     }
 
     /// Test that get_station returns valid station data for known stations.
@@ -342,7 +366,8 @@ mod station_discovery {
         assert!(
             houston.lat > 26.0 && houston.lat < 36.0 && houston.lon > -106.0 && houston.lon < -93.0,
             "Expected KHGX to be in Texas region, got lat={}, lon={}",
-            houston.lat, houston.lon
+            houston.lat,
+            houston.lon
         );
     }
 }
@@ -398,12 +423,7 @@ mod data_polling {
             .expect("Failed to list scans");
 
         // Assert that exactly 3 scans are returned
-        assert_eq!(
-            scans.len(),
-            3,
-            "Expected 3 scans, got {}",
-            scans.len()
-        );
+        assert_eq!(scans.len(), 3, "Expected 3 scans, got {}", scans.len());
     }
 
     /// Test that polling filters out duplicate scans.
@@ -429,13 +449,7 @@ mod data_polling {
         let scan2 = format!("KTLX{}{:02}{:02}_124000", year, month, day);
 
         // Register mock scan list with 2 scans
-        mock_server.register_list_scans_response(
-            "KTLX",
-            year,
-            month,
-            day,
-            &[&scan1, &scan2],
-        );
+        mock_server.register_list_scans_response("KTLX", year, month, day, &[&scan1, &scan2]);
 
         // Create S3 client pointing to mock server
         let client =
@@ -468,8 +482,7 @@ mod data_polling {
 
         // Verify the remaining scan is the second one
         assert_eq!(
-            new_scans[0].filename,
-            scan2,
+            new_scans[0].filename, scan2,
             "Expected the second scan to be returned"
         );
     }
@@ -535,13 +548,7 @@ mod data_polling {
         let scan = format!("KTLX{}{:02}{:02}_123456", year, month, day);
 
         // Register mock scan list with 1 scan
-        mock_server.register_list_scans_response(
-            "KTLX",
-            year,
-            month,
-            day,
-            &[&scan],
-        );
+        mock_server.register_list_scans_response("KTLX", year, month, day, &[&scan]);
 
         // Create S3 client pointing to mock server
         let client =
@@ -554,10 +561,7 @@ mod data_polling {
         };
 
         // Verify the config is set correctly
-        assert_eq!(
-            poll_config.max_retries, 3,
-            "Expected max_retries to be 3"
-        );
+        assert_eq!(poll_config.max_retries, 3, "Expected max_retries to be 3");
         assert_eq!(
             poll_config.poll_interval,
             Duration::from_secs(1),
@@ -576,10 +580,6 @@ mod data_polling {
         );
 
         let scans = result.unwrap();
-        assert_eq!(
-            scans.len(),
-            1,
-            "Expected 1 scan after successful retry"
-        );
+        assert_eq!(scans.len(), 1, "Expected 1 scan after successful retry");
     }
 }

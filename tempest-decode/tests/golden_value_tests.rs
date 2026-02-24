@@ -60,7 +60,8 @@ fn load_metadata(name: &str) -> FixtureMetadata {
     let content = std::fs::read_to_string(&metadata_path)
         .unwrap_or_else(|_| panic!("Failed to read metadata: {}", name));
 
-    serde_json::from_str(&content).unwrap_or_else(|e| panic!("Failed to parse metadata {}: {}", name, e))
+    serde_json::from_str(&content)
+        .unwrap_or_else(|e| panic!("Failed to parse metadata {}: {}", name, e))
 }
 
 // ============================================================================
@@ -91,11 +92,17 @@ fn golden_value_vcp215_elevation_angle_is_0_5() {
     let data = load_fixture("vcp215_clear_air.bin");
     let volume = decode(&data).expect("Failed to decode fixture");
 
-    let first_sweep = volume.sweeps.first()
+    let first_sweep = volume
+        .sweeps
+        .first()
         .expect("Should have at least one sweep");
-    
-    assert!((first_sweep.elevation - metadata.elevation_angle).abs() < 0.01,
-        "Expected elevation {}, got {}", metadata.elevation_angle, first_sweep.elevation);
+
+    assert!(
+        (first_sweep.elevation - metadata.elevation_angle).abs() < 0.01,
+        "Expected elevation {}, got {}",
+        metadata.elevation_angle,
+        first_sweep.elevation
+    );
 }
 
 #[test]
@@ -104,9 +111,11 @@ fn golden_value_vcp215_num_radials() {
     let data = load_fixture("vcp215_clear_air.bin");
     let volume = decode(&data).expect("Failed to decode fixture");
 
-    let first_sweep = volume.sweeps.first()
+    let first_sweep = volume
+        .sweeps
+        .first()
         .expect("Should have at least one sweep");
-    
+
     assert_eq!(first_sweep.radials.len() as u16, metadata.num_radials);
 }
 
@@ -138,9 +147,11 @@ fn golden_value_vcp35_num_radials() {
     let data = load_fixture("vcp35_clear_air.bin");
     let volume = decode(&data).expect("Failed to decode fixture");
 
-    let first_sweep = volume.sweeps.first()
+    let first_sweep = volume
+        .sweeps
+        .first()
         .expect("Should have at least one sweep");
-    
+
     assert_eq!(first_sweep.radials.len() as u16, metadata.num_radials);
 }
 
@@ -172,9 +183,11 @@ fn golden_value_vcp12_num_radials() {
     let data = load_fixture("vcp12_severe_weather.bin");
     let volume = decode(&data).expect("Failed to decode fixture");
 
-    let first_sweep = volume.sweeps.first()
+    let first_sweep = volume
+        .sweeps
+        .first()
         .expect("Should have at least one sweep");
-    
+
     assert_eq!(first_sweep.radials.len() as u16, metadata.num_radials);
 }
 
@@ -294,8 +307,10 @@ fn golden_value_super_resolution_elevation_angle() {
     let data = load_fixture("super_resolution.bin");
     let volume = decode(&data).expect("Failed to decode fixture");
 
-    let first_sweep = volume.sweeps.first()
+    let first_sweep = volume
+        .sweeps
+        .first()
         .expect("Should have at least one sweep");
-    
+
     assert!((first_sweep.elevation - metadata.elevation_angle).abs() < 0.01);
 }

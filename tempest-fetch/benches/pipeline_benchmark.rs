@@ -55,7 +55,7 @@ fn benchmark_scan_listing(c: &mut Criterion) {
     <Prefix>2024/03/15/KTLX/KTLX20240315_121021</Prefix>
   </CommonPrefixes>
 </ListBucketResult>"#;
-            
+
             b.iter(|| {
                 // Parse scan list from XML (simplified)
                 let _has_prefix = black_box(sample_xml.contains("CommonPrefixes"));
@@ -67,7 +67,7 @@ fn benchmark_scan_listing(c: &mut Criterion) {
 /// Benchmark data decompression (bzip2)
 fn benchmark_decompression(c: &mut Criterion) {
     use std::io::Read;
-    
+
     c.benchmark_group("decompression")
         .sample_size(10)
         .measurement_time(Duration::from_secs(5))
@@ -75,9 +75,10 @@ fn benchmark_decompression(c: &mut Criterion) {
             // Read compressed test fixture
             let compressed_path = "tests/fixtures/SuperRes_KTLX_20240427.ar2v";
             let compressed_data = std::fs::read(compressed_path).expect("Failed to read fixture");
-            
+
             b.iter(|| {
-                let mut decompressor = bzip2::bufread::BzDecoder::new(black_box(&compressed_data[..]));
+                let mut decompressor =
+                    bzip2::bufread::BzDecoder::new(black_box(&compressed_data[..]));
                 let mut decompressed = Vec::new();
                 let _ = decompressor.read_to_end(&mut decompressed);
                 black_box(decompressed)
@@ -88,7 +89,7 @@ fn benchmark_decompression(c: &mut Criterion) {
 /// Benchmark cache operations
 fn benchmark_cache_operations(c: &mut Criterion) {
     use lru::LruCache;
-    
+
     c.benchmark_group("cache")
         .sample_size(20)
         .measurement_time(Duration::from_secs(5))
@@ -96,18 +97,18 @@ fn benchmark_cache_operations(c: &mut Criterion) {
             let mut cache = LruCache::new(NonZero::new(100).unwrap());
             cache.put("key1", vec![1u8; 1000]);
             cache.put("key2", vec![2u8; 1000]);
-            
+
             b.iter(|| {
                 let result = cache.get(black_box(&"key1"));
                 black_box(result.is_some())
             });
         });
-    
+
     c.benchmark_group("cache")
         .bench_function("cache_get_miss", |b| {
             let mut cache = LruCache::new(NonZero::new(100).unwrap());
             cache.put("key1", vec![1u8; 1000]);
-            
+
             b.iter(|| {
                 let result = cache.get(black_box(&"nonexistent"));
                 black_box(result.is_none())

@@ -73,7 +73,7 @@ fn compare_images(img1: &DynamicImage, img2: &DynamicImage) -> Result<f64> {
 /// Get all image files in a directory
 fn get_image_files(dir: &Path) -> Result<Vec<PathBuf>> {
     let mut images = Vec::new();
-    
+
     if !dir.exists() {
         return Ok(images);
     }
@@ -81,7 +81,7 @@ fn get_image_files(dir: &Path) -> Result<Vec<PathBuf>> {
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
         let path = entry.path();
-        
+
         if path.is_file() {
             // Check if it's an image file by trying to load it
             if let Ok(reader) = ImageReader::open(&path) {
@@ -91,22 +91,23 @@ fn get_image_files(dir: &Path) -> Result<Vec<PathBuf>> {
             }
         }
     }
-    
+
     Ok(images)
 }
 
 /// Copy source images to golden directory
 fn update_golden_images(source_dir: &Path, golden_dir: &Path) -> Result<()> {
-    info!("Updating golden images from {:?} to {:?}", source_dir, golden_dir);
-    
+    info!(
+        "Updating golden images from {:?} to {:?}",
+        source_dir, golden_dir
+    );
+
     // Create golden directory if it doesn't exist
     if !golden_dir.exists() {
-        fs::create_dir_all(golden_dir)
-            .context("Failed to create golden directory")?;
+        fs::create_dir_all(golden_dir).context("Failed to create golden directory")?;
     }
 
-    let source_images = get_image_files(source_dir)
-        .context("Failed to read source directory")?;
+    let source_images = get_image_files(source_dir).context("Failed to read source directory")?;
 
     if source_images.is_empty() {
         warn!("No images found in source directory");
@@ -117,8 +118,7 @@ fn update_golden_images(source_dir: &Path, golden_dir: &Path) -> Result<()> {
     let mut same_count = 0;
 
     for source_path in &source_images {
-        let file_name = source_path.file_name()
-            .context("Invalid file name")?;
+        let file_name = source_path.file_name().context("Invalid file name")?;
         let golden_path = golden_dir.join(file_name);
 
         // Check if golden image exists and is identical
@@ -131,7 +131,7 @@ fn update_golden_images(source_dir: &Path, golden_dir: &Path) -> Result<()> {
                 .decode()?;
 
             let diff = compare_images(&source_img, &golden_img)?;
-            
+
             if diff < 0.01 {
                 // Images are essentially identical, skip
                 same_count += 1;
@@ -142,25 +142,34 @@ fn update_golden_images(source_dir: &Path, golden_dir: &Path) -> Result<()> {
         // Copy file to golden directory
         fs::copy(source_path, &golden_path)
             .with_context(|| format!("Failed to copy {:?} to golden directory", file_name))?;
-        
+
         info!("Updated golden image: {:?}", file_name);
         updated_count += 1;
     }
 
-    info!("Update complete: {} updated, {} unchanged", updated_count, same_count);
+    info!(
+        "Update complete: {} updated, {} unchanged",
+        updated_count, same_count
+    );
     Ok(())
 }
 
 /// Verify source images against golden references
-fn verify_images(source_dir: &Path, golden_dir: &Path, threshold: f64) -> Result<Vec<ComparisonResult>> {
-    info!("Verifying images from {:?} against {:?}", source_dir, golden_dir);
-    
+fn verify_images(
+    source_dir: &Path,
+    golden_dir: &Path,
+    threshold: f64,
+) -> Result<Vec<ComparisonResult>> {
+    info!(
+        "Verifying images from {:?} against {:?}",
+        source_dir, golden_dir
+    );
+
     if !golden_dir.exists() {
         anyhow::bail!("Golden directory does not exist: {:?}", golden_dir);
     }
 
-    let source_images = get_image_files(source_dir)
-        .context("Failed to read source directory")?;
+    let source_images = get_image_files(source_dir).context("Failed to read source directory")?;
 
     if source_images.is_empty() {
         return Err(GoldenError::NoImagesFound.into());
@@ -176,11 +185,10 @@ fn verify_images(source_dir: &Path, golden_dir: &Path, threshold: f64) -> Result
     let mut passed = 0;
 
     for source_path in &source_images {
-        let file_name = source_path.file_name()
-            .context("Invalid file name")?;
-        
+        let file_name = source_path.file_name().context("Invalid file name")?;
+
         let file_name_str = file_name.to_string_lossy().to_string();
-        
+
         // Check if golden reference exists
         if !golden_images.contains(file_name) {
             warn!("No golden reference for: {}", file_name_str);
@@ -210,7 +218,10 @@ fn verify_images(source_dir: &Path, golden_dir: &Path, threshold: f64) -> Result
             info!("✓ {}: {}% different", file_name_str, diff);
             passed += 1;
         } else {
-            error!("✗ {}: {}% different (threshold: {}%)", file_name_str, diff, threshold);
+            error!(
+                "✗ {}: {}% different (threshold: {}%)",
+                file_name_str, diff, threshold
+            );
             failed += 1;
         }
 
@@ -224,7 +235,7 @@ fn verify_images(source_dir: &Path, golden_dir: &Path, threshold: f64) -> Result
     // Summary
     let total = results.len();
     info!("Verification complete: {}/{} passed", passed, total);
-    
+
     if failed > 0 {
         info!("Failed images:");
         for r in &results {
@@ -245,22 +256,22 @@ enum Commands {
         /// Source directory containing images to use as golden references
         #[arg(value_name = "SOURCE_DIR")]
         source_dir: PathBuf,
-        
+
         /// Golden directory to store reference images
         #[arg(value_name = "GOLDEN_DIR")]
         golden_dir: PathBuf,
     },
-    
+
     /// Verify current images against golden references
     Verify {
         /// Source directory containing images to verify
         #[arg(value_name = "SOURCE_DIR")]
         source_dir: PathBuf,
-        
+
         /// Golden directory containing reference images
         #[arg(value_name = "GOLDEN_DIR")]
         golden_dir: PathBuf,
-        
+
         /// Maximum allowed difference percentage (default: 1.5)
         #[arg(long, default_value_t = DEFAULT_THRESHOLD)]
         threshold: f64,
@@ -294,21 +305,35 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Update { source_dir, golden_dir } => {
+        Commands::Update {
+            source_dir,
+            golden_dir,
+        } => {
             update_golden_images(&source_dir, &golden_dir)?;
         }
-        
-        Commands::Verify { source_dir, golden_dir, threshold } => {
+
+        Commands::Verify {
+            source_dir,
+            golden_dir,
+            threshold,
+        } => {
             let results = verify_images(&source_dir, &golden_dir, threshold)?;
-            
+
             let failed: Vec<_> = results.iter().filter(|r| !r.passed).collect();
-            
+
             if !failed.is_empty() {
-                eprintln!("\nVerification FAILED: {} out of {} images differ more than {}%",
-                    failed.len(), results.len(), threshold);
+                eprintln!(
+                    "\nVerification FAILED: {} out of {} images differ more than {}%",
+                    failed.len(),
+                    results.len(),
+                    threshold
+                );
                 std::process::exit(1);
             } else {
-                println!("\nVerification PASSED: All {} images match golden references", results.len());
+                println!(
+                    "\nVerification PASSED: All {} images match golden references",
+                    results.len()
+                );
                 std::process::exit(0);
             }
         }
@@ -324,14 +349,14 @@ mod tests {
     /// Create a simple test image as PNG bytes
     fn create_test_image(width: u32, height: u32, color: (u8, u8, u8)) -> DynamicImage {
         let mut buffer = vec![0u8; (width * height * 3) as usize];
-        
+
         for i in 0..(width * height) {
             let idx = (i * 3) as usize;
             buffer[idx] = color.0;
             buffer[idx + 1] = color.1;
             buffer[idx + 2] = color.2;
         }
-        
+
         image::RgbImage::from_raw(width, height, buffer)
             .map(DynamicImage::ImageRgb8)
             .unwrap()
@@ -341,9 +366,9 @@ mod tests {
     fn test_identical_images() {
         let img1 = create_test_image(100, 100, (255, 0, 0));
         let img2 = create_test_image(100, 100, (255, 0, 0));
-        
+
         let diff = compare_images(&img1, &img2).unwrap();
-        
+
         assert!(diff < 0.01, "Identical images should have 0% difference");
     }
 
@@ -351,44 +376,54 @@ mod tests {
     fn test_different_images() {
         let img1 = create_test_image(100, 100, (255, 0, 0));
         let img2 = create_test_image(100, 100, (0, 0, 255));
-        
+
         let diff = compare_images(&img1, &img2).unwrap();
-        
+
         // All pixels should be different (100% difference)
-        assert!(diff > 99.0, "Different images should have high difference: {}%", diff);
+        assert!(
+            diff > 99.0,
+            "Different images should have high difference: {}%",
+            diff
+        );
     }
 
     #[test]
     fn test_partial_difference() {
         let img1 = create_test_image(100, 100, (255, 0, 0));
         let img2 = create_test_image(100, 100, (255, 0, 0));
-        
+
         // Modify 10% of pixels in img2
         let mut rgb2 = img2.to_rgb8();
         let total_pixels = 100 * 100;
         let pixels_to_change = (total_pixels as f64 * 0.10) as u32;
-        
+
         for i in 0..pixels_to_change {
             let x = i % 100;
             let y = i / 100;
             rgb2.put_pixel(x, y, image::Rgb([0, 0, 255]));
         }
-        
+
         let img2_modified = DynamicImage::ImageRgb8(rgb2);
         let diff = compare_images(&img1, &img2_modified).unwrap();
-        
-        assert!((diff - 10.0).abs() < 1.0, "Expected ~10% difference, got {}%", diff);
+
+        assert!(
+            (diff - 10.0).abs() < 1.0,
+            "Expected ~10% difference, got {}%",
+            diff
+        );
     }
 
     #[test]
     fn test_dimension_mismatch() {
         let img1 = create_test_image(100, 100, (255, 0, 0));
         let img2 = create_test_image(200, 200, (255, 0, 0));
-        
+
         let result = compare_images(&img1, &img2);
-        
+
         assert!(result.is_err());
         let err = result.unwrap_err();
-        assert!(err.downcast_ref::<GoldenError>().map_or(false, |e| matches!(e, GoldenError::DimensionMismatch(_, _))));
+        assert!(err
+            .downcast_ref::<GoldenError>()
+            .is_some_and(|e| matches!(e, GoldenError::DimensionMismatch(_, _))));
     }
 }
