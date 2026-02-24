@@ -212,6 +212,7 @@ impl AppTestHarness {
     }
 
     /// Get timestamps from all volumes in timeline (for temporal order verification).
+    #[allow(dead_code)]
     pub fn get_timeline_timestamps(&self) -> Vec<String> {
         let state = self.state.lock().unwrap();
         state
@@ -1391,7 +1392,7 @@ async fn test_station_selection_and_switching_workflow() {
     harness.register_scan_data("KICT", year, month, day, kict_filename, kict_data);
 
     // Step 1: Select initial station (KTLX)
-    let volume_ktlx = harness
+    let _volume_ktlx = harness
         .fetch_and_decode("KTLX", ktlx_filename)
         .await
         .expect("Failed to fetch KTLX");
@@ -1426,7 +1427,7 @@ async fn test_station_selection_and_switching_workflow() {
 
     // Step 4: Verify we have volume data from both stations in history
     assert!(
-        state_after_switch.volume_scans.len() >= 1,
+        !state_after_switch.volume_scans.is_empty(),
         "Should have at least one volume scan loaded"
     );
 
@@ -1536,7 +1537,7 @@ async fn test_timeline_navigation_workflow() {
         let volume = harness
             .fetch_and_decode("KTLX", filename)
             .await
-            .expect(&format!("Failed to fetch {}", filename));
+            .unwrap_or_else(|_| panic!("Failed to fetch {}", filename));
         harness.add_to_timeline(&volume);
         println!(
             "✓ Added scan: {} ({} sweeps)",
@@ -1562,9 +1563,9 @@ async fn test_timeline_navigation_workflow() {
 
     // Step 6: Verify volume sweep counts are in ascending order (temporal progression)
     for (i, volume) in final_state.volume_scans.iter().enumerate() {
-        let expected_sweeps = 1 + i;
+        let _expected_sweeps = 1 + i;
         assert!(
-            volume.sweeps.len() >= 1,
+            !volume.sweeps.is_empty(),
             "Volume {} should have at least 1 sweep",
             i
         );
