@@ -1,7 +1,7 @@
 # Design Review State
 
-> Last Updated: 2026-02-24T22:09:00Z
-> Total runs completed: 26
+> Last Updated: 2026-02-24T23:06:00Z
+> Total runs completed: 27
 
 ## Component Registry
 
@@ -13,8 +13,8 @@
 | ColorLegend | tempest-app/src/color_legend.rs | 6 | 7 | 2026-02-24 | DD-043, DD-051, DD-052 |
 | ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5 | 7 | 2026-02-24 | DD-048, DD-049, DD-050 |
 | MomentSwitcher | tempest-app/src/moment_switcher.rs | 1 | 7 | 2026-02-24 | DD-039 |
-| OfflineIndicator | tempest-app/src/offline_indicator.rs | 1 | 5 | 2026-02-24 | none |
-| CacheManager | tempest-app/src/cache_manager.rs | 1 | 8 | 2026-02-24 | none |
+| OfflineIndicator | tempest-app/src/offline_indicator.rs | 1 | 6 | 2026-02-24 | DD-053, DD-054 |
+| CacheManager | tempest-app/src/cache_manager.rs | 1 | 9 | 2026-02-24 | DD-055 |
 | Config | tempest-app/src/config.rs | 0 | 1 | 2026-02-24 | none |
 | DecodeTypes | tempest-decode/src/types.rs | High | 1 | 2026-02-24 | none |
 | FetchCache | tempest-fetch/src/cache.rs | High | 1 | 2026-02-24 | none |

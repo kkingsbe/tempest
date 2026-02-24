@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T22:09:00Z
-> Total Open: 15
+> Last Updated: 2026-02-24T23:05:00Z
+> Total Open: 17
 
 ---
 
@@ -283,6 +283,83 @@ button(text(label).size(14))
 - **Suggested fix:** Change `.spacing(spacing::SM)` to `.spacing(spacing::LG)` or larger
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T22:07:00Z
+- **Status:** OPEN
+
+---
+
+### DD-053: OfflineIndicator - Container Padding Below Minimum (High Priority)
+
+- **Component:** `tempest-app/src/offline_indicator.rs`
+- **Usage count:** 1 (used in main app)
+- **Priority:** High (violates mandatory minimum)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Container internal padding: At least BASE (16px)"
+- **Evidence:**
+```rust
+// Line 85: Container around dot indicator
+container(text("●").size(16))
+    .width(Length::Shrink)
+    .padding(8),  // 8px < 16px BASE
+
+// Line 94: Outer container
+container(indicator)
+    .padding(12)  // 12px < 16px BASE
+```
+- **Line(s):** 85, 94
+- **Expected:** Container internal padding should be at least BASE (16px)
+- **Suggested fix:** Change `.padding(8)` to `.padding(spacing::BASE)` and `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T23:05:00Z
+- **Status:** OPEN
+
+---
+
+### DD-054: OfflineIndicator - Within-Group Spacing Below Minimum (Medium Priority)
+
+- **Component:** `tempest-app/src/offline_indicator.rs`
+- **Usage count:** 1 (used in main app)
+- **Priority:** Medium (violates minimum element spacing rule)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Element spacing within a group: At least SM (8px), typically MD (12px)"
+- **Evidence:**
+```rust
+// Line 89: Between dot indicator and text
+let indicator = row![
+    container(text("●").size(16))
+        .width(Length::Shrink)
+        .padding(8),
+    text(status_text).size(14),
+]
+.spacing(4)  // XS = 4px < 8px SM
+```
+- **Line(s):** 89
+- **Expected:** Element spacing within a group should be at least SM (8px)
+- **Suggested fix:** Change `.spacing(4)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)`
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T23:05:00Z
+- **Status:** OPEN
+
+---
+
+### DD-055: CacheManager - Container Padding Below Minimum (Medium Priority)
+
+- **Component:** `tempest-app/src/cache_manager.rs`
+- **Usage count:** 1 (used in main app)
+- **Priority:** Medium (violates mandatory minimum)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Container internal padding: At least BASE (16px)"
+- **Evidence:**
+```rust
+// Line 292: Settings panel container
+]
+.spacing(8)
+.padding(12);  // 12px < 16px BASE
+
+// Line 294: Another container
+container(settings_content).padding(12).into()  // 12px < 16px BASE
+```
+- **Line(s):** 292, 294
+- **Expected:** Container internal padding should be at least BASE (16px)
+- **Suggested fix:** Change `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T23:05:00Z
 - **Status:** OPEN
 
 ---
