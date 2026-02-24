@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T18:00:06Z
-> Total Open: 7
+> Last Updated: 2026-02-24T20:05:00Z
+> Total Open: 6
 
 ---
 
@@ -125,25 +125,4 @@ text("").size(5),
 - **Queued:** 2026-02-24T16:00:08Z
 - **Status:** OPEN
 
----
-
-### DD-040: CacheManager - Non-8-point Padding in Text Input (Low Priority)
-
-- **Component:** `tempest-app/src/cache_manager.rs`
-- **Usage count:** Medium (used in main app)
-- **Priority:** Low (design system violation)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "8-Point Spacing: ALL spacing values must come from the 8-point scale"
-- **Evidence:**
-```rust
-let max_size_input = text_input("Max size (MB)", &self.max_size_input)
-    .on_input(CacheManagerMessage::MaxSizeChanged)
-    .width(Length::Fixed(150.0))
-    .padding(10);
-```
-- **Line(s):** 275
-- **Expected:** Padding should use 8-point values (2, 4, 8, 12, 16, 24, 32, 48, 64)
-- **Suggested fix:** Change `.padding(10)` to `.padding(8)` or `.padding(12)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T18:00:06Z
-- **Status:** OPEN
 
