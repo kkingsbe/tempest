@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T21:11:00Z
-> Total Open: 13
+> Last Updated: 2026-02-24T22:09:00Z
+> Total Open: 15
 
 ---
 
@@ -263,6 +263,46 @@ button(text(label).size(14))
 - **Suggested fix:** Add `use crate::spacing;` and replace hardcoded values with constants
 - **Fix estimate:** S
 - **Queued:** 2026-02-24T21:00:00Z
+- **Status:** OPEN
+
+---
+
+### DD-051: ColorLegend - Section Spacing Below Minimum (Medium Priority)
+
+- **Component:** `tempest-app/src/color_legend.rs`
+- **Usage count:** 6+ usages
+- **Priority:** Medium (violates mandatory section spacing rule)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Section spacing: At least LG (24px) between distinct sections"
+- **Evidence:**
+```rust
+// Line 170: Between title, color bar row, and min label
+.spacing(spacing::SM)  // SM = 8px
+```
+- **Line(s):** 170
+- **Expected:** Section spacing should be at least LG (24px) between distinct sections of a view
+- **Suggested fix:** Change `.spacing(spacing::SM)` to `.spacing(spacing::LG)` or larger
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T22:07:00Z
+- **Status:** OPEN
+
+---
+
+### DD-052: ColorLegend - Within-Group Spacing Below Minimum (Medium Priority)
+
+- **Component:** `tempest-app/src/color_legend.rs`
+- **Usage count:** 6+ usages
+- **Priority:** Medium (violates minimum element spacing rule)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Element spacing within a group: At least SM (8px), typically MD (12px)"
+- **Evidence:**
+```rust
+// Line 167: Between color bar and max label within the row
+.spacing(spacing::XS)  // XS = 4px
+```
+- **Line(s):** 167
+- **Expected:** Element spacing within a group should be at least SM (8px), typically MD (12px)
+- **Suggested fix:** Change `.spacing(spacing::XS)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)`
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-24T22:07:00Z
 - **Status:** OPEN
 
 
