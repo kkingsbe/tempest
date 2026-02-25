@@ -1,6 +1,6 @@
 # Design Debt
 
-> Last Updated: 2026-02-24T23:05:00Z
+> Last Updated: 2026-02-25T00:00:00Z
 > Total Open: 17
 
 ---
@@ -199,13 +199,6 @@ row![].spacing(spacing::XXS)  // XXS = 2px
 
 ---
 
-- **Suggested fix:** Change `.size(14)` to `.size(18)` or `.size(20)`
-- **Fix estimate:** XS (< 5 min)
-- **Queued:** 2026-02-24T21:11:00Z
-- **Status:** OPEN
-
----
-
 ### DD-048: ElevationTiltSelector - Container Padding Below Minimum
 - **Component:** `tempest-app/src/elevation_tilt_selector.rs` (Line 175)
 - **Usage count:** 5 (second most-used component)
@@ -360,6 +353,31 @@ container(settings_content).padding(12).into()  // 12px < 16px BASE
 - **Suggested fix:** Change `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T23:05:00Z
+- **Status:** OPEN
+
+---
+
+### DD-056: StationSelector - Form Field Padding Below Minimum (Medium Priority)
+
+- **Component:** `tempest-app/src/station_selector.rs`
+- **Usage count:** 1 (used in main app)
+- **Priority:** Medium (violates form field spacing rule)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Form field spacing: At least MD (12px) between consecutive inputs"
+- **Evidence:**
+```rust
+let filter_input = text_input(
+    "Filter by ID or name (e.g., KTLX, Oklahoma)",
+    &self.filter_text,
+)
+.on_input(StationSelectorMessage::FilterChanged)
+.width(Length::Fill)
+.padding(8);  // 8px < 12px MD
+```
+- **Line(s):** 121
+- **Expected:** Form field padding should be at least 12px vertical for comfortable touch targets
+- **Suggested fix:** Change `.padding(8)` to `.padding(12)` or `.padding(spacing::MD)`
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T00:00:00Z
 - **Status:** OPEN
 
 ---
