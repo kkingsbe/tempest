@@ -59,7 +59,7 @@ pub fn check_connectivity(host: &str, port: u16) -> bool {
 ///
 /// # Example
 /// ```
-/// use tempest_offline_detection::PeriodicConnectivityChecker;
+/// use tempest_app::offline_detection::PeriodicConnectivityChecker;
 ///
 /// // Create a new checker with 5-second intervals
 /// let checker = PeriodicConnectivityChecker::new(5);

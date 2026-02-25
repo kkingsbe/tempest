@@ -1,24 +1,21 @@
 # Design Review State
 
-> Last Updated: 2026-02-25T10:08:00Z
-> Total runs completed: 36
+> Last Updated: 2026-02-25T11:08:00Z
+> Total runs completed: 37
 
 ## Component Registry
 
 | Component | Path | Usage Count | Times Reviewed | Last Reviewed | Open Debt Items |
 | --------- | ---- | ----------- | -------------- | ------------- | --------------- |
 | App (main.rs) | tempest-app/src/main.rs | 1 | 4 | 2026-02-25 | DD-059 |
-| TimelineState | tempest-app/src/timeline.rs | 1 | 11 | 2026-02-25 | DD-044, DD-046, DD-060 |
-| StationSelector | tempest-app/src/station_selector.rs | 6+ | 13 | 2026-02-25 | DD-037, DD-038 |
-| ColorLegend | tempest-app/src/color_legend.rs | 6+ | 9 | 2026-02-25 | DD-051, DD-052 |
-| ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5+ | 11 | 2026-02-25 | DD-050, DD-062 |
-| MomentSwitcher | tempest-app/src/moment_switcher.rs | 3+ | 9 | 2026-02-25 | DD-042, DD-056, DD-061 |
-| OfflineIndicator | tempest-app/src/offline_indicator.rs | 2+ | 7 | 2026-02-25 | none (scheduled) |
-| CacheManager | tempest-app/src/cache_manager.rs | 3+ | 12 | 2026-02-25 | DD-055, DD-057, DD-058, DD-063 |
+| TimelineState | tempest-app/src/timeline.rs | 30 | 12 | 2026-02-25 | DD-046, DD-060, DD-064 |
+| StationSelector | tempest-app/src/station_selector.rs | 26 | 13 | 2026-02-25 | DD-037, DD-038 |
+| ColorLegend | tempest-app/src/color_legend.rs | 19 | 9 | 2026-02-25 | DD-051, DD-052 |
+| ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 26 | 11 | 2026-02-25 | DD-050, DD-062 |
+| MomentSwitcher | tempest-app/src/moment_switcher.rs | 27 | 9 | 2026-02-25 | DD-042, DD-056, DD-061 |
+| OfflineIndicator | tempest-app/src/offline_indicator.rs | 19 | 7 | 2026-02-25 | none |
+| CacheManager | tempest-app/src/cache_manager.rs | 57 | 13 | 2026-02-25 | DD-055, DD-057, DD-058, DD-063 |
 | Config | tempest-app/src/config.rs | 0 | 1 | 2026-02-24 | none |
-| DecodeTypes | tempest-decode/src/types.ts | High | 1 | 2026-02-24 | none |
-| FetchCache | tempest-fetch/src/cache.rs | High | 1 | 2026-02-24 | none |
-| OfflineDetection | tempest-app/src/offline_detection.rs | 1 | 2 | 2026-02-25 | none |
 | Colors | tempest-app/src/colors.rs | 3 | 1 | 2026-02-25 | none |
 | Spacing | tempest-app/src/spacing.rs | 4 | 1 | 2026-02-25 | none |
 
@@ -26,6 +23,7 @@
 
 | Run | Date | Components Reviewed | New Debt Items | False Positives |
 | --- | ---- | ------------------- | -------------- | ---------------- |
+| 37 | 2026-02-25 | Timeline, CacheManager | DD-064 | 0 |
 | 36 | 2026-02-25 | ElevationTiltSelector, CacheManager | DD-048, DD-049 resolved | 0 |
 | 34 | 2026-02-25 | ColorLegend, MomentSwitcher, ElevationTiltSelector, Timeline | DD-061, DD-062 | 0 |
 | 33 | 2026-02-25 | OfflineIndicator, ElevationTiltSelector | 0 | 0 |
@@ -48,9 +46,10 @@
 | Component | Total Violations | Unresolved |
 | --------- | ---------------- | ---------- |
 | App | 1 | 1 |
-| Timeline | 4 | 3 |
+| Timeline | 5 | 3 |
 | StationSelector | 6 | 2 |
 | ElevationTiltSelector | 4 | 2 |
 | ColorLegend | 4 | 2 |
 | MomentSwitcher | 4 | 3 |
 | CacheManager | 9 | 4 |
+

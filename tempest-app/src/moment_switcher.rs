@@ -8,7 +8,7 @@ use iced::widget::{button, row, text};
 use iced::{Border, Element, Length};
 
 mod colors {
-    pub use crate::colors::{accent, border, surface, text};
+    pub use crate::colors::{border, surface, text};
 }
 
 /// Supported radar moments/data types
@@ -142,22 +142,6 @@ impl MomentSwitcher {
 
     /// Returns the view for this component
     pub fn view(&self) -> Element<'_, MomentSwitcherMessage> {
-        // Custom button style for primary/selected state (filled accent)
-        let primary_button_style = |_theme: &iced::Theme, status: button::Status| {
-            let is_selected =
-                status == button::Status::Pressed || status == button::Status::Hovered;
-            button::Style {
-                background: Some(if is_selected {
-                    colors::accent::HOVER.into()
-                } else {
-                    colors::accent::PRIMARY.into()
-                }),
-                text_color: colors::text::PRIMARY,
-                border: Border::default().rounded(8),
-                ..button::Style::default()
-            }
-        };
-
         // Custom button style for secondary/unselected state (outlined/muted)
         let secondary_button_style = |_theme: &iced::Theme, status: button::Status| {
             let is_hovered = status == button::Status::Hovered;
@@ -189,7 +173,7 @@ impl MomentSwitcher {
                     .width(Length::Fixed(112.0))
                     .height(Length::Fixed(48.0))
                     .padding([12, 24])
-                    .style(primary_button_style)
+                    .style(secondary_button_style)
             } else {
                 button(text(format!("{}\n{}", moment.code(), moment.name())).size(12))
                     .on_press(MomentSwitcherMessage::MomentSelected(moment))

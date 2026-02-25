@@ -1,22 +1,35 @@
-# Sprint 24 - Agent 4
+# Sprint 25 - Agent 4 Tasks
 
-## Tasks
+**Focus:** timeline.rs, cache_manager.rs
 
-- [x] [BUILDFIX] Fix broken build / failing tests
-  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/test-driven-development/SKILL.md
-  - 🎯 Goal: Build compiles with zero errors AND full test suite passes
-  - 📂 Files: tempest-app/tests/e2e/gui_harness_test.rs
-  - 🧭 Context: The test suite fails to compile with the following error:
+## Design Debt Items
 
-    **Error [E0599]**: `no method named '_is_online' found for struct 'tempest_app::OfflineIndicator'` in gui_harness_test.rs line 659
+- [ ] [DD-046] Fix Timeline - Inter-element Spacing Below Minimum (Medium)
+  - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
+  - 🎯 Goal: Change `.spacing(spacing::XXS)` to `.spacing(spacing::XS)` or `.spacing(spacing::SM)` for spacing between tick marks and tick labels
+  - 📂 Files: `tempest-app/src/timeline.rs`
+  - 🧭 Context: See DESIGN_DEBT.md DD-046 for details
+  - ✅ Acceptance: Inter-element spacing uses XS or SM, build passes, tests pass
 
-    ```
-    let initial_online = harness.state.offline_indicator._is_online();
-    ```
+- [ ] [DD-055] Fix CacheManager - Inter-element Spacing Below Minimum (Medium)
+  - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
+  - 🎯 Goal: Change `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)` for settings panel containers
+  - 📂 Files: `tempest-app/src/cache_manager.rs`
+  - 🧭 Context: See DESIGN_DEBT.md DD-055 for details
+  - ✅ Acceptance: Container padding is at least 16px, build passes, tests pass
 
-    The compiler suggests using `is_online` instead of `_is_online`.
+- [ ] [DD-060] Fix Timeline - Container Padding Below Minimum (Medium)
+  - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
+  - 🎯 Goal: Ensure container padding is at least BASE (16px) for timeline containers
+  - 📂 Files: `tempest-app/src/timeline.rs`
+  - 🧭 Context: See DESIGN_DEBT.md DD-060 for details
+  - ✅ Acceptance: Container padding is at least 16px, build passes, tests pass
 
-    Fix: Change `_is_online()` to `is_online()` in the test file.
-  - ✅ Acceptance: `cargo build` exits 0; `cargo test` exits 0
+- [ ] [DD-063] Fix CacheManager - Non-8-point Dimensions (Medium)
+  - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
+  - 🎯 Goal: Change Space heights from 12px, 8px, 16px to 24px (LG) and column spacing from 8px to 24px for proper section spacing
+  - 📂 Files: `tempest-app/src/cache_manager.rs`
+  - 🧭 Context: See DESIGN_DEBT.md DD-063 for details
+  - ✅ Acceptance: All spacing uses 8-point values, build passes, tests pass
 
 - [ ] AGENT QA: Run cargo build FIRST to verify compilation. Fix ALL build errors. Then run full test suite. If ALL errors fixed and tests pass, create '.agent_done_4' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.

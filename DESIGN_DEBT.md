@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-25T10:08:00Z
-> Total Open: 14
+> Last Updated: 2026-02-25T11:08:00Z
+> Total Open: 13
 
 ---
 
@@ -85,50 +85,6 @@ row![].spacing(spacing::XXS)  // XXS = 2px
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T21:11:00Z
 - **Status:** OPEN
-
----
-
-### DD-048: ElevationTiltSelector - Container Padding Below Minimum
-
-- **Component:** `tempest-app/src/elevation_tilt_selector.rs` (Line 175)
-- **Usage count:** 5 (second most-used component)
-- **Priority:** Medium
-- **Skill violated:** `skills/iced-rs/SKILL.md` — "Container internal padding: At least BASE (16px)"
-- **Evidence:**
-```rust
-container(content).padding(12).into()
-```
-- **Line(s):** 175
-- **Expected:** Container padding ≥ BASE (16px)
-- **Suggested fix:** Change `.padding(12)` to `.padding(16)` or use `spacing::BASE`
-- **Fix estimate:** S
-- **Queued:** 2026-02-24T21:00:00Z
-- **Status:** RESOLVED
-- **Resolved:** 2026-02-25 - container now uses .padding(16)
-
----
-
-### DD-049: ElevationTiltSelector - Button Padding Missing
-
-- **Component:** `tempest-app/src/elevation_tilt_selector.rs` (Lines 136-148)
-- **Usage count:** 5
-- **Priority:** High
-- **Skill violated:** `skills/iced-rs/SKILL.md` — "Button padding: At least 12px vertical, 24px horizontal"
-- **Evidence:**
-```rust
-button(text(label).size(14))
-    .on_press(...)
-    .width(Length::Fixed(48.0))
-    .height(Length::Fixed(48.0))
-    .style(iced::widget::button::primary)
-```
-- **Line(s):** 136-148
-- **Expected:** Button padding ≥12px vertical, ≥24px horizontal
-- **Suggested fix:** Add `.padding([12, 16])` to provide adequate breathing room
-- **Fix estimate:** S
-- **Queued:** 2026-02-24T21:00:00Z
-- **Status:** RESOLVED
-- **Resolved:** 2026-02-25 - buttons now have .padding([12, 24])
 
 ---
 
@@ -408,5 +364,28 @@ iced::widget::Space::with_height(iced::Length::Fixed(16.0)),  // BASE = 16px < L
 - **Suggested fix:** Change Space heights to 24px (LG) and column .spacing(8) to .spacing(spacing::LG)
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-25T09:07:33Z
+- **Status:** OPEN
+
+---
+
+### DD-064: Timeline - Additional Inter-element Spacing Violations (Medium Priority)
+
+- **Component:** `tempest-app/src/timeline.rs`
+- **Usage count:** High (timeline controls)
+- **Priority:** Medium (violates mandatory minimum spacing)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Element spacing within a group: At least SM (8px), typically MD (12px)"
+- **Evidence:**
+```rust
+// Line 328: Between speed buttons (1x, 2x, 5x, 10x)
+let mut speed_buttons_row = row![].spacing(spacing::XXS);  // XXS = 2px < SM (8px)
+
+// Line 370: Between range buttons (1h, 6h, 24h)
+let mut range_buttons_row = row![].spacing(spacing::XXS);  // XXS = 2px < SM (8px)
+```
+- **Line(s):** 328, 370
+- **Expected:** Element spacing within a group should be at least SM (8px). XXS should only be used for icon-to-label gaps.
+- **Suggested fix:** Change `.spacing(spacing::XXS)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)` in both locations
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T11:08:00Z
 - **Status:** OPEN
 
