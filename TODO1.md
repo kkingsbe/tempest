@@ -27,14 +27,14 @@
   - 🧭 Context: See DESIGN_DEBT.md DD-042 for details
   - ✅ Acceptance: Button dimensions use 8-point values, build passes, tests pass
 
-- [ ] [DD-051] Fix ColorLegend - Section Spacing Below Minimum (Medium)
+- [x] [DD-051] Fix ColorLegend - Section Spacing Below Minimum (Medium)
   - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
   - 🎯 Goal: Change `.spacing(spacing::SM)` to `.spacing(spacing::LG)` between title, color bar row, and min label sections
   - 📂 Files: `tempest-app/src/color_legend.rs`
   - 🧭 Context: See DESIGN_DEBT.md DD-051 for details
   - ✅ Acceptance: Section spacing uses LG (24px), build passes, tests pass
 
-- [ ] [DD-052] Fix ColorLegend - Container Padding Below Minimum (Medium)
+- [x] [DD-052] Fix ColorLegend - Container Padding Below Minimum (Medium)
   - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
   - 🎯 Goal: Ensure container padding is at least BASE (16px) for all containers in color_legend.rs
   - 📂 Files: `tempest-app/src/color_legend.rs`

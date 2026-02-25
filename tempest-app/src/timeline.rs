@@ -325,7 +325,7 @@ impl TimelineState {
         let speed_label = text("Speed:").size(12).font(iced::font::Font::MONOSPACE);
 
         // Build speed buttons row
-        let mut speed_buttons_row = row![].spacing(spacing::XXS);
+        let mut speed_buttons_row = row![].spacing(spacing::XS);
         for &speed in &VALID_SPEEDS {
             let _is_selected = self.playback_speed == speed;
             let btn = button(text(format!("{}x", speed)).size(11))
@@ -367,7 +367,7 @@ impl TimelineState {
         let range_label = text("Range:").size(12).font(iced::font::Font::MONOSPACE);
 
         // Build range buttons row
-        let mut range_buttons_row = row![].spacing(spacing::XXS);
+        let mut range_buttons_row = row![].spacing(spacing::SM);
         for &hours in &VALID_TIME_RANGES {
             let is_selected = self.time_range_hours == hours;
             let btn_text = if is_selected {

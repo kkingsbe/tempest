@@ -125,7 +125,7 @@ impl ColorLegend {
         let num_stops = 20; // Number of color swatches in the gradient
         let step = (max_val - min_val) / (num_stops as f32);
 
-        let mut color_bar = column!().spacing(spacing::XXS).width(Length::Fixed(30.0));
+        let mut color_bar = column!().spacing(spacing::XXS).width(Length::Fixed(30.0)).padding(spacing::BASE);
 
         // Add color swatches from top (max) to bottom (min)
         for i in 0..num_stops {
@@ -142,6 +142,7 @@ impl ColorLegend {
                 Length::Fixed(30.0),
                 Length::Fixed(6.0),
             ))
+            .padding(spacing::BASE)
             .style(move |_theme| container::Style {
                 background: Some(iced::Background::Color(iced_color)),
                 ..Default::default()

@@ -9,6 +9,8 @@ use std::sync::Arc;
 use tempest_fetch::{Cache, CacheStats};
 use tokio::sync::RwLock;
 
+use crate::spacing;
+
 /// Messages produced by the CacheManager component
 #[derive(Debug, Clone)]
 pub enum CacheManagerMessage {
@@ -249,12 +251,12 @@ impl CacheManager {
             button(text("Clearing..."))
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
-                .padding([12, 24])
+                .padding([spacing::BASE, spacing::LG])
         } else {
             button(text("Clear Cache"))
                 .on_press(CacheManagerMessage::ClearCache)
                 .width(Length::Fixed(150.0))
-                .padding([12, 24])
+                .padding([spacing::BASE, spacing::LG])
         };
 
         // Settings toggle button
@@ -265,23 +267,23 @@ impl CacheManager {
         };
         let settings_toggle = button(text(settings_toggle_text))
             .on_press(CacheManagerMessage::ToggleSettings)
-            .padding([12, 24]);
+            .padding([spacing::BASE, spacing::LG]);
 
         // Settings panel (conditional)
         let settings_panel: Element<'_, CacheManagerMessage> = if self.show_settings {
             let max_size_input = text_input("Max size (MB)", &self.max_size_input)
                 .on_input(CacheManagerMessage::MaxSizeChanged)
                 .width(Length::Fixed(150.0))
-                .padding(10);
+                .padding(spacing::SM);
 
             let apply_button = button(text("Apply"))
                 .on_press(CacheManagerMessage::ApplyMaxSize)
                 .width(Length::Fixed(80.0))
-                .padding([12, 24]);
+                .padding([spacing::BASE, spacing::LG]);
 
             let settings_content = column![
                 text("Cache Settings").size(18),
-                iced::widget::Space::with_height(iced::Length::Fixed(8.0)),
+                iced::widget::Space::with_height(iced::Length::Fixed(24.0)),
                 row![text("Maximum Size (MB):"), max_size_input, apply_button,]
                     .spacing(8)
                     .align_y(Alignment::Center),
@@ -289,9 +291,9 @@ impl CacheManager {
                 text("Note: Cache limit requires app restart to take effect").size(12),
             ]
             .spacing(8)
-            .padding(12);
+            .padding(spacing::BASE);
 
-            container(settings_content).padding(12).into()
+            container(settings_content).padding(spacing::BASE).into()
         } else {
             text("").into()
         };
@@ -299,10 +301,10 @@ impl CacheManager {
         // Build main content
         let content = column![
             text("Cache Management").size(22),
-            iced::widget::Space::with_height(iced::Length::Fixed(12.0)),
+            iced::widget::Space::with_height(iced::Length::Fixed(24.0)),
             // Statistics section
             text("Current Statistics").size(18),
-            iced::widget::Space::with_height(iced::Length::Fixed(8.0)),
+            iced::widget::Space::with_height(iced::Length::Fixed(24.0)),
             row![text("Total Size:"), text(total_size.clone()),]
                 .spacing(8)
                 .align_y(Alignment::Center),
@@ -312,12 +314,12 @@ impl CacheManager {
             row![text("Usage:"), text(format!("{:.1}%", usage_percent)),]
                 .spacing(8)
                 .align_y(Alignment::Center),
-            iced::widget::Space::with_height(iced::Length::Fixed(16.0)),
+            iced::widget::Space::with_height(iced::Length::Fixed(24.0)),
             // Clear cache section
             text("Actions").size(18),
-            iced::widget::Space::with_height(iced::Length::Fixed(8.0)),
+            iced::widget::Space::with_height(iced::Length::Fixed(24.0)),
             clear_button,
-            iced::widget::Space::with_height(iced::Length::Fixed(16.0)),
+            iced::widget::Space::with_height(iced::Length::Fixed(24.0)),
             // Settings section
             settings_toggle,
             settings_panel,
