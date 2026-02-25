@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-25T09:07:33Z
-> Total Open: 16
+> Last Updated: 2026-02-25T10:08:00Z
+> Total Open: 14
 
 ---
 
@@ -103,7 +103,8 @@ container(content).padding(12).into()
 - **Suggested fix:** Change `.padding(12)` to `.padding(16)` or use `spacing::BASE`
 - **Fix estimate:** S
 - **Queued:** 2026-02-24T21:00:00Z
-- **Status:** OPEN
+- **Status:** RESOLVED
+- **Resolved:** 2026-02-25 - container now uses .padding(16)
 
 ---
 
@@ -126,7 +127,8 @@ button(text(label).size(14))
 - **Suggested fix:** Add `.padding([12, 16])` to provide adequate breathing room
 - **Fix estimate:** S
 - **Queued:** 2026-02-24T21:00:00Z
-- **Status:** OPEN
+- **Status:** RESOLVED
+- **Resolved:** 2026-02-25 - buttons now have .padding([12, 24])
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Tasks
 
-- [ ] [BUILDFIX] Fix broken build / failing tests
+- [x] [BUILDFIX] Fix broken build / failing tests
   - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/test-driven-development/SKILL.md
   - 🎯 Goal: Build compiles with zero errors AND full test suite passes
   - 📂 Files: tempest-app/tests/e2e/gui_harness_test.rs
