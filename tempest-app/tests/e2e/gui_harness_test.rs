@@ -656,7 +656,7 @@ fn test_offline_indicator_workflow() {
     let mut harness = GuiTestHarness::new();
     
     // Check initial online status
-    let initial_online = harness.state.offline_indicator._is_online();
+    let initial_online = harness.state.offline_indicator.is_online();
     println!("Initial online status: {}", initial_online);
     
     // Send check connectivity message

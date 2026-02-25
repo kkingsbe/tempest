@@ -53,4 +53,4 @@
 | ElevationTiltSelector | 6 | 4 |
 | ColorLegend | 4 | 2 |
 | MomentSwitcher | 4 | 3 |
-| CacheManager | 8 | 3 |
+| CacheManager | 9 | 4 |

@@ -4,8 +4,6 @@
 //! without running a window.
 
 pub mod gui_harness {
-    use iced::Task;
-    
     // Re-export types from the crate root (lib.rs)
     pub use crate::Message;
     pub use crate::PanDirection;

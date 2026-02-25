@@ -43,7 +43,7 @@ impl OfflineIndicator {
 
     /// Create an offline indicator with default offline status
     #[allow(dead_code)]
-    pub fn default() -> Self {
+    pub fn default_state() -> Self {
         Self { is_online: false }
     }
 
