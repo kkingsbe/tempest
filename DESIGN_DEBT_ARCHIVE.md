@@ -1,10 +1,13 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-25T10:08:00Z
-> Total Archived: 48
+> Last Updated: 2026-02-25T13:08:00Z
+> Total Archived: 51
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-037 | station_selector.rs | Medium | RESOLVED | Button padding now uses spacing::MD (12px) - fixed | 2026-02-25 |
+| DD-052 | color_legend.rs | Medium | RESOLVED | Section spacing now uses LG (24px) - fixed | 2026-02-25 |
+| DD-051 | color_legend.rs | Medium | RESOLVED | Within-group spacing now uses LG (24px) - fixed | 2026-02-25 |
 | DD-049 | elevation_tilt_selector.rs | High | RESOLVED | Button padding now has [12, 24] - fixed | 2026-02-25 |
 | DD-048 | elevation_tilt_selector.rs | Medium | RESOLVED | Container padding now uses 16px (BASE) - fixed | 2026-02-25 |
 

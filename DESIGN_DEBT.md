@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-25T11:08:00Z
-> Total Open: 13
+> Last Updated: 2026-02-25T13:08:00Z
+> Total Open: 10
 
 ---
 
@@ -44,26 +44,7 @@ text("").size(5),
 
 ---
 
-### DD-037: StationSelector - Button Padding Below Minimum (Medium Priority)
 
-- **Component:** `tempest-app/src/station_selector.rs`
-- **Usage count:** Medium (used in main app)
-- **Priority:** Medium (design system violation)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Button padding: At least 12px vertical, 24px horizontal"
-- **Evidence:**
-```rust
-.on_press(StationSelectorMessage::StationSelected(station.clone()))
-.width(Length::Fill)
-.padding(8);
-```
-- **Line(s):** 140
-- **Expected:** Button padding should be at least 12px vertical, 24px horizontal
-- **Suggested fix:** Change `.padding(8)` to `.padding([12, 24])` or use a larger padding value
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T16:00:08Z
-- **Status:** OPEN
-
----
 
 ### DD-046: Timeline - Inter-element Spacing Below Minimum (Medium Priority)
 
@@ -110,26 +91,6 @@ row![].spacing(spacing::XXS)  // XXS = 2px
 
 ---
 
-### DD-051: ColorLegend - Section Spacing Below Minimum (Medium Priority)
-
-- **Component:** `tempest-app/src/color_legend.rs`
-- **Usage count:** 6+ usages
-- **Priority:** Medium (violates mandatory section spacing rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Section spacing: At least LG (24px) between distinct sections"
-- **Evidence:**
-```rust
-// Line 170: Between title, color bar row, and min label
-.spacing(spacing::SM)  // SM = 8px
-```
-- **Line(s):** 170
-- **Expected:** Section spacing should be at least LG (24px) between distinct sections of a view
-- **Suggested fix:** Change `.spacing(spacing::SM)` to `.spacing(spacing::LG)` or larger
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T22:07:00Z
-- **Status:** OPEN
-
----
-
 ### DD-055: CacheManager - Container Padding Below Minimum (Medium Priority)
 
 - **Component:** `tempest-app/src/cache_manager.rs`
@@ -151,26 +112,6 @@ container(settings_content).padding(12).into()  // 12px < 16px BASE
 - **Suggested fix:** Change `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T23:05:00Z
-- **Status:** OPEN
-
----
-
-### DD-052: ColorLegend - Within-Group Spacing Below Minimum (Medium Priority)
-
-- **Component:** `tempest-app/src/color_legend.rs`
-- **Usage count:** 6+ usages
-- **Priority:** Medium (violates minimum element spacing rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Element spacing within a group: At least SM (8px), typically MD (12px)"
-- **Evidence:**
-```rust
-// Line 167: Between color bar and max label within the row
-.spacing(spacing::XS)  // XS = 4px
-```
-- **Line(s):** 167
-- **Expected:** Element spacing within a group should be at least SM (8px), typically MD (12px)
-- **Suggested fix:** Change `.spacing(spacing::XS)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T22:07:00Z
 - **Status:** OPEN
 
 ---
