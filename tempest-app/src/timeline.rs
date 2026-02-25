@@ -309,17 +309,17 @@ impl TimelineState {
                 .font(iced::font::Font::MONOSPACE),
         )
         .on_press(TimelineMessage::PlayPauseToggled)
-        .padding(spacing::SM);
+        .padding(spacing::MD);
 
         // Step backward button
         let step_back_btn = button(text("⏮").size(14))
             .on_press(TimelineMessage::StepBackward)
-            .padding(spacing::SM);
+            .padding(spacing::MD);
 
         // Step forward button
         let step_forward_btn = button(text("⏭").size(14))
             .on_press(TimelineMessage::StepForward)
-            .padding(spacing::SM);
+            .padding(spacing::MD);
 
         // Speed label
         let speed_label = text("Speed:").size(12).font(iced::font::Font::MONOSPACE);
@@ -330,7 +330,7 @@ impl TimelineState {
             let _is_selected = self.playback_speed == speed;
             let btn = button(text(format!("{}x", speed)).size(11))
                 .on_press(TimelineMessage::SpeedChanged(speed))
-                .padding(spacing::XS);
+                .padding(spacing::MD);
             speed_buttons_row = speed_buttons_row.push(btn);
         }
 
@@ -342,7 +342,7 @@ impl TimelineState {
         };
         let loop_btn = button(text(loop_text).size(12))
             .on_press(TimelineMessage::LoopToggled)
-            .padding(spacing::XS);
+            .padding(spacing::MD);
 
         // Combine all controls
         row![
@@ -377,7 +377,7 @@ impl TimelineState {
             };
             let btn = button(text(btn_text).size(12))
                 .on_press(TimelineMessage::TimeRangeChanged(hours))
-                .padding(spacing::XS);
+                .padding(spacing::MD);
             range_buttons_row = range_buttons_row.push(btn);
         }
 

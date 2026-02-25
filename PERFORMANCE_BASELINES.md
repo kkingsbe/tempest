@@ -6,9 +6,9 @@ This document tracks the baseline performance measurements for the Tempest NEXRA
 
 | Metric | Target | Baseline | Status |
 |--------|--------|----------|--------|
-| Decode | <100ms | TBD | TO-BENCHMARK |
-| Pipeline p95 | <500ms | TBD | TO-BENCHMARK |
-| Memory | <500MB | TBD | TO-BENCHMARK |
+| Decode | <100ms | 6.03 ns | TO-BENCHMARK |
+| Pipeline p95 | <500ms | 40.81 ps | TO-BENCHMARK |
+| Memory | <500MB | ~2.4 MB (fixture size) | TO-BENCHMARK |
 
 ## Benchmark Categories
 
@@ -92,3 +92,13 @@ cargo bench --package tempest-fetch -- decompress_bzip2
 - Sample sizes are set to 10-20 for reliability
 - Memory benchmarks track heap allocations during decoding
 - p95 measurements are available through Criterion's statistics
+
+## Current Measurement Notes
+
+**Observed Issues:**
+- `decode_full_volume` runs at ~6ns - appears to return early (likely error path)
+- `pipeline_single_scan` is a stub benchmark returning immediately (black_box(()))
+- `decompress_bzip2` shows realistic ~1.16µs for actual decompression work
+- Memory allocation tracking not implemented in current benchmarks
+
+**Recommendation:** Need actual pipeline benchmark implementation for meaningful p95 measurements.

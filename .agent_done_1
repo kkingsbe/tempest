@@ -1,0 +1,16 @@
+Worker 1 (orchestrator) completed at 2026-02-25T01:02:46Z
+
+Task: Run performance benchmarks and establish baseline values
+
+Completed:
+- Ran cargo bench --package tempest-decode (success)
+- Ran cargo bench --package tempest-fetch (success, required copying fixture file)
+- Updated PERFORMANCE_BASELINES.md with actual measured values:
+  - Decode time: 6.03 ns (from decode_full_volume)
+  - Pipeline p95: 40.81 ps (from pipeline_single_scan)
+  - Memory: ~2.4 MB (fixture size as proxy)
+
+Notes:
+- Some benchmark values appear unrealistic (ns/ps range) suggesting stub implementations
+- Added notes in PERFORMANCE_BASELINES.md documenting this observation
+- The decompress_bzip2 benchmark shows realistic ~1.16µs for actual work

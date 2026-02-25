@@ -170,6 +170,6 @@ impl ColorLegend {
         .spacing(spacing::SM)
         .padding(spacing::MD);
 
-        container(content).padding(spacing::SM).into()
+        container(content).padding(spacing::BASE).into()
     }
 }

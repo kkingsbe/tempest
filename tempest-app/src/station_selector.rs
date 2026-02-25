@@ -118,10 +118,10 @@ impl StationSelector {
         )
         .on_input(StationSelectorMessage::FilterChanged)
         .width(Length::Fill)
-        .padding(8);
+        .padding(spacing::MD);
 
         // Build station list buttons
-        let mut station_buttons = Column::new().spacing(4);
+        let mut station_buttons = Column::new().spacing(spacing::SM);
         for station in &self.filtered_stations {
             let is_selected = self
                 .selected_station

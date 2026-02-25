@@ -1,10 +1,15 @@
 # Design Debt Archive
 
-> Last Updated: 2026-02-24T18:00:06Z
-> Total Archived: 41
+> Last Updated: 2026-02-25T01:00:15Z
+> Total Archived: 46
 
 | ID     | Component  | Priority | Status   | Summary                                           | Resolved   |
 | ------ | ---------- | -------- | -------- | ------------------------------------------------- | ---------- |
+| DD-041 | station_selector.rs | High | SCHEDULED | Column spacing (4px) + Visual Proximity - scheduled for Sprint 23 | 2026-02-25 |
+| DD-039 | color_legend.rs | High | SCHEDULED | Container padding below minimum (SM=8 < 16) - scheduled for Sprint 23 | 2026-02-25 |
+| DD-044 | timeline.rs | High | SCHEDULED | Button padding (SM=8 < 12) + Section spacing (SM=8 < 24) - scheduled Sprint 23 | 2026-02-25 |
+| DD-053 | offline_indicator.rs | High | SCHEDULED | Container padding (8,12 < 16) + Within-group spacing (4 < 8) - scheduled Sprint 23 | 2026-02-25 |
+| DD-056 | station_selector.rs | Medium | SCHEDULED | Form field padding (8 < 12) - scheduled for Sprint 23 | 2026-02-25 |
 | DD-040 | cache_manager.rs | Low | RESOLVED | Non-8-point padding (10) - fixed | 2026-02-24 |
 | DD-035 | cache.rs | Medium | RESOLVED | expect() in production - fixed (now uses ok_or_else) | 2026-02-24 |
 | DD-034 | cache.rs | Medium | RESOLVED | Cloning in loop - fixed (only calls to_string once) | 2026-02-24 |

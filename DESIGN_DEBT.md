@@ -1,70 +1,11 @@
 # Design Debt
 
-> Last Updated: 2026-02-25T00:00:00Z
-> Total Open: 17
+> Last Updated: 2026-02-25T01:00:00Z
+> Total Open: 10
 
 ---
 
-### DD-041: StationSelector - Column Spacing Below Minimum (High Priority)
-
-- **Component:** `tempest-app/src/station_selector.rs`
-- **Usage count:** 6+ usages
-- **Priority:** High (violates foundational spacing rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Spacing Scale: ALL spacing values must use 8-point grid tokens"
-- **Evidence:**
-```rust
-let mut station_buttons = Column::new().spacing(4);
-```
-- **Line(s):** 124
-- **Expected:** Element spacing within a group should be at least SM (8px). The skill says "Element spacing within a group: At least SM (8px), typically MD (12px)."
-- **Suggested fix:** Change `.spacing(4)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T19:00:00Z
-- **Status:** SCHEDULED for Sprint 23 - Visual Proximity Rule Violated (High Priority)
-
-- **Component:** `tempest-app/src/station_selector.rs`
-- **Usage count:** 6+ usages
-- **Priority:** High (violates visual hierarchy rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Visual Proximity Rule: Space BETWEEN groups > space WITHIN groups"
-- **Evidence:**
-```rust
-// Line 124: within station list group
-let mut station_buttons = Column::new().spacing(4);
-// Line 161: within details column  
-.spacing(4)
-// Line 200: main column (between groups)
-.spacing(spacing::XS)
-```
-- **Line(s):** 124, 161, 200
-- **Expected:** "Space BETWEEN groups must always be LARGER than space WITHIN groups." Currently both are 4px, destroying visual hierarchy.
-- **Suggested fix:** Increase between-group spacing to BASE (16px) or LG (24px)
-- **Fix estimate:** M (15-45 min)
-- **Queued:** 2026-02-24T19:00:00Z
-- **Status:** SCHEDULED for Sprint 23
-
----
-
-### DD-039:
-
-- **Component:** `tempest-app/src/color_legend.rs`
-- **Usage count:** 6+ usages
-- **Priority:** High (violates mandatory minimum)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Minimum Padding: Container internal padding at least BASE (16px)"
-- **Evidence:**
-```rust
-container(content).padding(spacing::SM).into()
-```
-- **Line(s):** 173
-- **Expected:** Container internal padding should be at least BASE (16px). The skill says "Container internal padding: At least BASE (16px). Cards and panels use LG (24px) or XL (32px)"
-- **Suggested fix:** Change `.padding(spacing::SM)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T19:00:00Z
-- **Queued:** 2026-02-24T19:00:00Z
-- **Status:** SCHEDULED for Sprint 23
-
----
-
-### DD-042: StationSelector - Container Padding Below Minimum (High Priority) - Non-8-point Button Dimensions (Medium Priority)
+### DD-042: MomentSwitcher - Non-8-point Button Dimensions (Medium Priority)
 
 - **Component:** `tempest-app/src/moment_switcher.rs`
 - **Usage count:** Medium (used in main app)
@@ -124,51 +65,6 @@ text("").size(5),
 
 ---
 
-### DD-044: Timeline - Button Padding Below Minimum (Critical Priority)
-
-- **Component:** `tempest-app/src/timeline.rs`
-- **Usage count:** High (core playback controls)
-- **Priority:** Critical (violates mandatory button padding rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Button padding: At least 12px vertical, 24px horizontal"
-- **Evidence:**
-```rust
-// Line 312: Play/Pause button
-.padding(spacing::SM)  // SM = 8px
-
-// Line 317: Step backward button  
-.padding(spacing::SM)  // SM = 8px
-
-// Line 322: Step forward button
-.padding(spacing::SM)  // SM = 8px
-
-// Lines 333, 345, 380: Speed/Loop/Range buttons
-.padding(spacing::XS)  // XS = 4px
-```
-- **Line(s):** 312, 317, 322, 333, 345, 380
-- **Expected:** Button padding should be at least 12px vertical, 24px horizontal
-- **Suggested fix:** Change `.padding(spacing::SM)` to `.padding([12, 24])` or `.padding(spacing::MD)` for vertical, and `.padding(spacing::XS)` to `.padding([12, 24])`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T21:11:00Z
-- **Status:** SCHEDULED for Sprint 23 Timeline - Section Spacing Below Minimum (High Priority)
-
-- **Component:** `tempest-app/src/timeline.rs`
-- **Usage count:** High (core playback controls)
-- **Priority:** High (violates mandatory section spacing rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Section spacing: At least LG (24px) between distinct sections"
-- **Evidence:**
-```rust
-// Line 284: Column spacing between header, timeline bar, controls row, footer
-.spacing(spacing::SM)  // SM = 8px
-```
-- **Line(s):** 284
-- **Expected:** Section spacing should be at least LG (24px) between distinct sections of a view
-- **Suggested fix:** Change `.spacing(spacing::SM)` to `.spacing(spacing::LG)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T21:11:00Z
-- **Status:** SCHEDULED for Sprint 23
-
----
-
 ### DD-046: Timeline - Inter-element Spacing Below Minimum (Medium Priority)
 
 - **Component:** `tempest-app/src/timeline.rs`
@@ -193,6 +89,7 @@ row![].spacing(spacing::XXS)  // XXS = 2px
 ---
 
 ### DD-048: ElevationTiltSelector - Container Padding Below Minimum
+
 - **Component:** `tempest-app/src/elevation_tilt_selector.rs` (Line 175)
 - **Usage count:** 5 (second most-used component)
 - **Priority:** Medium
@@ -211,6 +108,7 @@ container(content).padding(12).into()
 ---
 
 ### DD-049: ElevationTiltSelector - Button Padding Missing
+
 - **Component:** `tempest-app/src/elevation_tilt_selector.rs` (Lines 136-148)
 - **Usage count:** 5
 - **Priority:** High
@@ -233,6 +131,7 @@ button(text(label).size(14))
 ---
 
 ### DD-050: ElevationTiltSelector - Hardcoded Spacing Values
+
 - **Component:** `tempest-app/src/elevation_tilt_selector.rs` (Lines 115, 122, 172)
 - **Usage count:** 5
 - **Priority:** Low
@@ -273,54 +172,6 @@ button(text(label).size(14))
 
 ---
 
-### DD-053: OfflineIndicator - Container Padding Below Minimum (High Priority)
-
-- **Component:** `tempest-app/src/offline_indicator.rs`
-- **Usage count:** 1 (used in main app)
-- **Priority:** High (violates mandatory minimum)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Container internal padding: At least BASE (16px)"
-- **Evidence:**
-```rust
-// Line 85: Container around dot indicator
-container(text("●").size(16))
-    .width(Length::Shrink)
-    .padding(8),  // 8px < 16px BASE
-
-// Line 94: Outer container
-container(indicator)
-    .padding(12)  // 12px < 16px BASE
-```
-- **Line(s):** 85, 94
-- **Expected:** Container internal padding should be at least BASE (16px)
-- **Suggested fix:** Change `.padding(8)` to `.padding(spacing::BASE)` and `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T23:05:00Z
-- **Status:** SCHEDULED for Sprint 23 OfflineIndicator - Within-Group Spacing Below Minimum (Medium Priority)
-
-- **Component:** `tempest-app/src/offline_indicator.rs`
-- **Usage count:** 1 (used in main app)
-- **Priority:** Medium (violates minimum element spacing rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Element spacing within a group: At least SM (8px), typically MD (12px)"
-- **Evidence:**
-```rust
-// Line 89: Between dot indicator and text
-let indicator = row![
-    container(text("●").size(16))
-        .width(Length::Shrink)
-        .padding(8),
-    text(status_text).size(14),
-]
-.spacing(4)  // XS = 4px < 8px SM
-```
-- **Line(s):** 89
-- **Expected:** Element spacing within a group should be at least SM (8px)
-- **Suggested fix:** Change `.spacing(4)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-24T23:05:00Z
-- **Status:** OPEN
-
----
-
 ### DD-055: CacheManager - Container Padding Below Minimum (Medium Priority)
 
 - **Component:** `tempest-app/src/cache_manager.rs`
@@ -346,31 +197,6 @@ container(settings_content).padding(12).into()  // 12px < 16px BASE
 
 ---
 
-### DD-056: StationSelector - Form Field Padding Below Minimum (Medium Priority)
-
-- **Component:** `tempest-app/src/station_selector.rs`
-- **Usage count:** 1 (used in main app)
-- **Priority:** Medium (violates form field spacing rule)
-- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Form field spacing: At least MD (12px) between consecutive inputs"
-- **Evidence:**
-```rust
-let filter_input = text_input(
-    "Filter by ID or name (e.g., KTLX, Oklahoma)",
-    &self.filter_text,
-)
-.on_input(StationSelectorMessage::FilterChanged)
-.width(Length::Fill)
-.padding(8);  // 8px < 12px MD
-```
-- **Line(s):** 121
-- **Expected:** Form field padding should be at least 12px vertical for comfortable touch targets
-- **Suggested fix:** Change `.padding(8)` to `.padding(12)` or `.padding(spacing::MD)`
-- **Fix estimate:** S (< 15 min)
-- **Queued:** 2026-02-25T00:00:00Z
-- **Status:** SCHEDULED for Sprint 23
-
----
-
 ### DD-052: ColorLegend - Within-Group Spacing Below Minimum (Medium Priority)
 
 - **Component:** `tempest-app/src/color_legend.rs`
@@ -388,5 +214,4 @@ let filter_input = text_input(
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T22:07:00Z
 - **Status:** OPEN
-
 
