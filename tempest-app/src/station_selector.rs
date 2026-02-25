@@ -137,7 +137,7 @@ impl StationSelector {
             )
             .on_press(StationSelectorMessage::StationSelected(station.clone()))
             .width(Length::Fill)
-            .padding(8);
+            .padding(spacing::MD);
 
             station_buttons = station_buttons.push(btn);
         }
@@ -158,7 +158,7 @@ impl StationSelector {
                     text("Elevation: ").color(label_style),
                     text(format!("{:.0} m", station.elevation_m)).color(value_style),
                 ]
-                .spacing(4)
+                .spacing(spacing::BASE)
                 .align_x(Alignment::Start);
 
                 container(details_column).padding(spacing::BASE).into()
@@ -197,7 +197,7 @@ impl StationSelector {
             text("").size(15),
             details,
         ]
-        .spacing(spacing::XS)
+        .spacing(spacing::BASE)
         .align_x(Alignment::Start)
         .padding(spacing::BASE)
         .width(Length::FillPortion(1));

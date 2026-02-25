@@ -164,11 +164,11 @@ impl ColorLegend {
                     max_label,
                 ]
             ]
-            .spacing(spacing::XS),
+            .spacing(spacing::LG),
             min_label,
         ]
-        .spacing(spacing::SM)
-        .padding(spacing::MD);
+        .spacing(spacing::LG)
+        .padding(spacing::BASE);
 
         container(content).padding(spacing::BASE).into()
     }

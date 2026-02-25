@@ -138,12 +138,14 @@ impl ElevationTiltSelector {
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(48.0))
                     .height(Length::Fixed(48.0))
+                    .padding([12, 24])
                     .style(iced::widget::button::primary)
             } else {
                 button(text(label).size(14))
                     .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
                     .width(Length::Fixed(48.0))
                     .height(Length::Fixed(48.0))
+                    .padding([12, 24])
                     .style(iced::widget::button::secondary)
             };
 
@@ -172,6 +174,6 @@ impl ElevationTiltSelector {
         .spacing(12)
         .align_y(iced::Alignment::Center);
 
-        container(content).padding(12).into()
+        container(content).padding(16).into()
     }
 }

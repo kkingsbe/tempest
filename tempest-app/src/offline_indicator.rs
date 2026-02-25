@@ -2,6 +2,7 @@
 //!
 //! Displays network connectivity status in the UI.
 
+use crate::spacing;
 use iced::widget::{container, row, text};
 use iced::{Color, Element, Length};
 
@@ -82,7 +83,7 @@ impl OfflineIndicator {
             // Colored dot indicator
             container(text("●").size(16))
                 .width(Length::Shrink)
-                .padding(8),
+                .padding(spacing::BASE),
             // Status text
             text(status_text).size(14),
         ]
@@ -91,7 +92,7 @@ impl OfflineIndicator {
 
         // Wrap in a container positioned at top-right
         container(indicator)
-            .padding(12)
+            .padding(spacing::BASE)
             .width(Length::Shrink)
             .height(Length::Shrink)
             .into()

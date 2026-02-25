@@ -1,31 +1,31 @@
-# TODO2.md - Agent 2 Work Queue (Sprint 23)
+# Sprint 24 - Agent 2
 
-> ⚠️ Rebalanced by Architect on 2026-02-25
+## Tasks
 
-## Status: PENDING START
+- [ ] Golden Reference Images CLI
+  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`, `./skills/rust-best-practices/SKILL.md`
+  - 🎯 Goal: Create CLI tool to manage golden reference images for visual regression testing with update/verify commands
+  - 📂 Files: New CLI crate or module in `tempest-app/`
+  - 🧭 Context: Key testing infrastructure item from BACKLOG.md for visual regression testing. PRD specifies 1.5% threshold for visual differences
+  - ✅ Acceptance: CLI supports 'update' and 'verify' commands, can capture and compare screenshots
 
-### Design Debt Items
+- [ ] [DD-056] Fix MomentSwitcher - Missing Button Padding
+  - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
+  - 🎯 Goal: Add proper button padding (≥12px vertical, ≥24px horizontal) to moment switcher buttons
+  - 📂 Files: `tempest-app/src/moment_switcher.rs`
+  - 🧭 Context: Lines 187-198 - both primary and secondary buttons lack .padding() call, violating iced-rs button padding requirement
+  - ✅ Acceptance: Both button definitions have .padding(12) or higher
 
-- [ ] [DD-041] Fix StationSelector - Column Spacing Below Minimum
-  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
-  - 🎯 Goal: Change `.spacing(4)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)` at line 124
-  - 📂 Files: `tempest-app/src/station_selector.rs`
-  - 🧭 Context: Element spacing within a group should be at least SM (8px). The skill says "Element spacing within a group: At least SM (8px), typically MD (12px)."
-  - ✅ Acceptance: No spacing(4) in Column/Row definitions; uses spacing::SM or larger
+- [ ] [DD-042] Fix MomentSwitcher - Non-8-point Button Dimensions
+  - 📚 SKILLS: `./skills/iced-rs.md`, `./skills/rust-best-practices.md`
+  - 🎯 Goal: Change button dimensions to use 8-point values (e.g., 48x48, 112x48)
+  - 📂 Files: `tempest-app/src/moment_switcher.rs`
+  - 🧭 Context: Lines 189-190, 195-196 - button dimensions (110x50) violate 8-point spacing rule
+  - ✅ Acceptance: Button dimensions follow 8-point scale
 
-- [ ] [DD-042] Fix StationSelector - Visual Proximity Rule Violated
-  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
-  - 🎯 Goal: Increase between-group spacing to BASE (16px) or LG (24px) - currently both within-group and between-group are 4px
-  - 📂 Files: `tempest-app/src/station_selector.rs`
-  - 🧭 Context: "Space BETWEEN groups must always be LARGER than space WITHIN groups." Lines 124, 161, 200 need adjustment.
-  - ✅ Acceptance: Between-group spacing > within-group spacing; uses LG (24px) or larger for sections
-
-- [ ] [DD-056] Fix StationSelector - Form Field Padding Below Minimum
-  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
-  - 🎯 Goal: Change `.padding(8)` to `.padding(12)` or `.padding(spacing::MD)` at line 121
-  - 📂 Files: `tempest-app/src/station_selector.rs`
-  - 🧭 Context: Form field padding should be at least 12px vertical for comfortable touch targets
-  - ✅ Acceptance: Input field padding is MD (12px) or larger
-
-### AGENT QA
-- [ ] AGENT QA: Run cargo build FIRST to verify compilation. Fix ALL build errors. Then run cargo test. If ALL errors fixed and tests pass, create '.agent_done_2' with the current date.
+- [ ] AGENT QA: Verify all tasks in TODO2.md are complete and correct
+  - 📚 SKILLS: `./skills/test-driven-development/SKILL.md`
+  - 🎯 Goal: Review and verify all completed work meets acceptance criteria
+  - 📂 Files: All modified files
+  - 🧭 Context: Final quality check before marking sprint complete
+  - ✅ Acceptance: All tasks have passing tests and meet skill requirements

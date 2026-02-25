@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-25T01:00:00Z
-> Total Open: 10
+> Last Updated: 2026-02-25T05:00:08Z
+> Total Open: 15
 
 ---
 
@@ -213,5 +213,122 @@ container(settings_content).padding(12).into()  // 12px < 16px BASE
 - **Suggested fix:** Change `.spacing(spacing::XS)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T22:07:00Z
+- **Status:** OPEN
+
+---
+
+### DD-056: MomentSwitcher - Missing Button Padding
+
+- **Component:** `tempest-app/src/moment_switcher.rs`
+- **Usage count:** 5 imports
+- **Priority:** High
+- **Skill violated:** `skills/iced-rs/SKILL.md` - "Button padding: At least 12px vertical, 24px horizontal"
+- **Evidence:**
+```rust
+button(text(format!("{}\n{}", moment.code(), moment.name())).size(12))
+    .on_press(MomentSwitcherMessage::MomentSelected(moment))
+    .width(Length::Fixed(110.0))
+    .height(Length::Fixed(50.0))
+    .style(primary_button_style)
+```
+- **Line(s):** 187-198 (both primary and secondary buttons lack .padding() call)
+- **Expected:** Add .padding(12) or higher for vertical, .padding(24) or higher for horizontal
+- **Suggested fix:** Add .padding(12) to both button definitions
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T02:00:30Z
+- **Status:** OPEN
+
+---
+
+### DD-057: CacheManager - Text Input Padding Below Minimum
+
+- **Component:** `tempest-app/src/cache_manager.rs`
+- **Usage count:** 4 imports
+- **Priority:** Medium
+- **Skill violated:** `skills/iced-rs/SKILL.md` - "Form field spacing: At least 12px"
+- **Evidence:**
+```rust
+let max_size_input = text_input("Max size (MB)", &self.max_size_input)
+    .on_input(CacheManagerMessage::MaxSizeChanged)
+    .width(Length::Fixed(150.0))
+    .padding(10);  // 10px < 12px minimum
+```
+- **Line(s):** 275
+- **Expected:** Change .padding(10) to .padding(12) or higher
+- **Suggested fix:** Update padding to 12px minimum
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T02:00:30Z
+- **Status:** OPEN
+
+---
+
+### DD-058: CacheManager - Non-8-Point Button Width
+
+- **Component:** `tempest-app/src/cache_manager.rs`
+- **Usage count:** 4 imports
+- **Priority:** Low
+- **Skill violated:** `skills/iced-rs/SKILL.md` - "8-Point Spacing: All spacing values MUST come from this scale"
+- **Evidence:**
+```rust
+button(text("Clear Cache"))
+    .on_press(CacheManagerMessage::ClearCache)
+    .width(Length::Fixed(150.0))  // 150 not in 8-point scale (valid: 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160)
+    .padding([12, 24])
+```
+- **Line(s):** 251, 256
+- **Expected:** Use 8-point grid values (e.g., 144px or 152px instead of 150px)
+- **Suggested fix:** Round width to nearest 8-point value
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T02:00:30Z
+- **Status:** OPEN
+
+---
+
+### DD-059: Main Layout - Missing Component Spacing (High Priority)
+
+- **Component:** `tempest-app/src/main.rs`
+- **Usage count:** 1 (root app component)
+- **Priority:** High (root layout violation affects entire app)
+- **Skill violated:** `skills/iced-rs/SKILL.md` — "Element spacing within a group: At least SM (8px), typically MD (12px)"
+- **Evidence:**
+```rust
+// Lines 165-192: Main view column has no spacing between components
+column![
+    state.station_selector.view().map(Message::StationSelector),
+    state.moment_switcher.view().map(Message::MomentSwitcher),
+    state.elevation_tilt_selector.view(&Theme::Dark).map(Message::ElevationTiltSelector),
+    state.color_legend.view().map(Message::ColorLegend),
+    state.timeline.view().map(Message::Timeline),
+    state.offline_indicator.view().map(Message::OfflineIndicator),
+    state.cache_manager.view().map(Message::CacheManager),
+    text(format!...))
+]
+.into()  // No .spacing() call - defaults to 0px
+```
+- **Line(s):** 165-192
+- **Expected:** Add .spacing(spacing::LG) or .spacing(spacing::BASE) to separate distinct sections
+- **Suggested fix:** Add .spacing(spacing::LG) after the column![] definition to provide proper section spacing
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T05:00:08Z
+- **Status:** OPEN
+
+---
+
+### DD-060: Timeline - Typography Scale Violation for Timestamps (Medium Priority)
+
+- **Component:** `tempest-app/src/timeline.rs`
+- **Usage count:** 1 (timeline component)
+- **Priority:** Medium
+- **Skill violated:** `skills/iced-rs/SKILL.md` — "Typography Scale: Caption (12-13px) for timestamps"
+- **Evidence:**
+```rust
+// Line 454: Time labels use size(10) which is Micro
+let label = text(label_text).size(10).font(iced::font::Font::MONOSPACE);
+```
+- **Line(s):** 454
+- **Expected:** Typography sizes should follow the scale: Caption (12-13px) for timestamps, Micro (10-11px) for badges/status labels
+- **Suggested fix:** Change .size(10) to .size(12) or .size(13) for timestamp labels
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T05:00:08Z
 - **Status:** OPEN
 
