@@ -20,11 +20,7 @@ let mut station_buttons = Column::new().spacing(4);
 - **Suggested fix:** Change `.spacing(4)` to `.spacing(spacing::SM)` or `.spacing(spacing::MD)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T19:00:00Z
-- **Status:** OPEN
-
----
-
-### DD-042: StationSelector - Visual Proximity Rule Violated (High Priority)
+- **Status:** SCHEDULED for Sprint 23 - Visual Proximity Rule Violated (High Priority)
 
 - **Component:** `tempest-app/src/station_selector.rs`
 - **Usage count:** 6+ usages
@@ -44,11 +40,11 @@ let mut station_buttons = Column::new().spacing(4);
 - **Suggested fix:** Increase between-group spacing to BASE (16px) or LG (24px)
 - **Fix estimate:** M (15-45 min)
 - **Queued:** 2026-02-24T19:00:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED for Sprint 23
 
 ---
 
-### DD-043: ColorLegend - Container Padding Below Minimum (High Priority)
+### DD-039:
 
 - **Component:** `tempest-app/src/color_legend.rs`
 - **Usage count:** 6+ usages
@@ -63,11 +59,12 @@ container(content).padding(spacing::SM).into()
 - **Suggested fix:** Change `.padding(spacing::SM)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T19:00:00Z
-- **Status:** OPEN
+- **Queued:** 2026-02-24T19:00:00Z
+- **Status:** SCHEDULED for Sprint 23
 
 ---
 
-### DD-039: MomentSwitcher - Non-8-point Button Dimensions (Medium Priority)
+### DD-042: StationSelector - Container Padding Below Minimum (High Priority) - Non-8-point Button Dimensions (Medium Priority)
 
 - **Component:** `tempest-app/src/moment_switcher.rs`
 - **Usage count:** Medium (used in main app)
@@ -152,11 +149,7 @@ text("").size(5),
 - **Suggested fix:** Change `.padding(spacing::SM)` to `.padding([12, 24])` or `.padding(spacing::MD)` for vertical, and `.padding(spacing::XS)` to `.padding([12, 24])`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T21:11:00Z
-- **Status:** OPEN
-
----
-
-### DD-045: Timeline - Section Spacing Below Minimum (High Priority)
+- **Status:** SCHEDULED for Sprint 23 Timeline - Section Spacing Below Minimum (High Priority)
 
 - **Component:** `tempest-app/src/timeline.rs`
 - **Usage count:** High (core playback controls)
@@ -172,7 +165,7 @@ text("").size(5),
 - **Suggested fix:** Change `.spacing(spacing::SM)` to `.spacing(spacing::LG)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T21:11:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED for Sprint 23
 
 ---
 
@@ -302,11 +295,7 @@ container(indicator)
 - **Suggested fix:** Change `.padding(8)` to `.padding(spacing::BASE)` and `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-24T23:05:00Z
-- **Status:** OPEN
-
----
-
-### DD-054: OfflineIndicator - Within-Group Spacing Below Minimum (Medium Priority)
+- **Status:** SCHEDULED for Sprint 23 OfflineIndicator - Within-Group Spacing Below Minimum (Medium Priority)
 
 - **Component:** `tempest-app/src/offline_indicator.rs`
 - **Usage count:** 1 (used in main app)
@@ -378,7 +367,7 @@ let filter_input = text_input(
 - **Suggested fix:** Change `.padding(8)` to `.padding(12)` or `.padding(spacing::MD)`
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-25T00:00:00Z
-- **Status:** OPEN
+- **Status:** SCHEDULED for Sprint 23
 
 ---
 

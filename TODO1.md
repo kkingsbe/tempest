@@ -1,17 +1,13 @@
-# TODO1 - Agent 1
+# TODO1.md - Agent 1 Work Queue (Sprint 22)
 
-> Sprint: 22
-> Focus Area: Coverage Enforcement & Performance Benchmarks
-> Last Updated: 2026-02-24T15:08Z
+## Status: IN PROGRESS
 
-## Tasks
+### Remaining Tasks
 
-- [ ] Coverage Ratchet Policy
-  - 📚 SKILLS: ./skills/test-driven-development/SKILL.md, ./skills/rust-best-practices/SKILL.md
-  - Scope: Define and implement coverage ratchet policy - automated enforcement that prevents coverage from decreasing. Set threshold at 1.5% decrease allowed.
+- [ ] Run performance benchmarks and establish baseline values
+  - Coverage Ratchet Policy was already completed in previous work
+  - Performance Benchmark Baseline needs actual benchmark runs
 
-- [ ] Performance Benchmark Baseline
-  - 📚 SKILLS: ./skills/rust-best-practices/SKILL.md, ./skills/test-driven-development/SKILL.md
-  - Scope: Establish performance baselines per PRD: decode time <100ms, render <50ms, pipeline <500ms p95, memory <500MB. Document in project.
-
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_1' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
+### Notes
+- Coverage ratchet script exists at `scripts/coverage-ratchet.sh` (COMPLETE)
+- Performance baselines need to be measured and recorded in `PERFORMANCE_BASELINES.md`

@@ -1,26 +1,31 @@
-# TODO4 - Agent 4
+# TODO4.md - Agent 4 Work Queue (Sprint 23)
 
-> Sprint: 22
-> Focus Area: Types Module Design Debt & PRD Verification
-> Last Updated: 2026-02-24T18:12Z
+> ⚠️ Rebalanced by Architect on 2026-02-25
 
-## Tasks
+## Status: PENDING START
 
-- [x] [DD-033] Fix String vs &str Parameter
-  - Fixed in tempest-decode/src/types.rs - now uses `&str` parameter
+### Design Debt Items
 
-- [x] [DD-032] Fix as_str_lossy Naming Convention
-  - Fixed in tempest-decode/src/types.rs - renamed to `to_string_lossy()`
+- [ ] [DD-043] Fix ColorLegend - Container Padding Below Minimum (HIGH)
+  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
+  - 🎯 Goal: Change `.padding(spacing::SM)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)` at line 173
+  - 📂 Files: `tempest-app/src/color_legend.rs`
+  - 🧭 Context: Container internal padding should be at least BASE (16px). The skill says "Container internal padding: At least BASE (16px). Cards and panels use LG (24px) or XL (32px)"
+  - ✅ Acceptance: Container padding is BASE (16px) or larger
 
-- [x] [DD-036] Fix expect() in Production Code - PeriodicConnectivityChecker
-  - Fixed in tempest-app/src/offline_detection.rs - replaced with proper error handling
+- [ ] [DD-051] Fix ColorLegend - Section Spacing Below Minimum (MEDIUM)
+  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
+  - 🎯 Goal: Change `.spacing(spacing::SM)` to `.spacing(spacing::LG)` at line 170
+  - 📂 Files: `tempest-app/src/color_legend.rs`
+  - 🧭 Context: Section spacing should be at least LG (24px) between distinct sections
+  - ✅ Acceptance: Section spacing between title, color bar row, and min label is LG (24px) or larger
 
-- [x] PRD Verification - Phase 6-8 E2E Test Coverage
-  - Build: ✅ PASSED (360 tests, 0 failures)
-  - E2E tests exist for station selection, moment switching, elevation switching, timeline scrubbing
-  - Minor gaps: animated playback, empty station handling (defer to future sprint)
+- [ ] [DD-053] Fix OfflineIndicator - Container Padding Below Minimum (HIGH)
+  - 📚 SKILLS: ./skills/iced-rs/SKILL.md
+  - 🎯 Goal: Change `.padding(8)` to `.padding(spacing::BASE)` and `.padding(12)` to `.padding(spacing::BASE)` or `.padding(spacing::LG)` at lines 85, 94
+  - 📂 Files: `tempest-app/src/offline_indicator.rs`
+  - 🧭 Context: Container internal padding should be at least BASE (16px)
+  - ✅ Acceptance: All container padding is BASE (16px) or larger
 
-- [x] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_4' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
-  - Build: ✅ PASSED
-  - Tests: ✅ PASSED (360 tests)
-  - .agent_done_4: ✅ Already created
+### AGENT QA
+- [ ] AGENT QA: Run cargo build FIRST to verify compilation. Fix ALL build errors. Then run cargo test. If ALL errors fixed and tests pass, create '.agent_done_4' with the current date.

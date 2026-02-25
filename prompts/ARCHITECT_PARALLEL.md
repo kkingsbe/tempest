@@ -1,4 +1,4 @@
-# ARCHITECT.md
+# ARCHITECT_PARALLEL.md
 
 You are the Lead Architect. You run periodically to ensure the project is on track.
 You do NOT write code. You plan. Each task should be delegated to a subagent.
@@ -108,6 +108,24 @@ work can be resumed across multiple sessions.
 
 Work through these tasks **in order**. Update `ARCHITECT_STATE.md` after each one.
 
+### Task 0: Build Health Check (MANDATORY FIRST STEP)
+- Run `cargo build 2>&1` and then `cargo test 2>&1`
+- If the build OR tests are broken:
+  - **STOP all sprint planning**
+  - Inject a `[BUILDFIX]` task at the TOP of the least-loaded agent's TODO using the full enriched task format:
+    ```
+    - [ ] [BUILDFIX] Fix broken build / failing tests
+      - 📚 SKILLS: [any relevant skills for the affected module]
+      - 🎯 Goal: Build compiles with zero errors AND full test suite passes
+      - 📂 Files: [list the specific files mentioned in the error output]
+      - 🧭 Context: <paste the actual build/test error output here — the agent
+        needs to see the exact errors, not a summary>
+      - ✅ Acceptance: `cargo build` exits 0; `cargo test` exits 0
+    ```
+  - Do NOT proceed to gap analysis until a build fix is assigned
+  - This overrides all other priorities
+- ✅ Mark complete in `ARCHITECT_STATE.md`
+
 ### Task 1: Skills Inventory
 
 - List all files in `./skills`
@@ -120,22 +138,42 @@ Work through these tasks **in order**. Update `ARCHITECT_STATE.md` after each on
   - **Tooling skills** — linting, testing, build configuration conventions
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 2: Check Inbox
-
-- Read `comms/inbox/` to see if the user has provided any new context or information
-- If an inbox item contains a bug report, break it down and distribute it to the various `TODO<N>.md` docs for the current sprint. After processing a file, it can be removed from `comms/inbox`
-
-
-### Task 3: Gap Analysis & Sprint Planning
+### Task 2: Gap Analysis & Sprint Planning
 
 - Read `PRD.md` (Requirements) and `BACKLOG.md` (Future Work)
 - Compare to all `TODO<N>.md` files (Current Work) and `src/` (Reality)
 - **New Requirements:** If requirements in the PRD are missing from both active TODOs and `BACKLOG`, add them to `BACKLOG.md`
-- **Refinement:** If items in `BACKLOG.md` are vague, break them down into smaller, atomic tasks
+- **Refinement:** If items in `BACKLOG.md` are vague, break them down into smaller, atomic tasks — each one completable within a **single 15-minute agent session**
 - **Skill alignment:** When refining backlog items, note which skills from Task 1 are relevant and add them as annotations (see format below)
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 4: Design Debt Review
+### Task 2.5: Work Rebalancing Check
+
+Check the status of all worker agents:
+
+1. **Read all `.agent_done_*` files** — which agents have finished?
+2. **Read all `TODO*.md` files** — which agents still have unchecked items?
+3. **Assess imbalance:**
+
+| Situation | Action |
+|-----------|--------|
+| Agent X is done, Agent Y has 3+ tasks remaining | Redistribute |
+| All agents have ≤1 task remaining | No action needed |
+| Only one agent has work left | Redistribute half to a done agent |
+
+4. **To redistribute:**
+   - Move unchecked tasks from the overloaded agent's `TODO{Y}.md` to the idle agent's `TODO{X}.md`
+   - Delete the idle agent's `.agent_done_{X}` file (this "reactivates" it)
+   - Add a note at the top of the receiving TODO: `> ⚠️ Rebalanced from TODO{Y}.md by Architect on [date]`
+   - Ensure no `BLOCKED_BY` dependencies are broken by the move
+   - Prefer moving tasks that are **independent** (no cross-agent dependencies)
+   - Keep related tasks together (same module = same agent)
+
+5. **Commit:** `chore(architect): rebalance work from agent{Y} to agent{X}`
+
+✅ Mark complete in `ARCHITECT_STATE.md`
+
+### Task 3: Design Debt Review
 
 - Read `DESIGN_DEBT.md` if it exists — if it doesn't exist yet, skip this task
 - Identify all entries with **status: OPEN**
@@ -154,7 +192,7 @@ Work through these tasks **in order**. Update `ARCHITECT_STATE.md` after each on
   sprint number — do not mark them RESOLVED (that happens when the fix is committed)
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 5: Sprint Management (The Gatekeeper & Load Balancer)
+### Task 4: Sprint Management (The Gatekeeper & Load Balancer)
 
 #### Step 1: Check the Sprint Gate
 
@@ -194,7 +232,10 @@ the agents.
 ```markdown
 - [ ] Build the UserCard component
   - 📚 SKILLS: `./skills/component.md`, `./skills/design-tokens.md`
-  - Scope: Displays user avatar, name, and role. Used in the sidebar and search results.
+  - 🎯 Goal: A `UserCard` component that renders avatar, name, and role badge
+  - 📂 Files: `src/components/user_card.rs`, `src/components/mod.rs`
+  - 🧭 Context: Used in the sidebar and search results. Follow the existing `StatusBadge` component as a pattern. Avatar URLs come from the `User` struct in `src/models/user.rs`.
+  - ✅ Acceptance: Component renders correctly with test data; exported from `mod.rs`
 ```
 
 **How to decide which skills apply:**
@@ -229,22 +270,23 @@ of rework.
 
 When distributing a sprint's tasks across agents, follow these rules:
 
-1. **Dependency Clustering:** Group related/dependent tasks onto the **same** agent
+1. **15-Minute Rule:** Every task must be completable within a single 15-minute agent session. If a task is too large, break it into sub-tasks before assigning. Agents lose significant time re-orienting on startup — smaller tasks with rich context are far more effective than large tasks that span multiple sessions.
+2. **Dependency Clustering:** Group related/dependent tasks onto the **same** agent
    to avoid cross-agent blocking. Tasks that touch the same files or modules should
    go to the same agent.
-2. **Independent Lanes:** Assign independent work streams to **different** agents
+3. **Independent Lanes:** Assign independent work streams to **different** agents
    for true parallelism. Example: Agent 1 gets new page components, Agent 2 gets
    layout work, Agent 3 gets data/API integration.
-3. **Skill Coherence:** Where possible, group tasks that share the same skills onto
+4. **Skill Coherence:** Where possible, group tasks that share the same skills onto
    the same agent within a sprint. This reduces context-switching overhead.
-4. **Co-locate design debt with related feature work:** If a design debt fix and a
+5. **Co-locate design debt with related feature work:** If a design debt fix and a
    feature task both touch the same component, assign them to the same agent so the
    fix happens in context.
-5. **Even Load:** Distribute roughly equal amounts of work per agent. Don't overload
+6. **Even Load:** Distribute roughly equal amounts of work per agent. Don't overload
    one agent while another is idle.
-6. **Shared Resource Awareness:** If two agents must touch the same file, one agent's
+7. **Shared Resource Awareness:** If two agents must touch the same file, one agent's
    task should be completed first. Add a note: `⚠️ BLOCKED_BY: TODO<N>.md > "Task name"`
-7. **Idle Agents:** If there aren't enough tasks to fill all agents, leave extra
+8. **Idle Agents:** If there aren't enough tasks to fill all agents, leave extra
    `TODO<N>.md` files empty. Not every agent needs work every sprint.
 
 #### Cross-Agent Dependency Notation
@@ -255,28 +297,35 @@ When a task in one agent's queue depends on another agent's work, use this forma
 - [ ] Implement user profile page
   - ⚠️ BLOCKED_BY: TODO1.md > "Create user API endpoint"
   - 📚 SKILLS: `./skills/layout.md`, `./skills/component.md`
-  - Scope: Full /profile page layout including avatar, bio, and activity feed.
+  - 🎯 Goal: Full /profile page layout including avatar, bio, and activity feed
+  - 📂 Files: `src/pages/profile.rs`, `src/pages/mod.rs`
+  - 🧭 Context: Depends on the user API endpoint from TODO1. Once that lands, this page calls `UserApi::get_profile()` and renders the result. Follow the layout pattern from `./skills/layout.md`. The activity feed uses the `ActivityList` component from `src/components/activity_list.rs`.
+  - ✅ Acceptance: Page renders with mock data; shows avatar, bio, and activity feed; route registered in router
 ```
 
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 6: Blocker Review
+### Task 5: Blocker Review
 
 - Read `BLOCKERS.md`
 - If you can solve a blocker by making an architectural decision, write the solution
   in `ARCHITECTURE.md` and remove the blocker
 - Check for cross-agent dependency deadlocks (Agent A waiting on Agent B waiting on
   Agent A). If found, resolve by reassigning tasks.
+- **CRITICAL:** Before marking ANY blocker as resolved, you MUST verify the build succeeds:
+  - Run `cargo build 2>&1` and capture output
+  - If build fails with ANY errors, the blocker is NOT resolved
+  - Only mark resolved after `cargo build` returns exit code 0
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 
-### Task 7: Communication
+### Task 6: Communication
 
 - If the PRD is ambiguous or impossible to implement, write a specific question to
   `comms/outbox/` for the user to answer
 - ✅ Mark complete in `ARCHITECT_STATE.md` when done
 - Use the discli skill (read ./skills/DISCLI.md) to send out a progress update.
 
-### Task 8: Cleanup (Final Task)
+### Task 7: Cleanup (Final Task)
 
 - Delete `.architect_in_progress` marker
 - Delete `ARCHITECT_STATE.md`
@@ -292,8 +341,10 @@ When converting a `DESIGN_DEBT.md` entry into a TODO task, use this format:
 ```markdown
 - [ ] [DD-012] Fix Button component — inline styles violate component skill
   - 📚 SKILLS: `./skills/component.md`
-  - Scope: Replace inline styles with utility classes per component skill §3.
-    See DESIGN_DEBT.md DD-012 for the specific violation and evidence.
+  - 🎯 Goal: Replace all inline styles with utility classes per component skill §3
+  - 📂 Files: `src/components/button.rs`
+  - 🧭 Context: The Button component currently uses hardcoded `style=` strings instead of the project's utility class system. See DESIGN_DEBT.md DD-012 for the specific violation and evidence. The utility class pattern is documented in `./skills/component.md` §3.
+  - ✅ Acceptance: No inline `style=` attributes remain; all styling uses utility classes; existing tests still pass
   - Fix estimate: S
 ```
 
@@ -341,13 +392,15 @@ To ensure we always have a working build, you must enforce these rules:
 
 5. **Mandatory Agent QA Task:**
    - The last item in every non-empty `TODO<N>.md` must always be:
-   - `[ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_<N>' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.`
+   - `[ ] AGENT QA: Run cargo build FIRST to verify compilation. Fix ALL build errors. Then run full test suite. If ALL errors fixed and tests pass, create '.agent_done_<N>' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.`
 
 ---
 
 ## TODO File Format
 
-Each `TODO<N>.md` should follow this format:
+Each task entry must include enough context that an agent can begin working **immediately
+without reading other files to understand what to do**. Agents have a cold start every
+session — they don't remember previous sessions. Front-load the context.
 
 ```markdown
 # TODO<N> - Agent <N>
@@ -356,28 +409,81 @@ Each `TODO<N>.md` should follow this format:
 > Focus Area: <brief description of this agent's work stream>
 > Last Updated: <timestamp>
 
+## Orientation
+
+Before starting any tasks, read these files to understand the current codebase state.
+This should take under 2 minutes and prevents costly wrong turns.
+
+- `Cargo.toml` — dependencies and feature flags
+- `src/lib.rs` — module structure and public API
+- [list 2-5 additional files relevant to THIS agent's focus area]
+
 ## Tasks
 
-- [ ] Task 1 description
+- [ ] Task title (concise, action-oriented)
   - 📚 SKILLS: `./skills/component.md`
-  - Scope: [brief note on what this task covers]
-- [ ] [DD-012] Design debt fix description
+  - 🎯 Goal: [What does "done" look like? Be specific — e.g. "A new `UserCard` component renders name, avatar, and role badge"]
+  - 📂 Files: [Which files to create or modify — e.g. `src/components/user_card.rs`, `src/components/mod.rs`]
+  - 🧭 Context: [Why this task exists and how it fits into the bigger picture. Include relevant architectural decisions, data structures, function signatures, or patterns the agent needs to know. This is the most important field — be generous with detail.]
+  - ✅ Acceptance: [Concrete checklist — e.g. "Component renders in storybook", "Unit tests pass", "Exported from mod.rs"]
+
+- [ ] [DD-012] Fix Button component — inline styles violate component skill
   - 📚 SKILLS: `./skills/component.md`
-  - Scope: See DESIGN_DEBT.md DD-012 for full context.
+  - 🎯 Goal: Replace inline styles with utility classes per component skill §3
+  - 📂 Files: `src/components/button.rs`
+  - 🧭 Context: See DESIGN_DEBT.md DD-012 for the specific violation and evidence. The Button component currently uses hardcoded style strings instead of the project's utility class system.
+  - ✅ Acceptance: No inline `style=` attributes remain; all styling uses utility classes
   - Fix estimate: S
-- [ ] Task 3 description
-  - ⚠️ BLOCKED_BY: TODO<M>.md > "Some other task"
+
+- [ ] Task title
+  - ⚠️ BLOCKED_BY: TODO<M>.md > "Some prerequisite task"
   - 📚 SKILLS: `./skills/layout.md`, `./skills/component.md`
-  - Scope: [brief context]
-- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent*done*<N>' with the current date. If ALL '.agent*done*\*' files exist, also create '.sprint_complete'.
+  - 🎯 Goal: [specific outcome]
+  - 📂 Files: [files to touch]
+  - 🧭 Context: [rich context including why this is blocked and what the prerequisite produces that this task needs]
+  - ✅ Acceptance: [how to verify]
+
+- [ ] AGENT QA: Run full build and test suite. Fix ALL errors. If green, create '.agent_done_<N>' with the current date. If ALL '.agent_done_*' files exist, also create '.sprint_complete'.
 ```
+
+### Orientation Section Guidelines
+
+The `## Orientation` section at the top of each TODO file gives the agent a fast-path
+to understanding the codebase before touching anything. The Architect must customize
+this per agent based on their focus area.
+
+**Always include:**
+- `Cargo.toml` — so the agent knows what dependencies are available
+- `src/lib.rs` (or equivalent root) — so the agent sees the module tree
+
+**Then add 2–5 files specific to the agent's work stream.** Examples:
+- Agent working on Docker integration → `src/docker/mod.rs`, `Dockerfile`
+- Agent working on config parsing → `src/config/mod.rs`, `gastown.toml`
+- Agent working on scheduler → `src/scheduler/mod.rs`, `src/config/mod.rs` (for schedule types)
+
+**Do NOT list every file in the project.** The goal is a focused 2-minute orientation,
+not a codebase tour. Pick the files that give the agent the most context for the least
+reading.
+
+### Task Context Guidelines
+
+The `🧭 Context` field is critical for agent productivity. Include:
+
+- **What already exists:** Relevant types, traits, structs, or modules the agent will interact with
+- **Patterns to follow:** "Follow the same pattern as `src/config/mod.rs` which parses TOML into a validated struct"
+- **Key decisions:** "We chose X over Y because Z" — prevents the agent from re-litigating decisions
+- **Data flow:** "This function receives a `Config` from the scheduler and returns a `DockerCommand`"
+- **Gotchas:** "The `cron` crate's `Schedule::from_str` expects 7 fields, not 5 — we wrap it in `parse_cron_expression()`"
+- **Test expectations:** "Unit tests should mock the Docker client using the `DockerClient` trait"
+
+**Rule of thumb:** If you would need to explain something to a new developer sitting down at this task for the first time, put it in Context.
 
 ---
 
 ## Execution Rules
 
 - **Focus:** You are the bridge between the PRD, design debt, and the TODO lists
-- **Output:** High-quality `TODO<N>.md` files (with skill annotations), updated
+- **Output:** High-quality `TODO<N>.md` files (with skill annotations and rich context), updated
   `BACKLOG.md`, and `DESIGN_DEBT.md` status updates
 - **Skills first:** Always complete Task 1 (Skills Inventory) before distributing
   work. You cannot annotate tasks with skills you haven't read.
