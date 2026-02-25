@@ -455,7 +455,7 @@ impl TimelineState {
 
                 container(
                     iced::widget::column![tick, label]
-                        .spacing(spacing::XS)
+                        .spacing(spacing::SM)
                         .align_x(iced::Alignment::Center),
                 )
                 .height(iced::Length::Fixed(TICK_HEIGHT + LABEL_HEIGHT + 8.0))

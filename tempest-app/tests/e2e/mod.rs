@@ -10,3 +10,4 @@
 //! ```
 
 mod app_harness_test;
+mod gui_harness_test;

@@ -1,7 +1,7 @@
 # Design Review State
 
-> Last Updated: 2026-02-25T05:00:08Z
-> Total runs completed: 31
+> Last Updated: 2026-02-25T07:00:10Z
+> Total runs completed: 33
 
 ## Component Registry
 
@@ -9,12 +9,12 @@
 | --------- | ---- | ----------- | -------------- | ------------- | --------------- |
 | App (main.rs) | tempest-app/src/main.rs | 1 | 4 | 2026-02-25 | DD-059 |
 | TimelineState | tempest-app/src/timeline.rs | 1 | 10 | 2026-02-25 | DD-044, DD-046, DD-060 |
-| StationSelector | tempest-app/src/station_selector.rs | 6+ | 11 | 2026-02-25 | DD-037, DD-038 |
+| StationSelector | tempest-app/src/station_selector.rs | 6+ | 12 | 2026-02-25 | DD-037, DD-038 |
 | ColorLegend | tempest-app/src/color_legend.rs | 6+ | 8 | 2026-02-25 | DD-051, DD-052 |
-| ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5+ | 8 | 2026-02-25 | DD-048, DD-049, DD-050 |
+| ElevationTiltSelector | tempest-app/src/elevation_tilt_selector.rs | 5+ | 9 | 2026-02-25 | DD-048, DD-049, DD-050 |
 | MomentSwitcher | tempest-app/src/moment_switcher.rs | 3+ | 8 | 2026-02-25 | DD-042, DD-056 |
-| OfflineIndicator | tempest-app/src/offline_indicator.rs | 2+ | 6 | 2026-02-24 | none (scheduled) |
-| CacheManager | tempest-app/src/cache_manager.rs | 3+ | 10 | 2026-02-25 | DD-055, DD-057, DD-058 |
+| OfflineIndicator | tempest-app/src/offline_indicator.rs | 2+ | 7 | 2026-02-25 | none (scheduled) |
+| CacheManager | tempest-app/src/cache_manager.rs | 3+ | 11 | 2026-02-25 | DD-055, DD-057, DD-058 |
 | Config | tempest-app/src/config.rs | 0 | 1 | 2026-02-24 | none |
 | DecodeTypes | tempest-decode/src/types.ts | High | 1 | 2026-02-24 | none |
 | FetchCache | tempest-fetch/src/cache.rs | High | 1 | 2026-02-24 | none |
@@ -26,6 +26,8 @@
 
 | Run | Date | Components Reviewed | New Debt Items | False Positives |
 | --- | ---- | ------------------- | -------------- | ---------------- |
+| 33 | 2026-02-25 | OfflineIndicator, ElevationTiltSelector | 0 | 0 |
+| 32 | 2026-02-25 | StationSelector, CacheManager | 0 | 0 |
 | 31 | 2026-02-25 | App (main.rs), Timeline | DD-059, DD-060 | 0 |
 | 30 | 2026-02-25 | CacheManager, MomentSwitcher, Colors, Spacing | DD-056, DD-057, DD-058 | 1 |
 | 29 | 2026-02-25 | ColorLegend, ElevationTiltSelector, OfflineIndicator, MomentSwitcher, OfflineDetection | 0 | 0 |
@@ -50,4 +52,3 @@
 | ColorLegend | 4 | 2 |
 | MomentSwitcher | 4 | 2 |
 | CacheManager | 8 | 3 |
-

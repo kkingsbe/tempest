@@ -2,17 +2,20 @@
 //!
 //! Main application entry point using iced UI framework.
 
-mod cache_manager;
-mod color_legend;
-mod colors;
-mod config;
-mod elevation_tilt_selector;
-mod moment_switcher;
-mod offline_detection;
-mod offline_indicator;
-mod spacing;
-mod station_selector;
-mod timeline;
+pub mod cache_manager;
+pub mod color_legend;
+pub mod colors;
+pub mod config;
+pub mod elevation_tilt_selector;
+pub mod moment_switcher;
+pub mod offline_detection;
+pub mod offline_indicator;
+pub mod spacing;
+pub mod station_selector;
+pub mod timeline;
+
+#[cfg(test)]
+pub mod test_utils;
 
 use cache_manager::{CacheManager, CacheManagerMessage};
 use color_legend::{ColorLegend, ColorLegendMessage};
