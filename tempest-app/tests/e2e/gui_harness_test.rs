@@ -10,12 +10,12 @@
 //! ```
 
 use chrono::Utc;
-use crate::test_utils::gui_harness::{
-    Message, State, PanDirection,
+use tempest_app::test_utils::gui_harness::{
+    Message, State,
 };
 use tempest_fetch::Station;
 use tempest_render_core::RadarMoment;
-use crate::test_utils::gui_harness::moment_switcher::MomentSwitcherMessage;
+use tempest_app::test_utils::gui_harness::moment_switcher::MomentSwitcherMessage;
 
 // ============================================================================
 // GuiTestHarness - Test Harness Implementation
@@ -39,7 +39,7 @@ impl GuiTestHarness {
         use iced::Task;
         
         // Load configuration synchronously
-        let config = crate::test_utils::gui_harness::AppConfig::load_or_default();
+        let config = tempest_app::test_utils::gui_harness::AppConfig::load_or_default();
         
         // Create a minimal cache for testing
         let runtime = tokio::runtime::Builder::new_current_thread()
@@ -57,16 +57,16 @@ impl GuiTestHarness {
         use tokio::sync::RwLock;
         let cache = Arc::new(RwLock::new(cache));
         
-        use crate::test_utils::gui_harness::CacheManager;
+        use tempest_app::test_utils::gui_harness::CacheManager;
         let cache_manager = CacheManager::new(cache);
         
-        use crate::test_utils::gui_harness::station_selector::StationSelector;
-        use crate::test_utils::gui_harness::moment_switcher::MomentSwitcher;
-        use crate::test_utils::gui_harness::elevation_tilt_selector::ElevationTiltSelector;
-        use crate::test_utils::gui_harness::color_legend::ColorLegend;
-        use crate::test_utils::gui_harness::offline_indicator::OfflineIndicator;
-        use crate::test_utils::gui_harness::offline_detection;
-        use crate::test_utils::gui_harness::timeline::TimelineState;
+        use tempest_app::test_utils::gui_harness::station_selector::StationSelector;
+        use tempest_app::test_utils::gui_harness::moment_switcher::MomentSwitcher;
+        use tempest_app::test_utils::gui_harness::elevation_tilt_selector::ElevationTiltSelector;
+        use tempest_app::test_utils::gui_harness::color_legend::ColorLegend;
+        use tempest_app::test_utils::gui_harness::offline_indicator::OfflineIndicator;
+        use tempest_app::test_utils::gui_harness::offline_detection;
+        use tempest_app::test_utils::gui_harness::timeline::TimelineState;
         use tempest_fetch::prefetch::Prefetcher;
         
         let state = State {
@@ -96,7 +96,7 @@ impl GuiTestHarness {
         use iced::Task;
         // Call the update function - it takes &mut State and Message
         // and returns Task<Message> (which we ignore for testing)
-        let _task = crate::test_utils::gui_harness::update(&mut self.state, message);
+        let _task = tempest_app::test_utils::gui_harness::update(&mut self.state, message);
         self
     }
 
@@ -135,7 +135,7 @@ fn test_station_selection_changes_state() {
     
     // Send message to select station
     harness.send_message(Message::StationSelector(
-        crate::test_utils::gui_harness::station_selector::StationSelectorMessage::StationSelected(station.clone())
+        tempest_app::test_utils::gui_harness::station_selector::StationSelectorMessage::StationSelected(station.clone())
     ));
     
     // Verify the station was selected
@@ -167,20 +167,20 @@ fn test_moment_switcher_changes_state() {
     let initial_moment = harness.state.moment_switcher.selected_moment();
     assert_eq!(
         initial_moment,
-        crate::test_utils::gui_harness::Moment::REF,
+        tempest_app::test_utils::gui_harness::Moment::REF,
         "Default moment should be REF"
     );
     
     // Send message to select VEL (Velocity)
     harness.send_message(Message::MomentSwitcher(
-        MomentSwitcherMessage::MomentSelected(crate::test_utils::gui_harness::Moment::VEL)
+        MomentSwitcherMessage::MomentSelected(tempest_app::test_utils::gui_harness::Moment::VEL)
     ));
     
     // Verify moment changed to VEL
     let selected_moment = harness.state.moment_switcher.selected_moment();
     assert_eq!(
         selected_moment,
-        crate::test_utils::gui_harness::Moment::VEL,
+        tempest_app::test_utils::gui_harness::Moment::VEL,
         "Moment should be VEL after selection"
     );
 }
@@ -195,7 +195,7 @@ fn test_moment_switcher_updates_color_legend() {
     
     // Select VEL moment
     harness.send_message(Message::MomentSwitcher(
-        MomentSwitcherMessage::MomentSelected(crate::test_utils::gui_harness::Moment::VEL)
+        MomentSwitcherMessage::MomentSelected(tempest_app::test_utils::gui_harness::Moment::VEL)
     ));
     
     // The color legend should have been updated to Velocity colors
@@ -263,7 +263,7 @@ fn test_timeline_step_forward_advances_index() {
     
     // Update timeline with scan times
     harness.send_message(Message::Timeline(
-        crate::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times.clone())
+        tempest_app::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times.clone())
     ));
     
     // Verify initial index is 0
@@ -298,7 +298,7 @@ fn test_timeline_step_backward_decrements_index() {
     
     // Update timeline with scan times and set current index to 1
     harness.send_message(Message::Timeline(
-        crate::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times.clone())
+        tempest_app::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times.clone())
     ));
     harness.send_message(Message::StepForward); // index = 1
     
@@ -334,7 +334,7 @@ fn test_timeline_speed_change_updates_state() {
     
     // Change speed to 5
     harness.send_message(Message::Timeline(
-        crate::test_utils::gui_harness::timeline::TimelineMessage::SpeedChanged(5)
+        tempest_app::test_utils::gui_harness::timeline::TimelineMessage::SpeedChanged(5)
     ));
     
     // Verify speed changed to 5
@@ -359,12 +359,12 @@ fn test_timeline_click_jumps_to_position() {
     ];
     
     harness.send_message(Message::Timeline(
-        crate::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times)
+        tempest_app::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times)
     ));
     
     // Click at 50% position (should go to index 1 or 2)
     harness.send_message(Message::Timeline(
-        crate::test_utils::gui_harness::timeline::TimelineMessage::TimelineClicked(0.5)
+        tempest_app::test_utils::gui_harness::timeline::TimelineMessage::TimelineClicked(0.5)
     ));
     
     // Verify we jumped to a middle position
@@ -440,7 +440,7 @@ fn test_pan_changes_offset() {
     );
     
     // Pan right
-    harness.send_message(Message::Pan(crate::PanDirection::Right));
+    harness.send_message(Message::Pan(tempest_app::PanDirection::Right));
     
     // Verify offset changed
     let new_offset = harness.state.pan_offset;
@@ -507,4 +507,228 @@ fn test_settings_cache_size_changes_config() {
     
     // Note: original value is preserved for cleanup
     harness.state.config.cache_size_mb = initial_size;
+}
+
+// ============================================================================
+// Comprehensive User Workflow Tests
+// ============================================================================
+
+/// Test: Full user journey - launch app → select station → select moment → select elevation → view data
+///
+/// This test verifies the complete user workflow from app launch to viewing radar data.
+#[test]
+fn test_full_user_workflow_journey() {
+    let mut harness = GuiTestHarness::new();
+    
+    // Step 1: App launch - verify initial state
+    assert_eq!(harness.state.zoom_level, 0, "Initial zoom should be 0");
+    assert_eq!(harness.state.pan_offset, (0, 0), "Initial pan offset should be (0,0)");
+    assert!(!harness.state.show_settings, "Settings should be hidden initially");
+    assert!(!harness.state.timeline.is_playing(), "Timeline should be paused initially");
+    
+    // Verify default moment is REF
+    let default_moment = harness.state.moment_switcher.selected_moment();
+    assert_eq!(default_moment, tempest_app::test_utils::gui_harness::Moment::REF);
+    
+    // Step 2: Select a station (KTLX - Oklahoma City)
+    let station = Station {
+        id: "KTLX".to_string(),
+        name: "Oklahoma City".to_string(),
+        lat: 35.2331,
+        lon: -97.4636,
+        elevation_m: 370.0,
+    };
+    harness.send_message(Message::StationSelector(
+        tempest_app::test_utils::gui_harness::station_selector::StationSelectorMessage::StationSelected(station)
+    ));
+    
+    // Verify station was selected
+    let selected = harness.state.station_selector.selected_station();
+    assert!(selected.is_some(), "Station should be selected");
+    assert_eq!(selected.unwrap().id, "KTLX");
+    
+    // Step 3: Select a different moment (VEL - Velocity)
+    harness.send_message(Message::MomentSwitcher(
+        MomentSwitcherMessage::MomentSelected(tempest_app::test_utils::gui_harness::Moment::VEL)
+    ));
+    
+    // Verify moment changed
+    let current_moment = harness.state.moment_switcher.selected_moment();
+    assert_eq!(current_moment, tempest_app::test_utils::gui_harness::Moment::VEL);
+    
+    // Step 4: Set available elevations and select one
+    harness.send_message(Message::ElevationTiltSelector(
+        tempest_app::test_utils::gui_harness::elevation_tilt_selector::ElevationTiltSelectorMessage::SelectElevation(1.5)
+    ));
+    
+    // Verify elevation was selected
+    let selected_elevation = harness.state.elevation_tilt_selector.selected_elevation();
+    assert!(selected_elevation.is_some(), "Elevation should be selected");
+    assert!((selected_elevation.unwrap() - 1.5).abs() < 0.01, "Selected elevation should be 1.5");
+    
+    // Step 5: Add scan times to timeline (simulating data loading)
+    let scan_times = vec![
+        Utc::now(),
+        Utc::now() + chrono::Duration::minutes(6),
+        Utc::now() + chrono::Duration::minutes(12),
+    ];
+    harness.send_message(Message::Timeline(
+        tempest_app::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times)
+    ));
+    
+    // Verify timeline has scans
+    assert_eq!(harness.state.timeline.scan_count(), 3, "Timeline should have 3 scans");
+    
+    // Step 6: Navigate timeline (step forward)
+    harness.send_message(Message::StepForward);
+    assert_eq!(harness.state.timeline.current_index(), 1, "Should be at index 1 after StepForward");
+    
+    // Step 7: Play the timeline
+    harness.send_message(Message::PlayPause);
+    assert!(harness.state.timeline.is_playing(), "Timeline should be playing");
+    
+    // Step 8: Zoom in
+    harness.send_message(Message::ZoomIn);
+    assert_eq!(harness.state.zoom_level, 1, "Zoom should be 1 after ZoomIn");
+    
+    // Step 9: Pan the view
+    harness.send_message(Message::Pan(tempest_app::PanDirection::Right));
+    assert_eq!(harness.state.pan_offset.0, 10, "Pan right should offset x by 10");
+    
+    // Step 10: Toggle settings panel
+    harness.send_message(Message::ToggleSettings);
+    assert!(harness.state.show_settings, "Settings should be visible");
+    
+    println!("✓ Full user workflow completed successfully");
+}
+
+/// Test: Elevation tilt selection workflow
+///
+/// Tests selecting different elevation angles from available options.
+#[test]
+fn test_elevation_tilt_selection_workflow() {
+    let mut harness = GuiTestHarness::new();
+    
+    // First, let's set elevations via internal state (simulating data loaded with elevations)
+    // The harness starts with default elevations [0.5, 1.5, 2.4, 3.3, 4.3]
+    let elevations = harness.state.elevation_tilt_selector.elevations();
+    assert!(!elevations.is_empty(), "Should have default elevations");
+    
+    // Verify initial selection is the first elevation
+    let initial = harness.state.elevation_tilt_selector.selected_elevation();
+    assert!(initial.is_some(), "Should have initial elevation selected");
+    assert!((initial.unwrap() - 0.5).abs() < 0.01, "Initial should be 0.5");
+    
+    // Select second elevation (1.5)
+    harness.send_message(Message::ElevationTiltSelector(
+        tempest_app::test_utils::gui_harness::elevation_tilt_selector::ElevationTiltSelectorMessage::SelectElevation(1.5)
+    ));
+    
+    let selected = harness.state.elevation_tilt_selector.selected_elevation();
+    assert!(selected.is_some(), "Should have elevation selected");
+    assert!((selected.unwrap() - 1.5).abs() < 0.01, "Selected should be 1.5");
+    
+    // Select fourth elevation (3.3)
+    harness.send_message(Message::ElevationTiltSelector(
+        tempest_app::test_utils::gui_harness::elevation_tilt_selector::ElevationTiltSelectorMessage::SelectElevation(3.3)
+    ));
+    
+    let selected = harness.state.elevation_tilt_selector.selected_elevation();
+    assert!((selected.unwrap() - 3.3).abs() < 0.01, "Selected should be 3.3");
+    
+    // Try to select non-existent elevation (should be ignored)
+    harness.send_message(Message::ElevationTiltSelector(
+        tempest_app::test_utils::gui_harness::elevation_tilt_selector::ElevationTiltSelectorMessage::SelectElevation(99.0)
+    ));
+    
+    // Selection should remain at 3.3 (not changed)
+    let selected = harness.state.elevation_tilt_selector.selected_elevation();
+    assert!((selected.unwrap() - 3.3).abs() < 0.01, "Selection should remain 3.3 for invalid elevation");
+    
+    println!("✓ Elevation tilt selection workflow completed");
+}
+
+/// Test: Offline indicator workflow
+///
+/// Tests the online/offline status detection workflow.
+#[test]
+fn test_offline_indicator_workflow() {
+    let mut harness = GuiTestHarness::new();
+    
+    // Check initial online status
+    let initial_online = harness.state.offline_indicator._is_online();
+    println!("Initial online status: {}", initial_online);
+    
+    // Send check connectivity message
+    harness.send_message(Message::OfflineIndicator(
+        tempest_app::test_utils::gui_harness::offline_indicator::OfflineIndicatorMessage::CheckConnectivity
+    ));
+    
+    // The offline indicator should handle the message
+    // (Actual status depends on system connectivity)
+    println!("✓ Offline indicator workflow completed");
+}
+
+// ============================================================================
+// Helper Functions for E2E Testing
+// ============================================================================
+
+/// Helper function to create a test station
+pub fn create_test_station(id: &str, name: &str, lat: f64, lon: f64, elevation: f32) -> Station {
+    Station {
+        id: id.to_string(),
+        name: name.to_string(),
+        lat,
+        lon,
+        elevation_m: elevation,
+    }
+}
+
+/// Helper function to create scan times for timeline testing
+pub fn create_scan_times(count: usize, interval_minutes: i64) -> Vec<chrono::DateTime<Utc>> {
+    (0..count)
+        .map(|i| Utc::now() + chrono::Duration::minutes(i as i64 * interval_minutes))
+        .collect()
+}
+
+/// Helper function to run a complete station selection workflow
+#[allow(dead_code)]
+pub fn run_station_workflow(harness: &mut GuiTestHarness, station: Station) {
+    harness.send_message(Message::StationSelector(
+        tempest_app::test_utils::gui_harness::station_selector::StationSelectorMessage::StationSelected(station)
+    ));
+}
+
+/// Helper function to run a complete moment selection workflow
+#[allow(dead_code)]
+pub fn run_moment_workflow(harness: &mut GuiTestHarness, moment: tempest_app::test_utils::gui_harness::Moment) {
+    harness.send_message(Message::MomentSwitcher(
+        MomentSwitcherMessage::MomentSelected(moment)
+    ));
+}
+
+/// Helper function to run a complete elevation selection workflow
+#[allow(dead_code)]
+pub fn run_elevation_workflow(harness: &mut GuiTestHarness, elevation: f32) {
+    harness.send_message(Message::ElevationTiltSelector(
+        tempest_app::test_utils::gui_harness::elevation_tilt_selector::ElevationTiltSelectorMessage::SelectElevation(elevation)
+    ));
+}
+
+/// Helper function to run timeline navigation workflow
+#[allow(dead_code)]
+pub fn run_timeline_workflow(harness: &mut GuiTestHarness, scan_times: Vec<chrono::DateTime<Utc>>) {
+    // Set scan times
+    harness.send_message(Message::Timeline(
+        tempest_app::test_utils::gui_harness::timeline::TimelineMessage::ScanTimesUpdated(scan_times)
+    ));
+    
+    // Step forward
+    harness.send_message(Message::StepForward);
+    
+    // Step backward
+    harness.send_message(Message::StepBackward);
+    
+    // Play/Pause
+    harness.send_message(Message::PlayPause);
 }

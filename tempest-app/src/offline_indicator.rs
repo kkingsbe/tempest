@@ -64,7 +64,7 @@ impl OfflineIndicator {
 
     /// Get the current online status
     #[allow(dead_code)]
-    pub fn _is_online(&self) -> bool {
+    pub fn is_online(&self) -> bool {
         self.is_online
     }
 

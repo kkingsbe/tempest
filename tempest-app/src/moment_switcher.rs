@@ -188,14 +188,14 @@ impl MomentSwitcher {
                     .on_press(MomentSwitcherMessage::MomentSelected(moment))
                     .width(Length::Fixed(112.0))
                     .height(Length::Fixed(48.0))
-                    .padding([10, 28])
+                    .padding([12, 24])
                     .style(primary_button_style)
             } else {
                 button(text(format!("{}\n{}", moment.code(), moment.name())).size(12))
                     .on_press(MomentSwitcherMessage::MomentSelected(moment))
                     .width(Length::Fixed(112.0))
                     .height(Length::Fixed(48.0))
-                    .padding([10, 20])
+                    .padding([12, 24])
                     .style(secondary_button_style)
             };
 

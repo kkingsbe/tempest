@@ -1,7 +1,7 @@
 # Design Debt
 
-> Last Updated: 2026-02-25T05:00:08Z
-> Total Open: 15
+> Last Updated: 2026-02-25T09:07:33Z
+> Total Open: 16
 
 ---
 
@@ -330,5 +330,81 @@ let label = text(label_text).size(10).font(iced::font::Font::MONOSPACE);
 - **Suggested fix:** Change .size(10) to .size(12) or .size(13) for timestamp labels
 - **Fix estimate:** S (< 15 min)
 - **Queued:** 2026-02-25T05:00:08Z
+- **Status:** OPEN
+
+---
+
+### DD-061: MomentSwitcher - Multiple Primary Buttons (High Priority)
+
+- **Component:** `tempest-app/src/moment_switcher.rs`
+- **Usage count:** 5 (main app)
+- **Priority:** High (violates core UX principle)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Every screen should have at most ONE primary action button"
+- **Evidence:**
+```rust
+// Lines 186-200: Any selected button uses primary_button_style
+let btn = if is_selected {
+    button(...).style(primary_button_style)  // <-- Primary style applied
+} else {
+    button(...).style(secondary_button_style)
+};
+```
+- **Line(s):** 186-200
+- **Expected:** Maximum 1 primary button per view. Use secondary or text style for alternative selections.
+- **Suggested fix:** Change selected buttons to use secondary_button_style instead of primary_button_style, or use text-based selection indicators
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T08:09:33Z
+- **Status:** OPEN
+
+---
+
+### DD-062: ElevationTiltSelector - Multiple Primary Buttons (High Priority)
+
+- **Component:** `tempest-app/src/elevation_tilt_selector.rs`
+- **Usage count:** 5
+- **Priority:** High (violates core UX principle)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Every screen should have at most ONE primary action button"
+- **Evidence:**
+```rust
+// Lines 136-142: Selected elevation uses primary style
+let btn = if is_selected {
+    button(text(label).size(14))
+        .on_press(ElevationTiltSelectorMessage::SelectElevation(elevation))
+        .width(Length::Fixed(48.0))
+        .height(Length::Fixed(48.0))
+        .padding([12, 24])
+        .style(iced::widget::button::primary)  // <-- Primary style
+};
+```
+- **Line(s):** 136-142
+- **Expected:** Maximum 1 primary button per view. With 10-20 elevation tilts possible, only one should be visually "primary"
+- **Suggested fix:** Use secondary style for selected buttons, or add a separate indicator for current selection
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T08:09:33Z
+- **Status:** OPEN
+
+---
+
+### DD-063: CacheManager - Section Spacing Below Minimum (Medium Priority)
+
+- **Component:** `tempest-app/src/cache_manager.rs`
+- **Usage count:** 3+ (used in main app)
+- **Priority:** Medium (violates mandatory section spacing rule)
+- **Skill violated:** `./skills/iced-rs/SKILL.md` — "Section spacing: At least LG (24px) between distinct sections"
+- **Evidence:**
+```rust
+// Lines 302, 315, 320: Space with heights 12px and 16px between sections
+iced::widget::Space::with_height(iced::Length::Fixed(12.0)),  // MD = 12px < LG (24px)
+iced::widget::Space::with_height(iced::Length::Fixed(8.0)),  // SM = 8px < LG (24px)
+iced::widget::Space::with_height(iced::Length::Fixed(16.0)),  // BASE = 16px < LG (24px)
+
+// Line 325: column spacing
+.spacing(8)  // SM = 8px < LG (24px)
+```
+- **Line(s):** 302, 315, 320, 325
+- **Expected:** Section spacing should be at least LG (24px) between distinct sections (Title → Statistics → Actions → Settings)
+- **Suggested fix:** Change Space heights to 24px (LG) and column .spacing(8) to .spacing(spacing::LG)
+- **Fix estimate:** S (< 15 min)
+- **Queued:** 2026-02-25T09:07:33Z
 - **Status:** OPEN
 

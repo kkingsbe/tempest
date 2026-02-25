@@ -1,0 +1,288 @@
+//! Tempest Application Library
+//!
+//! This module exposes the core application types for testing and reuse.
+
+pub mod cache_manager;
+pub mod color_legend;
+pub mod colors;
+pub mod config;
+pub mod elevation_tilt_selector;
+pub mod moment_switcher;
+pub mod offline_detection;
+pub mod offline_indicator;
+pub mod spacing;
+pub mod station_selector;
+pub mod timeline;
+pub mod golden_cli;
+
+pub mod test_utils;
+
+pub use cache_manager::{CacheManager, CacheManagerMessage};
+pub use color_legend::{ColorLegend, ColorLegendMessage};
+pub use config::AppConfig;
+pub use elevation_tilt_selector::{ElevationTiltSelector, ElevationTiltSelectorMessage};
+pub use iced::Task;
+pub use moment_switcher::{Moment, MomentSwitcher, MomentSwitcherMessage};
+pub use offline_indicator::{OfflineIndicator, OfflineIndicatorMessage};
+pub use station_selector::{StationSelector, StationSelectorMessage};
+pub use std::sync::Arc;
+pub use tempest_fetch::cache_default;
+pub use tempest_fetch::prefetch::{PlaybackDirection, PlaybackState, Prefetcher};
+pub use tempest_render_core::color::RadarMoment;
+pub use timeline::{TimelineMessage, TimelineState};
+pub use tokio::sync::RwLock;
+
+/// Application state
+#[derive(Debug)]
+pub struct State {
+    /// Station selector component
+    pub station_selector: StationSelector,
+    /// Moment switcher component
+    pub moment_switcher: MomentSwitcher,
+    /// Elevation tilt selector component
+    pub elevation_tilt_selector: ElevationTiltSelector,
+    /// Color legend component
+    pub color_legend: ColorLegend,
+    /// Cache manager component
+    pub cache_manager: CacheManager,
+    /// Offline indicator component
+    pub offline_indicator: OfflineIndicator,
+    /// Timeline component
+    pub timeline: TimelineState,
+    /// Prefetcher for predictive data loading
+    pub prefetcher: Prefetcher,
+    /// Counter for periodic connectivity checks
+    #[allow(dead_code)]
+    pub connectivity_check_counter: u32,
+    /// Application configuration
+    pub config: AppConfig,
+    /// Playback state
+    #[allow(dead_code)]
+    pub is_playing: bool,
+    /// Current zoom level (0 = default, positive = zoomed in, negative = zoomed out)
+    pub zoom_level: i32,
+    /// Pan offset for map (x, y)
+    pub pan_offset: (i32, i32),
+    /// Whether settings panel is visible
+    pub show_settings: bool,
+}
+
+impl State {
+    /// Sync the prefetcher with current timeline state
+    pub fn sync_prefetcher_with_timeline(&mut self) {
+        // Get timeline state
+        let is_playing = self.timeline.is_playing();
+        let current_index = self.timeline.current_index();
+        let speed = self.timeline.playback_speed() as f64;
+
+        // Determine direction
+        let direction = if is_playing {
+            // Default to Forward when playing
+            PlaybackDirection::Forward
+        } else {
+            PlaybackDirection::Paused
+        };
+
+        // Set available scans (use scan times as keys - format as strings)
+        let scan_keys: Vec<String> = self
+            .timeline
+            .scan_times()
+            .iter()
+            .map(|t| t.format("%Y%m%d%H%M").to_string())
+            .collect();
+        self.prefetcher.set_available_scans(scan_keys);
+
+        // Update playback state
+        let state = PlaybackState {
+            current_index,
+            total_scans: self.timeline.scan_count(),
+            direction,
+            speed: if is_playing { speed } else { 0.0 },
+            last_update: chrono::Utc::now(),
+        };
+        self.prefetcher.update_playback_state(state);
+    }
+}
+
+/// Direction for panning
+#[derive(Debug, Clone, Copy)]
+pub enum PanDirection {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+/// Messages that can be sent to the application
+#[derive(Debug, Clone)]
+pub enum Message {
+    /// Station selector internal messages
+    StationSelector(StationSelectorMessage),
+    /// Moment switcher internal messages
+    MomentSwitcher(MomentSwitcherMessage),
+    /// Elevation tilt selector internal messages
+    ElevationTiltSelector(ElevationTiltSelectorMessage),
+    /// Color legend internal messages
+    ColorLegend(ColorLegendMessage),
+    /// Cache manager internal messages
+    CacheManager(CacheManagerMessage),
+    /// Offline indicator internal messages
+    OfflineIndicator(OfflineIndicatorMessage),
+    /// Timeline internal messages
+    Timeline(TimelineMessage),
+    /// Prefetcher updated with keys to prefetch
+    PrefetcherUpdated(Vec<String>),
+    /// Toggle settings panel
+    ToggleSettings,
+    /// Update cache size from settings
+    SettingsCacheSizeChanged(u64),
+    /// Update default moment from settings
+    SettingsDefaultMomentChanged(String),
+    /// Update polling interval from settings
+    SettingsPollingIntervalChanged(u64),
+    /// Play/Pause toggle
+    PlayPause,
+    /// Step backward
+    StepBackward,
+    /// Step forward
+    StepForward,
+    /// Zoom in
+    ZoomIn,
+    /// Zoom out
+    ZoomOut,
+    /// Pan in a direction
+    Pan(PanDirection),
+    /// Keyboard event handler
+    Keyboard(iced::keyboard::Key),
+}
+
+/// Handle messages and update state
+pub fn update(state: &mut State, message: Message) -> Task<Message> {
+    match message {
+        Message::StationSelector(selector_message) => {
+            state.station_selector.update(selector_message);
+        }
+        Message::MomentSwitcher(switcher_message) => {
+            state.moment_switcher.update(switcher_message);
+            // Sync color legend with the selected moment
+            let selected_moment = state.moment_switcher.selected_moment();
+            let radar_moment = match selected_moment {
+                Moment::REF => RadarMoment::Reflectivity,
+                Moment::VEL => RadarMoment::Velocity,
+                Moment::SW => RadarMoment::SpectrumWidth,
+                Moment::ZDR => RadarMoment::Zdr,
+                Moment::CC => RadarMoment::Cc,
+                Moment::KDP => RadarMoment::Kdp,
+            };
+            state.color_legend.set_moment(radar_moment);
+        }
+        Message::ElevationTiltSelector(selector_message) => {
+            state.elevation_tilt_selector.update(selector_message);
+        }
+        Message::ColorLegend(legend_message) => {
+            state.color_legend.update(legend_message);
+        }
+        Message::CacheManager(cache_message) => {
+            state.cache_manager.update(cache_message);
+        }
+        Message::OfflineIndicator(indicator_message) => {
+            state.offline_indicator.update(indicator_message);
+        }
+        Message::Timeline(timeline_message) => {
+            state.timeline.update(timeline_message);
+            // Sync prefetcher after timeline updates
+            state.sync_prefetcher_with_timeline();
+            let prediction = state.prefetcher.predict();
+            if !prediction.keys.is_empty() {
+                // Keys are available for prefetching
+                // In a full implementation, this would trigger async fetches
+                // For now, just have the message available for testing
+            }
+        }
+        Message::ToggleSettings => {
+            state.show_settings = !state.show_settings;
+        }
+        Message::SettingsCacheSizeChanged(size) => {
+            state.config.cache_size_mb = size;
+            if let Err(e) = state.config.save() {
+                eprintln!("Failed to save config: {}", e);
+            }
+        }
+        Message::SettingsDefaultMomentChanged(moment) => {
+            state.config.default_moment = moment;
+            if let Err(e) = state.config.save() {
+                eprintln!("Failed to save config: {}", e);
+            }
+        }
+        Message::SettingsPollingIntervalChanged(interval) => {
+            state.config.polling_interval_seconds = interval;
+            if let Err(e) = state.config.save() {
+                eprintln!("Failed to save config: {}", e);
+            }
+        }
+        Message::PrefetcherUpdated(keys) => {
+            // Handle prefetcher updated - keys are available for prefetching
+            // This would trigger async fetches in a full implementation
+            let _ = keys;
+        }
+        Message::PlayPause => {
+            state.timeline.update(TimelineMessage::PlayPauseToggled);
+            state.sync_prefetcher_with_timeline();
+            let prediction = state.prefetcher.predict();
+            if !prediction.keys.is_empty() {
+                // Prefetch keys available
+            }
+        }
+        Message::StepBackward => {
+            state.timeline.update(TimelineMessage::StepBackward);
+            state.sync_prefetcher_with_timeline();
+            let prediction = state.prefetcher.predict();
+            if !prediction.keys.is_empty() {
+                // Prefetch keys available
+            }
+        }
+        Message::StepForward => {
+            state.timeline.update(TimelineMessage::StepForward);
+            state.sync_prefetcher_with_timeline();
+            let prediction = state.prefetcher.predict();
+            if !prediction.keys.is_empty() {
+                // Prefetch keys available
+            }
+        }
+        Message::ZoomIn => {
+            if state.zoom_level < 5 {
+                state.zoom_level += 1;
+                println!("Zoom in: level {}", state.zoom_level);
+            }
+        }
+        Message::ZoomOut => {
+            if state.zoom_level > -3 {
+                state.zoom_level -= 1;
+                println!("Zoom out: level {}", state.zoom_level);
+            }
+        }
+        Message::Pan(direction) => {
+            let (dx, dy) = match direction {
+                PanDirection::Up => (0, -10),
+                PanDirection::Down => (0, 10),
+                PanDirection::Left => (-10, 0),
+                PanDirection::Right => (10, 0),
+            };
+            state.pan_offset = (state.pan_offset.0 + dx, state.pan_offset.1 + dy);
+            println!(
+                "Pan: offset ({}, {})",
+                state.pan_offset.0, state.pan_offset.1
+            );
+        }
+        Message::Keyboard(key) => {
+            // Handle keyboard shortcuts
+            if let iced::keyboard::Key::Character(c) = key {
+                if c.as_str() == " " {
+                    // Toggle play/pause via Timeline
+                    state.timeline.update(TimelineMessage::PlayPauseToggled);
+                }
+            }
+        }
+    }
+    Task::none()
+}
